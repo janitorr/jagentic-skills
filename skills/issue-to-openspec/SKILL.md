@@ -1,54 +1,79 @@
 ---
 name: issue-to-openspec
-description: Use when the user invokes /issue-to-openspec, or when ready GitHub issue(s) need OpenSpec planning artifacts. Always explores before proposing; stops before implementation.
-disable-model-invocation: true
+description: Use when a GitHub issue must become an OpenSpec change, or when the user wants to explore an issue without proposing one.
 ---
 
 # Issue to OpenSpec
 
 ## Overview
 
-Turn one or more GitHub issues into an OpenSpec change. **Explore always runs
-first**, even when the issue looks complete. Explore resolves decisions;
+Turn one or more GitHub issues into an OpenSpec change. Explore always runs
+first, even when the issue looks complete. Explore resolves decisions;
 `openspec-propose` writes the artifacts; neither implements.
 
 This skill owns the handoff and the exit criteria. OpenSpec owns scaffolding,
-schema rules, validation, and artifact paths.
+schema rules, validation, artifact paths, and the `--store` rule.
 
 ## Preconditions
 
-- A GitHub issue reference. Read it, including comments:
-  `gh issue view <number> --json number,title,body,comments`.
-- An OpenSpec root. Run `openspec list --json`; if `root` is null, stop and ask
-  whether to initialize, target a store, or continue without OpenSpec.
-- Project context: `AGENTS.md` / `CLAUDE.md`, `openspec/config.yaml`, and the
-  repo's documented commands.
-- A clean enough working tree to branch from fresh `main`. Do not stash, merge,
-  rebase, or discard the user's work.
+- One or more issue references. If none is supplied, ask. Read each, including
+  comments: `gh issue view <number> --json number,title,body,comments`. If `gh`
+  is unavailable, ask the user to paste the issue bodies. Verify every template
+  section: problem, outcome, in scope, out of scope, acceptance, and context.
+  Missing sections mean amend the issue with `gh issue edit <n> --body-file
+  <path>` or return to `/issue-interview`; do not guess.
+- An OpenSpec root. Run `openspec list --json`. If `root` is null, the command
+  exits 1; that is the answer, not a CLI failure. Stop and ask whether to
+  initialize or target a store.
+- Project context: the target repo's `AGENTS.md` / `CLAUDE.md`,
+  `openspec/config.yaml`, and the repo's documented commands.
+- A base to branch from. `git status --porcelain` shows no changes except files
+  the user agrees are out of scope; `git fetch` succeeds and the base is current,
+  or the user names and approves a different base. Record the base commit with
+  `git rev-parse <base>`. Never stash, merge, rebase, or discard the user's work.
+
+If the project uses an OpenSpec store, append `--store <id>` to the OpenSpec
+commands below as its store rule requires.
 
 ## Process
 
 ### 1. Read the source
 
-Extract from the issue: problem, outcome, in-scope, out-of-scope, acceptance
-criteria, context links, and open questions. Note anything missing; missing
-acceptance criteria are a reason to return to `/issue-interview`, not to guess.
+Extract from each issue: problem, outcome, in-scope, out-of-scope, acceptance,
+context links, and open questions. Then read the codebase reality: current branch
+and status, existing specs (`openspec list --specs --json`), relevant specs in
+full (`openspec show "<spec-id>" --type spec`), integration points, nearby tests,
+and docs. Record any conflict between an issue and an existing spec; do not
+silently choose one.
 
-Then read the codebase reality: current branch and status, existing specs
-(`openspec list --specs --json`), relevant specs in full
-(`openspec show "<spec-id>" --type spec`), integration points, nearby tests, and
-docs. Record conflicts between the issue and the existing specs.
-
-### 2. Explore (mandatory)
+### 2. Explore
 
 Invoke the `openspec-explore` skill, or `/opsx-explore`, with the brief below.
-Do not substitute your own analysis for it, and do not skip it because there
-"seems to be enough context". Explore is where scope and design decisions get
-settled with the human.
+Explore owns the exploration and runs even when the issue looks complete.
+
+```markdown
+## Issues
+<numbers, titles, links>
+
+## Problem and outcome
+<from the issues>
+
+## Current state
+<relevant code, existing specs, constraints>
+
+## Decisions already made
+<settled by the issues or the user>
+
+## Open questions
+<what explore must resolve>
+
+## Boundaries
+No implementation. No code edits. Artifacts only if the user explicitly asks.
+```
 
 If several issues touch the same capability, explore them together. If one issue
-needs multiple independently shippable changes, say so and propose a change
-order.
+needs multiple independently shippable changes, propose only the first change,
+report the order, and stop; re-run this skill for each subsequent change.
 
 ### 3. Exit explore only when the record is complete
 
@@ -61,11 +86,13 @@ order.
 If the user wants to stop earlier, write down what remains open and stop without
 proposing. Do not let an incomplete exploration become an artifact.
 
+Before proposing, confirm with the user that exploration is complete and they
+want a change. Exploration alone does not authorize artifact creation.
+
 ### 4. Propose
 
-Invoke `openspec-propose`, or `/opsx-propose`. It creates the branch and all
-required artifacts in dependency order, then commits them. Do not hand-create
-artifact files, and do not write a parallel spec format.
+Invoke `openspec-propose`, or `/opsx-propose`. It creates the branch and every
+required artifact in dependency order, then commits them.
 
 If proposal writing exposes a material ambiguity that exploration missed, pause
 and return to explore. Do not resolve a scope question inside the artifact.
@@ -82,56 +109,40 @@ Confirm:
 - Every required artifact is `done` or deliberately `skipped` with a stated
   reason. Use `requires` edges, not status alone.
 - `proposal.md` links or cites the originating issue(s).
-- The spec delta states added, modified, and removed requirements with
-  testable scenarios.
+- The spec delta states the operations that apply: added, modified, and removed
+  requirements, each with testable scenarios. If `specs` is `skipped`, verify the
+  proposal's no-behavior-change rationale instead; do not invent requirements.
 - `design.md` exists when a material decision needs justification.
 - Tasks are vertical slices with acceptance and verification, not a layer-by-layer
   checklist.
 - No artifact contains invented APIs, stale file paths, or copied project
   context.
 
-### 6. Stop at the boundary
+### 6. Hand off
 
-Report the change name, branch, artifacts, validation result, and any deferred
-questions. Then stop. Do not implement, do not run apply, and do not archive.
-The next step is `/spec-review`.
+Report:
 
-## Explore brief
+- Change name, branch, and the approved base commit.
+- Issue numbers and links.
+- Artifacts created, plus any deliberately skipped.
+- Strict validation result.
+- Any deferred questions or risks.
 
-```markdown
-## Issue
-<number, title, link>
+Then stop. Do not implement, run apply, or archive. End with:
 
-## Problem and outcome
-<from the issue>
-
-## Current state
-<relevant code, existing specs, constraints>
-
-## Decisions already made
-<settled by the issue or the user>
-
-## Open questions
-<what explore must resolve>
-
-## Boundaries
-No implementation. No code edits. Artifacts only if the user explicitly asks.
 ```
-
-## Red Flags
-
-- Proposing without exploring, or treating exploration as a formality.
-- Writing artifacts by hand instead of using `openspec-propose`.
-- Implementing, running apply, or creating a PR in this workflow.
-- A task list that is horizontal by layer.
-- A spec delta with no scenarios, or acceptance criteria that cannot be tested.
-- Silently choosing between conflicting requirements.
+Next: /spec-review <change>
+```
 
 ## Verification
 
-- [ ] The issue and all comments were read.
-- [ ] Explore ran before propose and produced a settled decision record.
-- [ ] Required artifacts exist, validate strictly, and trace to the issue.
-- [ ] Tasks are vertical slices with verification.
+- [ ] Every issue and its comments were read, and every template section is
+      present.
+- [ ] The OpenSpec root exists, or the report explains why it does not.
+- [ ] Explore ran before propose and the user confirmed the capture.
+- [ ] Required artifacts exist, validate strictly, and trace to the issues.
+- [ ] The `specs` artifact is either present with testable deltas or deliberately
+      skipped with a rationale.
+- [ ] The handoff records the change, branch, base commit, issues, and validation
+      result.
 - [ ] No implementation happened.
-- [ ] The handoff names `/spec-review` as the next step.

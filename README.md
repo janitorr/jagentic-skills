@@ -38,4 +38,6 @@ Five pipeline skills around OpenSpec, each invoked by `/command`:
 | 5 | `code-review` | Read-only findings, then human gate |
 
 The reviews never fix what they find; remediation is a separate pass after the
-human reviews the report.
+human reviews the report. Spec review hands off through the `ready-for-dev`
+label, which the human sets after accepting the findings. Implementation commits
+once per green slice.

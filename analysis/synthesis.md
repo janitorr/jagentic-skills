@@ -72,7 +72,10 @@ what a review must prove.
 
 1. Issue publication requires an explicit human yes.
 2. Explore always runs before propose, even when the issue looks complete.
-3. Spec review is read-only; implementation starts only after human approval
-   recorded in a durable place.
-4. Tasks are checked only when the specified behavior is fully implemented.
+3. Spec review is read-only. Implementation starts only after the human sets the
+   `ready-for-dev` label on the issue or PR.
+4. Tasks are checked only when the specified behavior is fully implemented;
+   deferred tasks stay unchecked with a reason.
 5. Code review is read-only; fixes happen in a separate pass after human review.
+6. Implementation commits once per green slice. This is an explicit override of
+   `openspec-apply`'s default single commit at run completion.

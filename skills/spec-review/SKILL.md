@@ -1,7 +1,6 @@
 ---
 name: spec-review
-description: Use when the user invokes /spec-review, or before implementing an OpenSpec change. Read-only review of proposal, specs, design, and tasks against the issue, source, existing specs, and docs.
-disable-model-invocation: true
+description: Use before implementing an OpenSpec change, or when the user asks for a gaps review of the change's artifacts.
 ---
 
 # Spec Review
@@ -9,74 +8,64 @@ disable-model-invocation: true
 ## Overview
 
 Review an OpenSpec change before code exists. A confident artifact is not a
-correct one, and every hour spent here prevents a wrong implementation later.
+correct one.
 
-**Stance:** read-only, adversarial, evidence-first. Your job is to try to
-disprove the artifacts, not to approve them. A clean review is a valid result;
-an invented finding is not.
-
-## Inputs
-
-- The change name.
-- The originating GitHub issue(s), including comments.
-- The change artifacts: `proposal.md`, spec deltas, `design.md`, `tasks.md`.
-- The existing specifications, project docs, and relevant source and tests.
+**Stance:** read-only, adversarial, evidence-first. Your job is to falsify the
+artifacts, not to approve them. A clean review is a valid result; an invented
+finding is not.
 
 ## Process
 
-### 1. Pin the sources of truth
+### 1. Pin and read the sources
+
+If the change name is missing, run `openspec list --json` and ask which change.
+If `root` is null, the command exits 1; that is the answer, not a CLI failure.
+Stop and report that OpenSpec is not initialized. If the change list is empty,
+stop; there is nothing to review.
 
 ```bash
 openspec status --change "<name>" --json
 openspec validate "<name>" --type change --strict
 ```
 
-Read every artifact from disk. Read the issue, the existing specs it changes,
-the project context, and the source and tests at the integration points. If a
+Read every artifact that exists, the originating issue(s) and comments, the
+existing specs the change modifies, the target repo's docs and config, and the
+source and tests at the integration points. Judge `design.md` by whether a
+material decision needs justification, not by whether the file exists. If a
 source is unavailable, say so; do not fill the gap with assumptions.
 
 ### 2. Review five axes
 
 Keep the axes separate. Report each one, even when it passes.
 
-| Axis | Questions |
-|---|---|
-| Problem fit | Does the proposal solve the stated problem? Does scope match the issue? Are non-goals explicit and respected? |
-| Spec correctness | Are requirements and scenarios testable, complete, and consistent with existing specs? Are deltas correct? Any contradictions, duplicates, or missing edge cases? |
-| Design soundness | Are decisions justified against alternatives and constraints? Does it fit the architecture? Are APIs, data shapes, and failure modes real rather than invented? |
-| Task executability | Are tasks vertical slices with acceptance and verification? Is ordering sound? Could a fresh agent execute each task without guessing? |
-| Repo and doc fit | Does it follow documented conventions? Does it conflict with existing behavior, docs, or prior decisions? |
+| Axis | Questions | Evidence to look for |
+|---|---|---|
+| Problem fit | Does the proposal solve the stated problem? Does scope match the issue? Are non-goals explicit and respected? | An issue requirement with no corresponding artifact; behavior the issue never asked for |
+| Spec correctness | Are requirements and scenarios testable, complete, and consistent with existing specs? Are deltas correct? | A requirement with no scenario that can fail; contradictions, duplicates, or missing edge cases |
+| Design soundness | Are decisions justified against alternatives and constraints? Does it fit the architecture? | Invented APIs, unexplained data shapes, changed observable behavior, unstated failure modes |
+| Task executability | Are tasks vertical slices with acceptance and verification? Could a fresh agent execute each without guessing? | Horizontal layer batching; missing acceptance; stale file paths; ordering that blocks |
+| Repo and doc fit | Does it follow documented conventions? Does it conflict with existing behavior, docs, or prior decisions? | Convention drift; conflict with current code or a prior ADR |
 
-### 3. Try to falsify it
+### 3. Falsify
 
 List the three to five assumptions the change most depends on. For each, find
 evidence in the source, tests, specs, or official documentation. Mark it
 confirmed, contradicted, or unverified.
-
-Look specifically for:
-
-- An issue requirement with no corresponding spec delta.
-- Behavior in the artifacts that the issue never asked for.
-- A spec requirement with no scenario that can fail.
-- A task that batches layers horizontally instead of cutting a slice.
-- Stale file paths, invented APIs, or claims contradicted by current code.
-- A design decision that quietly changes externally observable behavior.
-- An unresolved question disguised as an assumption.
 
 For framework-specific claims, check official documentation rather than memory.
 Cite what you checked.
 
 ### 4. Report findings
 
-Label every finding:
+Label every finding and state its remedy:
 
-| Label | Meaning |
-|---|---|
-| **Critical** | Wrong problem, unsafe scope, or an artifact that cannot be implemented as written |
-| **Required** | Must be fixed before implementation |
-| **Optional** | Worth considering; not blocking |
-| **Nit** | Wording or formatting only |
-| **FYI** | Context for the human; no action |
+| Label | Meaning | Remedy |
+|---|---|---|
+| **Critical** | Wrong problem, unsafe scope, or an artifact that cannot be implemented as written | Return to the issue or explore |
+| **Required** | Must be fixed before implementation | Fix the artifact |
+| **Optional** | Worth considering; not blocking | Author decides |
+| **Nit** | Wording or formatting only | Author decides |
+| **FYI** | Context for the human; no action | None |
 
 Each finding carries:
 
@@ -92,33 +81,35 @@ clearer.
 
 ### 5. Verdict and gate
 
-End with:
+Map severity to the verdict:
 
-- Findings by severity.
-- The three highest-risk issues, if any.
-- Open questions the human must answer.
-- Verdict: **ready for human review** or **needs revision**.
+- Any **Critical** or **Required** finding: **needs revision**.
+- Only **Optional**, **Nit**, or **FYI** findings: **ready for human review**.
 
-Then stop. Do not edit artifacts, do not implement, and do not start remediation.
-The human decides; fixes are a separate pass.
+End with findings by severity, the three highest-risk issues, any questions the
+human must answer, and the verdict.
 
-## Red Flags
+Then stop. Do not edit artifacts, implement, or start remediation.
 
-- Reviewing the proposal but not the spec deltas or tasks.
-- Checking artifacts only against each other, never against the issue or source.
-- Reporting style preferences as blocking findings.
-- Accepting a requirement because it sounds reasonable, without a failing
-  scenario that could prove it.
-- Merging all axes into one score, so a spec failure hides behind clean tasks.
-- Editing the artifacts to "help" while reviewing.
-- Zero findings invented to look thorough.
+On **ready**, ask the human to review the findings and, if they accept them, set
+the `ready-for-dev` label on the issue or pull request. Do not set it yourself.
+The next command is:
+
+```
+Next: /vertical-slice-tdd <change>
+```
+
+On **needs revision**, name the artifact pass that owns each blocking finding
+(return to the issue, return to explore, or update the change artifacts) and
+stop. Do not implement.
 
 ## Verification
 
-- [ ] All artifacts and the originating issue were read.
-- [ ] Existing specs, relevant source, tests, and docs were checked.
+- [ ] The change and every existing artifact were read.
+- [ ] The issue, existing specs, relevant source, tests, and docs were checked.
 - [ ] Strict validation ran, and its output is recorded.
-- [ ] Each finding quotes its source and states impact.
-- [ ] The three highest-risk assumptions were tested, not just listed.
+- [ ] Each finding quotes its source and states impact and remedy.
+- [ ] The highest-risk assumptions were confirmed or contradicted with evidence.
 - [ ] No files were modified and no implementation started.
-- [ ] The verdict and human gate are explicit.
+- [ ] The verdict follows the severity mapping, and the `ready-for-dev` handoff
+      or the blocking remediation path is explicit.
