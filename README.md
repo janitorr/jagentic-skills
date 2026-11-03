@@ -31,6 +31,9 @@ OpenCode discovers; do not edit it directly.
 `scripts/inventory.py` has the authoritative category map. It exits non-zero if
 a vendored skill is unmapped, so the inventory cannot silently go stale.
 
+Evaluation status and the plan for resuming it: `analysis/evidence/README.md`.
+Only `spec-review` has a behavioral baseline; the other skills are unverified.
+
 ## Current synthesis
 
 Five pipeline skills around OpenSpec, invoked by whatever command or workflow the
