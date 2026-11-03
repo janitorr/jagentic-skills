@@ -25,6 +25,29 @@ it directly.
 | `python3 scripts/inventory.py` | Regenerate `analysis/inventory.md` from `vendor/`. Fails if a skill is unmapped. |
 | `./scripts/sync-skills.sh` | Copy `skills/` into `.opencode/skills/`. |
 
+## Git commit messages
+
+Match the repository history:
+
+```
+<area>: <imperative, lowercase summary>
+```
+
+- Areas: `skills`, `workflow`, `analysis`, `docs`, `scripts`, `eval`.
+- Use `fix:`, `chore:`, `test:`, or `refactor:` when the area is not the point.
+- Keep the subject under roughly 72 characters, with no trailing period.
+- Use the body to explain why, wrapped at roughly 72 characters.
+- One logical change per commit.
+
+Examples:
+
+```
+skills: add user trigger phrases to visual-explainer
+workflow: map review findings to GitHub artifacts
+analysis: record vertical-slice-tdd gate result
+docs: record commit message convention
+```
+
 ## When adding or changing a synthesized skill
 
 - Edit `skills/<skill-id>/SKILL.md`, then run `./scripts/sync-skills.sh`.
