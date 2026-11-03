@@ -72,3 +72,8 @@ Resume when one of these happens:
 Only `spec-review` has a partial record. The other nine are behavior-shaping
 documents with no observed behavior behind them. That is accepted temporary debt,
 not a completed verification.
+
+Pending trigger test: `visual-explainer` added the user phrases "show me",
+"visualize", "make it visual", "draw", "diagram", "sketch", "chart", and "map
+this out". The description has not been tested for should-fire or should-not-fire
+behavior.
