@@ -108,7 +108,8 @@ Then stop. Do not edit artifacts, implement, or start remediation.
 
 On **ready for spec approval**, ask the human to review the findings and, if they
 accept them, record approval with the marker the agent file defines (for example,
-a label or a comment). Do not record it yourself. Hand off:
+a label or a comment). Do not record it yourself. If the agent file defines no
+marker, ask which marker to use; do not invent one. Hand off:
 
 ```
 Next: vertical-slice-tdd for change <name>

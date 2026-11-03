@@ -66,20 +66,58 @@ to edit.
 | Next stage named | No | Yes: `vertical-slice-tdd` |
 | Approval marker handled | No | Yes: notes none is defined |
 
+## Five-repetition run
+
+Five fresh runs per condition, scored against seeded defect IDs D1–D6 and a
+clean-fixture false-positive check. The earlier pilot used full reports; this run
+used a compact output contract to make scoring consistent.
+
+Seeded defects:
+
+- D1: requirement with no scenario / strict validation failure
+- D2: missing auth or user-scoping requirement
+- D3: unverified index assumption
+- D4: horizontal layer-batched tasks
+- D5: duplicate requirement or wrong capability classification
+- D6: fuzzy-vs-contains semantics contradiction
+
+| Condition | D1 | D2 | D3 | D4 | D5 | D6 | Verdict | False blocking |
+|---|---|---|---|---|---|---|---|---|
+| Control (5 runs) | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 | needs revision 5/5 | 0 |
+| Skill (5 runs) | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 | needs revision 5/5 | 0 |
+
+| Condition | Clean verdict | False blocking | Next stage named |
+|---|---|---|---|
+| Control (5 runs) | ready for human review 5/5 | 0 | 5/5 |
+| Skill (5 runs) | ready for spec approval 5/5 | 0 | 5/5 |
+
+One skill run returned `APPROVAL_MARKER: missing` on the clean fixture while the
+other four returned `not-applicable`. The fixture defines no marker, so the
+correct behavior is to ask; the variance is in how that is reported, not in
+whether a marker was invented. No run invented a label or comment.
+
 ## Interpretation
 
-The pilot does not show that the skill finds defects the control misses. The
-control found the core seeded defects, which means the fixture is too easy to
-discriminate on recall alone.
 
-What the skill added:
+The pilot does not show that the skill finds defects the control misses. The
+control found the core seeded defects, and in the five-repetition run both
+conditions found all six defects and reached the same verdict. The fixture is too
+easy to discriminate on recall alone.
+
+What the skill added, observed in the full-report pilot:
 
 - A falsification table that made the unverified index assumption load-bearing
   and forced the verdict cap.
 - Explicit severity mapping and a stage-qualified verdict.
-- A named next stage and correct handling of an undefined approval marker.
+- Correct handling of an undefined approval marker, with no invented label.
 - More edge-case coverage on the seeded fixture: empty term, case sensitivity,
   fuzzy-vs-substring semantics, API contract, and the existing query.
+
+What the five-repetition run did not show:
+
+- Any recall advantage over a plain senior-engineer review.
+- Any false-positive advantage on the clean fixture; both conditions were clean.
+- Reliable discrimination, because both conditions hit the ceiling.
 
 What needs a harder fixture or more reps:
 
@@ -88,8 +126,7 @@ What needs a harder fixture or more reps:
   criterion hidden in an issue comment.
 - Trigger behavior: whether the description fires on a review request and stays
   quiet on adjacent tasks.
-- Five repetitions and a no-guidance control per `skill-forge`, with every match
-  read manually.
+- Five repetitions on the harder fixture, with every match read manually.
 
 ## Follow-up
 
