@@ -66,9 +66,11 @@ Supporting skills, callable at any point:
 | `documentation` | ADRs, READMEs, reference pages, changelogs, and agent instructions |
 
 Reviewers never fix what they find. The owning stage may rework findings
-agent-to-agent; human approval and merge sign-off remain fixed gates. Spec review
-hands off through the approval marker the agent file defines (for example, a
-`ready-for-dev` label). Implementation commits once per green slice.
+agent-to-agent; human approval and merge sign-off remain fixed gates. A design
+issue at human review reopens the spec and invalidates the approval marker, so
+implementation waits for a new one. Spec review hands off through the approval
+marker the agent file defines (for example, a `ready-for-dev` label).
+Implementation commits once per green slice.
 
 Skills are environment-agnostic. An agent file supplies the tracker operations,
 approval marker, review destination, and workspace policy; the same skill can run

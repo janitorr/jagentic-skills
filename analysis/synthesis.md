@@ -113,5 +113,7 @@ Supporting skills:
    deferred tasks stay unchecked with a reason.
 5. Reviewers are read-only. The owning stage may rework findings agent-to-agent;
    human approval and merge sign-off remain fixed gates.
-6. Implementation commits once per green slice. This is an explicit override of
+6. Human review may reopen the spec. A design or scope change returns to
+   `issue-to-openspec` and `spec-review`, and invalidates the approval marker.
+7. Implementation commits once per green slice. This is an explicit override of
    `openspec-apply`'s default single commit at run completion.
