@@ -32,7 +32,8 @@ OpenCode discovers; do not edit it directly.
 a vendored skill is unmapped, so the inventory cannot silently go stale.
 
 Evaluation status and the plan for resuming it: `analysis/evidence/README.md`.
-Only `spec-review` has a behavioral baseline; the other skills are unverified.
+`spec-review` and `vertical-slice-tdd` have partial behavioral evidence; the other
+eight are unverified.
 
 ## Current synthesis
 

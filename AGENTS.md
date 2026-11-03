@@ -55,5 +55,5 @@ it directly.
 - Read `analysis/evidence/README.md` first. It records what is verified, why
   evals are paused, and how to resume.
 - One skill at a time, per `skill-forge`. Do not batch untested skills.
-- Do not present an unverified skill as passing. Nine of the ten have no
+- Do not present an unverified skill as passing. Eight of the ten have no
   behavioral evidence.
