@@ -14,7 +14,7 @@ that a skill works.
 |---|---|---|
 | `spec-review` | `analysis/evidence/spec-review.md` plus fixtures | Pilot plus five repetitions per condition; ceiling effect |
 | `vertical-slice-tdd` | `analysis/evidence/vertical-slice-tdd.md` plus fixture | TDD ceiling; approval gate discriminates |
-| All ten descriptions | `analysis/evidence/trigger-tests.md` | 3 reps, 35 prompts, 105/105 expected |
+| All ten descriptions | `analysis/evidence/trigger-tests.md` | Proxy 105/105; live 8/10 generic, 4/4 repo-specific |
 | Eight other skills | none for behavior | Unverified behavior |
 
 The `spec-review` fixtures are small OpenSpec projects under
@@ -87,9 +87,9 @@ Only `spec-review` and `vertical-slice-tdd` have partial records. The other eigh
 are behavior-shaping documents with no observed behavior behind them. That is
 accepted temporary debt, not a completed verification.
 
-Pending trigger work: the 3-rep pilot passed; a live selector check for the
-adjacent pairs is still pending, and the pilot must be re-run after description
-edits.
+Pending trigger work: the proxy and live selector passes are recorded. The
+remaining work is to re-run after description edits and to check that the
+project-skill precedence rule wins when a generic and a project skill both apply.
 
 Pending routing-contract test: the five stage skills now emit `routing_status`,
 `owner`, and `requested_action`. `docs/workflow.md` defines the intended

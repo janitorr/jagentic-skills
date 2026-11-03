@@ -32,6 +32,36 @@ Adjacent pairs stayed separate:
 - skill authoring vs documentation: prompts 22-24 vs 28-30
 - git workflow vs code review: prompts 25-27 vs 13-15
 
+## Live selector pass
+
+The descriptions-only run is a proxy. The live pass delegated prompts to fresh
+agents without naming a skill or pointing at a file.
+
+**Generic prompts, 10.** Eight loaded the local skill. Two loaded a global skill
+because the prompt did not signal a project artifact:
+
+| Prompt | Loaded | Read |
+|---|---|---|
+| Interview me about what I actually want | `interview-me` (global) | Reasonable: no issue was requested |
+| Write an ADR for PostgreSQL vs SQLite | `documentation-and-adrs` (global) | Reasonable: no repo docs were named |
+
+**Repo-specific prompts, 4.** Four loaded the local skill:
+
+| Prompt | Loaded |
+|---|---|
+| Interview me and turn the answers into a GitHub issue in this repo | `issue-interview` |
+| Write an ADR in this repo's docs | `documentation` |
+| Update this repo's AGENTS.md | `documentation` |
+| Review this repo's OpenSpec change proposal | `spec-review` |
+
+The generic collisions are not necessarily defects: a generic interview or ADR
+request can belong to the global skill. The project rule now says to prefer the
+project skill when both apply.
+
+Harness lesson: the first live pass let agents perform the task. Two of them
+edited the repo, and those edits were reverted. Trigger tests must be read-only:
+load the skill, report the ID, change nothing.
+
 ## Prompt set
 
 | # | Prompt | Expected | Reps |
