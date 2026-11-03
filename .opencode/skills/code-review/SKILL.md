@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: Use before merging an OpenSpec change, or when the user asks to review a diff or pull request.
+description: Use before merging or archiving an OpenSpec change; when the user asks to review code, a diff, branch, pull request, or "review since X"; when checking for bugs, regressions, security, performance, or spec drift; or before human sign-off.
 ---
 
 # Code Review

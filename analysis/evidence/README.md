@@ -83,14 +83,9 @@ Only `spec-review` and `vertical-slice-tdd` have partial records. The other eigh
 are behavior-shaping documents with no observed behavior behind them. That is
 accepted temporary debt, not a completed verification.
 
-Pending trigger test: `visual-explainer` added the user phrases "show me",
-"visualize", "make it visual", "draw", "diagram", "sketch", "chart", and "map
-this out". The description has not been tested for should-fire or should-not-fire
-behavior.
-
-Pending trigger test: `git-workflow` now names commit messages, commit and
-changelog conventions, push, and pull requests explicitly. The description has
-not been tested for should-fire or should-not-fire behavior.
+Pending trigger test: all ten descriptions were broadened for recall. No
+should-fire or should-not-fire test exists for any of them yet. `visual-explainer`
+and `git-workflow` were the first expanded.
 
 Pending routing-contract test: the five stage skills now emit `routing_status`,
 `owner`, and `requested_action`. `docs/workflow.md` defines the intended

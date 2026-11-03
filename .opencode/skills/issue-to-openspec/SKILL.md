@@ -1,6 +1,6 @@
 ---
 name: issue-to-openspec
-description: Use when an issue must become an OpenSpec change, or when the user wants to explore an issue without proposing one.
+description: Use when turning an issue into an OpenSpec change; when the user says "propose this", "write the spec", "explore this issue", or "create a change"; or when an issue is ready for planning but context may be missing.
 ---
 
 # Issue to OpenSpec

@@ -1,6 +1,6 @@
 ---
 name: deep-module-design
-description: Use when designing or reshaping a module, interface, or package boundary, when deciding where a seam belongs, when simplifying code, or when planning a migration.
+description: Use when designing, reviewing, or reshaping a module, interface, API, package, or seam; when deciding where logic belongs, how to make code more testable, or how to reduce coupling; when simplifying behavior-preserving code; or when planning a deprecation or migration.
 ---
 
 # Deep Module Design

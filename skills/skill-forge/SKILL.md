@@ -1,6 +1,6 @@
 ---
 name: skill-forge
-description: Use when creating or revising a skill, when a skill fails to fire, or when an agent follows a skill's letter but misses its intent.
+description: Use when creating, editing, reviewing, or debugging a skill; when a skill does not fire, fires at the wrong time, or is ignored under pressure; when an agent follows a skill's letter but misses its intent; or when testing whether a prompt or rule changes behavior.
 ---
 
 # Skill Forge

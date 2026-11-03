@@ -1,6 +1,6 @@
 ---
 name: git-workflow
-description: Use before committing, pushing, branching, or opening a pull request; when writing or reviewing a commit message; when choosing a commit or changelog convention; when isolating parallel work; when resolving conflicts; or when preparing a release.
+description: Use before any git commit, push, branch, merge, rebase, or pull request; when writing, reviewing, or choosing a commit message or convention; when isolating parallel work; when resolving conflicts or a rejected push; when inspecting or undoing history; or when preparing a version, tag, changelog, or release.
 ---
 
 # Git Workflow

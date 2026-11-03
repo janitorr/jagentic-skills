@@ -31,6 +31,13 @@ Follow `git-workflow`. Use `<area>: <imperative, lowercase summary>` with areas
 `skills`, `workflow`, `analysis`, `docs`, `scripts`, `eval`. The body explains
 why.
 
+## Skill invocation
+
+Load a skill when it has even a slight chance of applying, including supporting
+skills. Prefer loading it and deciding it was unnecessary over reconstructing its
+guidance from memory. A skill's description lists triggers; do not wait for the
+user to name the skill.
+
 ## When adding or changing a synthesized skill
 
 - Edit `skills/<skill-id>/SKILL.md`, then run `./scripts/sync-skills.sh`.

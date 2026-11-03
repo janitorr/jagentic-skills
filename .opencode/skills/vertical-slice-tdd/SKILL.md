@@ -1,6 +1,6 @@
 ---
 name: vertical-slice-tdd
-description: Use when an approved OpenSpec change is ready to implement, or when about to write code before a failing test.
+description: Use when implementing or applying an approved OpenSpec change; when the user says "implement this", "start coding", "apply the change", or "red-green-refactor"; or when about to write production code before a failing test.
 ---
 
 # Vertical Slice TDD

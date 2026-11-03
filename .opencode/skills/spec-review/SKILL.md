@@ -1,6 +1,6 @@
 ---
 name: spec-review
-description: Use before implementing an OpenSpec change, or when the user asks for a gaps review of the change's artifacts.
+description: Use before implementing or archiving an OpenSpec change; when the user asks to review, validate, or find gaps in a proposal, spec deltas, design, or tasks; when strict validation fails; or when asking whether a change is ready for implementation.
 ---
 
 # Spec Review

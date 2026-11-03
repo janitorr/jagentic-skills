@@ -1,6 +1,6 @@
 ---
 name: documentation
-description: Use when recording a decision, changing a public API, explaining a repeated question, onboarding, or writing and revising a README, ADR, reference page, changelog, or agent instructions file.
+description: Use when writing or revising a README, ADR, changelog, reference page, inline comment, onboarding guide, or agent instructions file; when recording why a decision was made or changing a public API; when documentation is stale, duplicated, or missing; or when the user asks how something should be documented.
 ---
 
 # Documentation

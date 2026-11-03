@@ -1,6 +1,6 @@
 ---
 name: issue-interview
-description: Use when an ask is underspecified (missing who, why, success, or constraint), when the user says "interview me" or "grill me", or when work needs an issue before planning.
+description: Use when an ask is vague or missing who, why, success criteria, or constraints; when acceptance criteria are unclear or scope is likely to change; when the user says "interview me", "grill me", "stress-test this", or "what do I actually want"; or when an issue must be created or amended before planning.
 ---
 
 # Issue Interview

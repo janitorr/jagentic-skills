@@ -1,6 +1,6 @@
 ---
 name: visual-explainer
-description: Use when the user says "show me", "visualize", "make it visual", "draw", "diagram", "sketch", "chart", or "map this out"; or when prose would be slower than a diagram, explaining architecture, control flow, a diff, or options, writing a review or PR summary, teaching a concept, or debugging where expected and actual diverge.
+description: Use when the user says "show me", "visualize", "make it visual", "draw", "diagram", "sketch", "chart", "map this out", "walk me through", or "show the flow"; when explaining architecture, control flow, a diff, options, or a review; when teaching or debugging; or whenever a diagram would land faster than a paragraph, even if the user did not ask for one.
 ---
 
 # Visual Explainer
