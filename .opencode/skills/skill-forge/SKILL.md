@@ -84,11 +84,16 @@ instead.
 
 ### 5. Test the trigger
 
-Test the frontmatter separately from the body. Write six to ten prompts: half
-should load the skill, half should not, including prompts that belong to adjacent
-skills. Load only the description and check which skill the model selects. Fix
-the wording until the should-fire set lands and the should-not-fire set does not.
-A skill that never fires passes every body test.
+Delegate a realistic prompt to a fresh agent without naming the skill or pointing
+at its file. The agent must discover and load the skill on its own. Run the test
+read-only: tell the agent to load the skill and report the ID without performing
+the task or editing files.
+
+Repeat for six to ten prompts: half should fire, half belong to adjacent skills.
+Include the full skill catalog, not just this skill, so collisions with global or
+generic skills are visible. Record the loaded skill ID and whether it matched. Fix
+the description until the should-fire set loads this skill and the should-not-fire
+set does not. A skill that never fires passes every body test.
 
 ### 6. Micro-test the wording
 
