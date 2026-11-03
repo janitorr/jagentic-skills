@@ -24,7 +24,7 @@ it directly.
 | `python3 scripts/inventory.py` | Regenerate `analysis/inventory.md` from `vendor/`. Fails if a skill is unmapped. |
 | `./scripts/sync-skills.sh` | Copy `skills/` into `.opencode/skills/`. |
 
-<important if="you are adding or changing a synthesized skill">
+## When adding or changing a synthesized skill
 
 - Edit `skills/<skill-id>/SKILL.md`, then run `./scripts/sync-skills.sh`.
 - Follow the `skill-forge` skill. A behavior-shaping change needs a baseline or
@@ -35,18 +35,14 @@ it directly.
 - Update `README.md` and `analysis/synthesis.md` when the skill set or boundary
   changes.
 
-</important>
-
-<important if="you are adding or updating a vendored bundle">
+## When adding or updating a vendored bundle
 
 - Add the name and URL to `bundles.txt`, then run `./sync.sh`.
 - Never edit files under `vendor/`; they are upstream copies.
 - Map every new skill in `scripts/inventory.py`, then rerun the inventory. The
   script exits non-zero until the mapping is complete.
 
-</important>
-
-<important if="you are updating the analysis">
+## When updating the analysis
 
 - Categories are editorial and live in `scripts/inventory.py`; `analysis/inventory.md`
   is generated, not hand-edited.
@@ -54,14 +50,10 @@ it directly.
   `analysis/synthesis.md` and `analysis/coverage.md` describe the current set.
 - Keep claims traceable to a vendored file, the repo, or recorded evidence.
 
-</important>
-
-<important if="you are running an eval">
+## When running an eval
 
 - Read `analysis/evidence/README.md` first. It records what is verified, why
   evals are paused, and how to resume.
 - One skill at a time, per `skill-forge`. Do not batch untested skills.
 - Do not present an unverified skill as passing. Nine of the ten have no
   behavioral evidence.
-
-</important>
