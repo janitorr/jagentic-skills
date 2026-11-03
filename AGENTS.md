@@ -38,6 +38,9 @@ skills. Prefer loading it and deciding it was unnecessary over reconstructing it
 guidance from memory. A skill's description lists triggers; do not wait for the
 user to name the skill.
 
+When two skills could apply, prefer this project's stage or supporting skill over
+a global generic skill.
+
 ## When adding or changing a synthesized skill
 
 - Edit `skills/<skill-id>/SKILL.md`, then run `./scripts/sync-skills.sh`.
