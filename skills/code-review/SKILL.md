@@ -5,6 +5,12 @@ description: Use before merging an OpenSpec change, or when the user asks to rev
 
 # Code Review
 
+## Environment
+
+The agent file defines the tracker, approval marker, review destination, and
+workspace policy. Read it before starting. If an operation you need is not
+defined, ask; do not assume a specific CLI or service.
+
 ## Overview
 
 Review the diff from a fixed point to `HEAD` before human sign-off. Keep three
@@ -17,25 +23,22 @@ questions separate:
 
 **Stance:** read-only, evidence-first, no rubber stamp. Read-only means no
 tracked source file changes; test and build commands may write caches, and the
-mutation probe runs in a temporary worktree.
+mutation probe runs in the isolation location defined by the agent file.
 
 ## Process
 
 ### 1. Resolve the change and pin the diff
 
 - If a change name is supplied, use it.
-- For a pull request, run
-  `gh pr view <n> --json headRefName,title,body,baseRefName` and match
-  `headRefName` against `openspec list --json`. A match is the change whose name
-  equals the branch name; if no exact match exists, ask. Follow the proposal's
-  issue link when reviewing an issue.
-- If the change cannot be resolved, ask. If the work has no OpenSpec change, use
-  diff-only mode: review Standards and Quality, mark Spec **not applicable**, and
-  say why.
+- For a pull request or issue, use the tracker operation defined by the agent
+  file to resolve it to an OpenSpec change. If the result is ambiguous or absent,
+  ask.
+- If the work has no OpenSpec change, use diff-only mode: review Standards and
+  Quality, mark Spec **not applicable**, and say why.
 
-Use the base commit recorded by `/vertical-slice-tdd` as the fixed point.
-Otherwise detect the default branch:
-`git symbolic-ref --short refs/remotes/origin/HEAD`. If neither exists, ask.
+Use the base commit recorded by `vertical-slice-tdd` as the fixed point.
+Otherwise use the default branch defined by the agent file. If neither exists,
+ask.
 
 ```bash
 git rev-parse <fixed-point>
@@ -73,20 +76,19 @@ Use three headings and keep them separate.
 ### 5. Probe the tests
 
 Reading tests is not enough; check whether they would catch a regression. If the
-suite is hermetic:
+suite is hermetic, run the probe in the isolation location the agent file defines
+(a temporary worktree, container, or copy outside the review checkout):
 
-```bash
-git worktree add --detach /tmp/code-review-probe HEAD
-# In the probe worktree, either invert one branch condition or change one
-# boundary value at a touched seam.
-# Run the focused test for the behavior that mutation targets.
-git worktree remove --force /tmp/code-review-probe
-```
+1. Create an isolated copy of the reviewed `HEAD`.
+2. Either invert one branch condition or change one boundary value at a touched
+   seam.
+3. Run the focused test for the behavior that mutation targets.
+4. Remove the isolated copy and confirm no tracked source file in the review
+   checkout changed.
 
 The focused test must **fail** against the mutation. If it passes, record a
-**Required** finding: the mutation survived. Never mutate the review checkout.
-If the suite is not hermetic or the repo cannot support a worktree, skip the
-probe and record why. Confirm `git status --porcelain` is unchanged afterwards.
+**Required** finding: the mutation survived. If the suite is not hermetic or the
+environment cannot support an isolated copy, skip the probe and record why.
 
 ### 6. Run the verification
 
@@ -110,6 +112,8 @@ Each finding states file and line, evidence, impact, and a fix direction. Within
 each axis, order by leverage: correctness and security first, then structural
 issues, then nits. Report each finding under one axis, with a verdict per axis.
 
+Post the report to the review destination defined by the agent file.
+
 ### 8. Verdict and gate
 
 Map severity to the gate:
@@ -123,25 +127,26 @@ issue within each axis, and the overall gate.
 Then stop. Do not edit code or apply fixes.
 
 - On **ready**, hand off to the human for sign-off. After sign-off, the change
-  owner archives it with `/opsx-archive`.
+  owner archives it with the `openspec-archive-change` skill.
 - On **needs revision**, name the remediation path: artifact problems return to
-  `/spec-review`, code problems return to `/vertical-slice-tdd`. Do not start
+  `spec-review`, code problems return to `vertical-slice-tdd`. Do not start
   either pass in this turn.
 
 ```
-Next: human sign-off, then /opsx-archive
-      or /vertical-slice-tdd <change> for code fixes
+Next: human sign-off, then openspec-archive-change
+      or vertical-slice-tdd for code fixes
 ```
 
 ## Verification
 
 - [ ] The change resolved, and the fixed point came from the implementation
-      handoff or a detected default branch.
+      handoff or the agent file's default branch.
 - [ ] The diff is non-empty, and every artifact and issue was read.
 - [ ] Standards came from the target repo, not a vendored copy.
 - [ ] Tests, build, and type/lint ran, with commands and outcomes recorded.
 - [ ] The probe either produced a failing test or has a recorded skip reason.
-- [ ] The working tree is unchanged after the probe.
+- [ ] No tracked source file in the review checkout changed.
 - [ ] Every finding cites evidence and carries a severity and action.
+- [ ] The report reached the configured review destination.
 - [ ] The verdict follows the severity mapping, with per-axis results and a named
       remediation or archive path.

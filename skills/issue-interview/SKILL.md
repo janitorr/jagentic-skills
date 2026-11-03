@@ -1,9 +1,15 @@
 ---
 name: issue-interview
-description: Use when an ask is underspecified (missing who, why, success, or constraint), when the user says "interview me" or "grill me", or when work needs a GitHub issue before planning.
+description: Use when an ask is underspecified (missing who, why, success, or constraint), when the user says "interview me" or "grill me", or when work needs an issue before planning.
 ---
 
 # Issue Interview
+
+## Environment
+
+The agent file defines the tracker, approval marker, review destination, and
+workspace policy. Read it before starting. If an operation you need is not
+defined, ask; do not assume a specific CLI or service.
 
 ## Overview
 
@@ -11,8 +17,8 @@ The issue is the source of truth for everything downstream: OpenSpec scope, spec
 review, and code review. Get it wrong and every later gate reviews the wrong
 thing.
 
-The output is one or more GitHub issues, not a plan and not a spec. Not for
-mechanical changes with unambiguous acceptance criteria.
+The output is one or more issues in the configured tracker, not a plan and not a
+spec. Not for mechanical changes with unambiguous acceptance criteria.
 
 ## Rules
 
@@ -105,20 +111,16 @@ half of misalignment.
 
 ### 6. Confirm and publish
 
-Present the issue bodies and ask for an explicit yes. On yes:
+Present the issue bodies and ask for an explicit yes. On yes, publish through the
+tracker operation the agent file defines, one issue at a time. To amend an
+existing issue, use the tracker's amend operation; never create a duplicate.
 
-1. Check `gh auth status` and that the repository has a GitHub remote. If either
-   is unavailable, print the finished bodies and stop.
-2. Write each body to `${TMPDIR:-/tmp}/issue-<slug>.md`.
-3. Publish with `gh issue create --title "<title>" --body-file <path>`, one
-   issue at a time.
-4. To amend an existing issue instead, use
-   `gh issue edit <number> --body-file <path>`. Never create a duplicate.
+If the tracker is unavailable, print the finished bodies and stop.
 
-Report the issue numbers and URLs. Then end with the next command:
+Report the issue identifiers and links. Then hand off:
 
 ```
-Next: /issue-to-openspec <number> [<number>...]
+Next: issue-to-openspec for issues <identifier> [<identifier>...]
 ```
 
 Do not create branches, OpenSpec changes, or specs in this turn.
@@ -129,6 +131,6 @@ Do not create branches, OpenSpec changes, or specs in this turn.
 - [ ] Every template section has a direct answer or a verified fact with a
       source; none is inferred.
 - [ ] The user explicitly confirmed the issue bodies.
-- [ ] The issues exist on GitHub, or the bodies were printed because `gh` or the
-      remote was unavailable.
-- [ ] The next `/issue-to-openspec` command lists the issue numbers.
+- [ ] The issues exist in the tracker, or the bodies were printed because the
+      tracker was unavailable.
+- [ ] The handoff names `issue-to-openspec` and the issue identifiers.

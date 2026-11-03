@@ -7,18 +7,18 @@ what was deliberately left out.
 ## Pipeline
 
 ```
-/issue-interview
-  -> GitHub issue(s)            source of truth for scope and acceptance
-/issue-to-openspec
+issue-interview
+  -> issue(s) in the tracker    source of truth for scope and acceptance
+issue-to-openspec
   -> openspec-explore (always)
   -> openspec-propose
   -> openspec/changes/<change>  proposal, specs delta, design, tasks
-/spec-review
+spec-review
   -> read-only findings
   -> human gate
-/vertical-slice-tdd
+vertical-slice-tdd
   -> tasks executed as vertical slices, test-first, evidence
-/code-review
+code-review
   -> read-only findings across spec, standards, quality
   -> human gate
 ```
@@ -27,6 +27,15 @@ OpenSpec owns artifact creation and task tracking. These skills own the
 decisions OpenSpec deliberately leaves out: when the issue is ready, when
 exploration is done, whether the artifacts hold up, how to slice and test, and
 what a review must prove.
+
+## Environment boundary
+
+Skills own process and gates. Agent files own the environment: tracker
+operations (read, create, amend), the approval marker (label, comment, or other),
+the review destination (PR comment, issue comment, chat, or file), and workspace
+and delivery policy (base branch, isolation, temp location, push and PR rules).
+OpenSpec is fixed as the artifact system; it is not abstracted. A skill that
+needs an undefined environment operation asks instead of assuming a CLI.
 
 ## Provenance
 
@@ -72,8 +81,9 @@ what a review must prove.
 
 1. Issue publication requires an explicit human yes.
 2. Explore always runs before propose, even when the issue looks complete.
-3. Spec review is read-only. Implementation starts only after the human sets the
-   `ready-for-dev` label on the issue or PR.
+3. Spec review is read-only. Implementation starts only after the human records
+   approval with the marker defined by the agent file (for example, a
+   `ready-for-dev` label).
 4. Tasks are checked only when the specified behavior is fully implemented;
    deferred tasks stay unchecked with a reason.
 5. Code review is read-only; fixes happen in a separate pass after human review.

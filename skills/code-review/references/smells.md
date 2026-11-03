@@ -1,8 +1,8 @@
 # Smell baseline
 
-Reference for `/code-review`. Apply each smell as a labelled judgement call, not
-a hard violation. A documented repository standard overrides this list; skip
-anything tooling already enforces. Mark each finding **Optional** unless a
+Reference for the code-review skill. Apply each smell as a labelled judgement
+call, not a hard violation. A documented repository standard overrides this list;
+skip anything tooling already enforces. Mark each finding **Optional** unless a
 documented repo standard makes it **Required**.
 
 ## The smells

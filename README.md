@@ -31,13 +31,17 @@ Five pipeline skills around OpenSpec, each invoked by `/command`:
 
 | Stage | Skill | Output |
 |---|---|---|
-| 1 | `issue-interview` | GitHub issue(s) |
+| 1 | `issue-interview` | Issue(s) in the configured tracker |
 | 2 | `issue-to-openspec` | OpenSpec change (explore first, then propose) |
 | 3 | `spec-review` | Read-only findings, then human gate |
 | 4 | `vertical-slice-tdd` | Implemented tasks with test evidence |
 | 5 | `code-review` | Read-only findings, then human gate |
 
 The reviews never fix what they find; remediation is a separate pass after the
-human reviews the report. Spec review hands off through the `ready-for-dev`
-label, which the human sets after accepting the findings. Implementation commits
+human reviews the report. Spec review hands off through the approval marker the
+agent file defines (for example, a `ready-for-dev` label). Implementation commits
 once per green slice.
+
+Skills are environment-agnostic. An agent file supplies the tracker operations,
+approval marker, review destination, and workspace policy; the same skill can run
+locally or inside a GitHub workflow.

@@ -1,36 +1,41 @@
 ---
 name: issue-to-openspec
-description: Use when a GitHub issue must become an OpenSpec change, or when the user wants to explore an issue without proposing one.
+description: Use when an issue must become an OpenSpec change, or when the user wants to explore an issue without proposing one.
 ---
 
 # Issue to OpenSpec
 
+## Environment
+
+The agent file defines the tracker, approval marker, review destination, and
+workspace policy. Read it before starting. If an operation you need is not
+defined, ask; do not assume a specific CLI or service.
+
 ## Overview
 
-Turn one or more GitHub issues into an OpenSpec change. Explore always runs
-first, even when the issue looks complete. Explore resolves decisions;
-`openspec-propose` writes the artifacts; neither implements.
+Turn one or more issues into an OpenSpec change. Explore always runs first, even
+when the issue looks complete. Explore resolves decisions; `openspec-propose`
+writes the artifacts; neither implements.
 
 This skill owns the handoff and the exit criteria. OpenSpec owns scaffolding,
-schema rules, validation, artifact paths, and the `--store` rule.
+schema rules, validation, artifact paths, and the `--store` rule. The agent file
+owns how issues are read and how the workspace is isolated.
 
 ## Preconditions
 
-- One or more issue references. If none is supplied, ask. Read each, including
-  comments: `gh issue view <number> --json number,title,body,comments`. If `gh`
-  is unavailable, ask the user to paste the issue bodies. Verify every template
-  section: problem, outcome, in scope, out of scope, acceptance, and context.
-  Missing sections mean amend the issue with `gh issue edit <n> --body-file
-  <path>` or return to `/issue-interview`; do not guess.
+- One or more issue references. If none is supplied, ask. Read each issue and its
+  comments through the tracker. If the tracker is unavailable, ask the user to
+  paste the issue bodies. Verify every template section: problem, outcome, in
+  scope, out of scope, acceptance, and context. Missing sections mean amend the
+  issue through the tracker or return to `issue-interview`; do not guess.
 - An OpenSpec root. Run `openspec list --json`. If `root` is null, the command
   exits 1; that is the answer, not a CLI failure. Stop and ask whether to
   initialize or target a store.
 - Project context: the target repo's `AGENTS.md` / `CLAUDE.md`,
   `openspec/config.yaml`, and the repo's documented commands.
-- A base to branch from. `git status --porcelain` shows no changes except files
-  the user agrees are out of scope; `git fetch` succeeds and the base is current,
-  or the user names and approves a different base. Record the base commit with
-  `git rev-parse <base>`. Never stash, merge, rebase, or discard the user's work.
+- A base and workspace policy from the agent file. Record the base commit. If
+  the agent file does not define a base or isolation, ask. Do not disturb
+  existing work.
 
 If the project uses an OpenSpec store, append `--store <id>` to the OpenSpec
 commands below as its store rule requires.
@@ -48,12 +53,12 @@ silently choose one.
 
 ### 2. Explore
 
-Invoke the `openspec-explore` skill, or `/opsx-explore`, with the brief below.
-Explore owns the exploration and runs even when the issue looks complete.
+Invoke the `openspec-explore` skill with the brief below. Explore owns the
+exploration and runs even when the issue looks complete.
 
 ```markdown
 ## Issues
-<numbers, titles, links>
+<identifiers, titles, links>
 
 ## Problem and outcome
 <from the issues>
@@ -91,8 +96,8 @@ want a change. Exploration alone does not authorize artifact creation.
 
 ### 4. Propose
 
-Invoke `openspec-propose`, or `/opsx-propose`. It creates the branch and every
-required artifact in dependency order, then commits them.
+Invoke the `openspec-propose` skill. It creates the branch and every required
+artifact in dependency order, then commits them.
 
 If proposal writing exposes a material ambiguity that exploration missed, pause
 and return to explore. Do not resolve a scope question inside the artifact.
@@ -123,15 +128,15 @@ Confirm:
 Report:
 
 - Change name, branch, and the approved base commit.
-- Issue numbers and links.
+- Issue identifiers and links.
 - Artifacts created, plus any deliberately skipped.
 - Strict validation result.
 - Any deferred questions or risks.
 
-Then stop. Do not implement, run apply, or archive. End with:
+Then stop. Do not implement, run apply, or archive. Hand off:
 
 ```
-Next: /spec-review <change>
+Next: spec-review for change <name>
 ```
 
 ## Verification

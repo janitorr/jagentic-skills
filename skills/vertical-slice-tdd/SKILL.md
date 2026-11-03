@@ -5,6 +5,12 @@ description: Use when implementing an approved OpenSpec change test-first, one v
 
 # Vertical Slice TDD
 
+## Environment
+
+The agent file defines the tracker, approval marker, review destination, and
+workspace policy. Read it before starting. If an operation you need is not
+defined, ask; do not assume a specific CLI or service.
+
 ## Overview
 
 Implement an approved OpenSpec change one vertical slice at a time. Each slice
@@ -13,15 +19,14 @@ that was watched failing, and leaves the system green.
 
 OpenSpec supplies the task list, artifact context, and tracked task file. This
 skill owns the done condition, the test-first loop, the evidence, and the commit
-cadence.
+cadence. The agent file owns the workspace, push, and pull-request policy.
 
 ## Preconditions
 
-- `/spec-review` returned **ready for human review**.
-- The human set the `ready-for-dev` label on the issue or pull request. Verify it:
-  `gh issue view <number> --json labels --jq '.labels[].name'` or
-  `gh pr view <number> --json labels --jq '.labels[].name'`. If
-  `ready-for-dev` is absent, stop; do not infer approval from conversation.
+- `spec-review` returned **ready for human review**.
+- The approval marker defined by the agent file is present on the issue, pull
+  request, or change. Check it the way the agent file defines. If it is absent,
+  stop; do not infer approval from conversation.
 - Resolve the change name. If it is missing, run `openspec list --json` and ask.
 - The OpenSpec root exists. If `root` is null, `openspec list` exits 1; stop and
   report it.
@@ -34,14 +39,18 @@ openspec instructions apply --change "<name>" --json
 Handle the returned state before implementing:
 
 - `blocked` with `missingArtifacts`: stop and name the missing artifacts; return
-  to `/issue-to-openspec` or `/spec-review`.
-- `all_done`: report completion and suggest `/opsx-archive`; do not implement.
+  to `issue-to-openspec` or `spec-review`.
+- `all_done`: report completion and hand off to the OpenSpec archive workflow; do
+  not implement.
 - otherwise: read every path in `contextFiles`, plus the `context` and
   `operationGuidance` fields. Treat `context` as a required constraint and
   `operationGuidance` as advisory; report any conflict with the spec.
 
 Use the tracked task file path returned by `status` / `instructions`; do not
 assume it is `tasks.md`.
+
+Use the base branch and workspace isolation defined by the agent file. If either
+is undefined, ask. Record the base commit for the review handoff.
 
 ## Process
 
@@ -101,10 +110,11 @@ For each slice:
 7. **Check the task.** Mark the task complete in the tracked task file only when
    the specified behavior is fully implemented. Leave deferred tasks unchecked
    with a reason.
-8. **Commit.** Commit per slice. This overrides the default `openspec-apply`
-   cadence, which commits once when the run completes. Stage only the files this
+8. **Commit.** Commit per slice. This overrides the default `openspec-apply-change` cadence, which commits once
+   when the run completes. Stage only the files this
    slice changed and the tracked task file. Use the repo's commit convention.
-   Never bypass hooks with `--no-verify`.
+   Never bypass hooks with `--no-verify`. Push or open a pull request only as the
+   agent file's delivery policy allows.
 
 ### 5. Pause on design drift
 
@@ -134,15 +144,16 @@ The handoff report records:
 - Deferred tasks and deviations from the spec.
 - The slice-to-task mapping, when tasks were regrouped.
 
-Then hand off to code review. Do not archive the change.
+Post the handoff to the review destination defined by the agent file. Then hand
+off to code review. Do not archive the change.
 
 ```
-Next: /code-review <change> <fixed-point>
+Next: code-review for change <name> at <fixed-point>
 ```
 
 ## Verification
 
-- [ ] The `ready-for-dev` label is present on the issue or PR.
+- [ ] The approval marker defined by the agent file is present.
 - [ ] The apply state was handled, and `contextFiles`, `context`, and
       `operationGuidance` were read.
 - [ ] Every slice was tested through a named seam.
@@ -151,4 +162,4 @@ Next: /code-review <change> <fixed-point>
 - [ ] Completed tasks are checked only when fully implemented; deferred tasks
       are unchecked with a reason.
 - [ ] The handoff records the branch, base commit, fixed point, commands,
-      outcomes, and deviations.
+      outcomes, and deviations at the configured review destination.

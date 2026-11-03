@@ -5,6 +5,12 @@ description: Use before implementing an OpenSpec change, or when the user asks f
 
 # Spec Review
 
+## Environment
+
+The agent file defines the tracker, approval marker, review destination, and
+workspace policy. Read it before starting. If an operation you need is not
+defined, ask; do not assume a specific CLI or service.
+
 ## Overview
 
 Review an OpenSpec change before code exists. A confident artifact is not a
@@ -28,11 +34,11 @@ openspec status --change "<name>" --json
 openspec validate "<name>" --type change --strict
 ```
 
-Read every artifact that exists, the originating issue(s) and comments, the
-existing specs the change modifies, the target repo's docs and config, and the
-source and tests at the integration points. Judge `design.md` by whether a
-material decision needs justification, not by whether the file exists. If a
-source is unavailable, say so; do not fill the gap with assumptions.
+Read every artifact that exists, the originating issue(s) and comments through
+the tracker, the existing specs the change modifies, the target repo's docs and
+config, and the source and tests at the integration points. Judge `design.md` by
+whether a material decision needs justification, not by whether the file exists.
+If a source is unavailable, say so; do not fill the gap with assumptions.
 
 ### 2. Review five axes
 
@@ -77,7 +83,7 @@ Fix direction: <the change to make, not the rewritten text>
 ```
 
 Prefer a small table or diagram over a wall of prose when it makes the finding
-clearer.
+clearer. Post the report to the review destination defined by the agent file.
 
 ### 5. Verdict and gate
 
@@ -91,12 +97,12 @@ human must answer, and the verdict.
 
 Then stop. Do not edit artifacts, implement, or start remediation.
 
-On **ready**, ask the human to review the findings and, if they accept them, set
-the `ready-for-dev` label on the issue or pull request. Do not set it yourself.
-The next command is:
+On **ready**, ask the human to review the findings and, if they accept them,
+record approval with the marker the agent file defines (for example, a label or a
+comment). Do not record it yourself. Hand off:
 
 ```
-Next: /vertical-slice-tdd <change>
+Next: vertical-slice-tdd for change <name>
 ```
 
 On **needs revision**, name the artifact pass that owns each blocking finding
@@ -110,6 +116,7 @@ stop. Do not implement.
 - [ ] Strict validation ran, and its output is recorded.
 - [ ] Each finding quotes its source and states impact and remedy.
 - [ ] The highest-risk assumptions were confirmed or contradicted with evidence.
+- [ ] The report was posted to the configured review destination.
 - [ ] No files were modified and no implementation started.
-- [ ] The verdict follows the severity mapping, and the `ready-for-dev` handoff
-      or the blocking remediation path is explicit.
+- [ ] The verdict follows the severity mapping, and the approval marker or
+      blocking remediation path is explicit.
