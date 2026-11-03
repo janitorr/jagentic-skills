@@ -2,7 +2,8 @@
 
 Status: **opportunistic**. Targeted tests run when a skill or behavior warrants
 it; there is no standing eval suite. Two skills have partial behavioral evidence;
-eight are unverified.
+all ten descriptions passed a trigger pilot; eight skills are still unverified for
+behavior.
 
 This note is the place to resume. Do not treat the absence of evidence as proof
 that a skill works.
@@ -13,7 +14,8 @@ that a skill works.
 |---|---|---|
 | `spec-review` | `analysis/evidence/spec-review.md` plus fixtures | Pilot plus five repetitions per condition; ceiling effect |
 | `vertical-slice-tdd` | `analysis/evidence/vertical-slice-tdd.md` plus fixture | TDD ceiling; approval gate discriminates |
-| All other skills | none | Unverified |
+| All ten descriptions | `analysis/evidence/trigger-tests.md` | 3 reps, 35 prompts, 105/105 expected |
+| Eight other skills | none for behavior | Unverified behavior |
 
 The `spec-review` fixtures are small OpenSpec projects under
 `spec-review/fixtures/`:
@@ -85,9 +87,9 @@ Only `spec-review` and `vertical-slice-tdd` have partial records. The other eigh
 are behavior-shaping documents with no observed behavior behind them. That is
 accepted temporary debt, not a completed verification.
 
-Pending trigger test: all ten descriptions were broadened for recall. No
-should-fire or should-not-fire test exists for any of them yet. `visual-explainer`
-and `git-workflow` were the first expanded.
+Pending trigger work: the 3-rep pilot passed; a live selector check for the
+adjacent pairs is still pending, and the pilot must be re-run after description
+edits.
 
 Pending routing-contract test: the five stage skills now emit `routing_status`,
 `owner`, and `requested_action`. `docs/workflow.md` defines the intended
