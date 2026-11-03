@@ -1,4 +1,4 @@
-# agentic-skills
+# jagentic-skills
 
 A lab repo for comparing third-party agent skill bundles and synthesizing
 new skills that combine the strongest ideas from each.
