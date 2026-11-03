@@ -20,6 +20,20 @@ thing.
 The output is one or more issues in the configured tracker, not a plan and not a
 spec. Not for mechanical changes with unambiguous acceptance criteria.
 
+## Interaction contract
+
+End with a routing result the workflow can consume:
+
+```
+routing_status: ready | blocked
+owner: issue-author | workflow | human
+requested_action: publish issues | answer the missing questions
+```
+
+If the user cannot supply a required section, stop as `blocked` with the missing
+sections and questions. Do not publish a partial issue. The agent file maps
+`requested_action` to tracker operations.
+
 ## Rules
 
 - **Decisions belong to the human; facts belong to you.** Read the repo, docs,

@@ -20,6 +20,20 @@ correct one.
 artifacts, not to approve them. A clean review is a valid result; an invented
 finding is not.
 
+## Interaction contract
+
+End with a routing result the workflow can consume:
+
+```
+routing_status: ready | needs_revision
+owner: spec-writer | issue-author | human
+requested_action: post findings as review comments and request changes | record approval | proceed
+```
+
+When the root cause is the issue, `owner: issue-author`; when the spec is wrong,
+`owner: spec-writer`. The agent file maps the action to PR comments, review state,
+and labels. This skill never edits the artifacts.
+
 ## Process
 
 ### 1. Pin and read the sources

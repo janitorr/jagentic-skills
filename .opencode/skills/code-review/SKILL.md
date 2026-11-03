@@ -25,6 +25,20 @@ questions separate:
 tracked source file changes; test and build commands may write caches, and the
 mutation probe runs in the isolation location defined by the agent file.
 
+## Interaction contract
+
+End with a routing result the workflow can consume:
+
+```
+routing_status: ready | needs_revision
+owner: developer | spec-writer | human
+requested_action: post review comments and request changes | human sign-off | archive
+```
+
+Code defects are `owner: developer`; artifact problems are `owner: spec-writer`.
+The agent file maps findings to PR review comments and review state. This skill
+never edits code or artifacts.
+
 ## Process
 
 ### 1. Resolve the change and pin the diff

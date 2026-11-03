@@ -8,6 +8,7 @@ new skills that combine the strongest ideas from each.
 ```
 vendor/          # upstream bundles, cloned (not tracked - see sync.sh)
 analysis/        # category inventory, cross-bundle comparison, synthesis notes
+docs/            # workflow routing and GitHub artifact mapping
 skills/          # synthesized skills, the source of truth
 .opencode/skills # installed copies OpenCode discovers (generated)
 scripts/         # inventory generator and skill sync
@@ -65,4 +66,5 @@ once per green slice.
 
 Skills are environment-agnostic. An agent file supplies the tracker operations,
 approval marker, review destination, and workspace policy; the same skill can run
-locally or inside a GitHub workflow.
+locally or inside a GitHub workflow. Loop routing and the GitHub artifact mapping
+live in `docs/workflow.md`.

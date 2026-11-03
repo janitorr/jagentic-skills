@@ -7,6 +7,7 @@ OpenSpec is the fixed artifact system for the synthesized pipeline.
 ## Project map
 
 - `analysis/` - inventory, comparison, synthesis, coverage, and eval evidence.
+- `docs/` - workflow state machine and GitHub mapping.
 - `skills/` - source of truth for the ten synthesized skills.
 - `.opencode/skills/` - generated mirror OpenCode discovers.
 - `scripts/` - inventory generator and skill sync.
@@ -49,6 +50,14 @@ it directly.
 - `analysis/comparison.md` is a historical cross-bundle comparison.
   `analysis/synthesis.md` and `analysis/coverage.md` describe the current set.
 - Keep claims traceable to a vendored file, the repo, or recorded evidence.
+
+## When changing stage routing or loop rules
+
+- Update `docs/workflow.md` for transitions, owners, and GitHub artifacts.
+- Keep `routing_status`, `owner`, and `requested_action` semantic in skills. Do
+  not hardcode labels, `gh` commands, or PR review mechanics there.
+- If a skill's interaction contract changes, run `./scripts/sync-skills.sh` and
+  record evidence or debt in `analysis/evidence/README.md`.
 
 ## When running an eval
 

@@ -21,6 +21,19 @@ OpenSpec supplies the task list, artifact context, and tracked task file. This
 skill owns the done condition, the test-first loop, the evidence, and the commit
 cadence. The agent file owns the workspace, push, and pull-request policy.
 
+## Interaction contract
+
+End with a routing result the workflow can consume:
+
+```
+routing_status: ready | blocked
+owner: developer | spec-writer | workflow | human
+requested_action: proceed to code-review | update the artifacts | stop for approval
+```
+
+Design drift is `blocked` with `owner: spec-writer`; do not continue
+implementation. The agent file maps the action to tracker or PR operations.
+
 ## Preconditions
 
 - `spec-review` returned **ready for spec approval**.

@@ -21,6 +21,21 @@ This skill owns the handoff and the exit criteria. OpenSpec owns scaffolding,
 schema rules, validation, artifact paths, and the `--store` rule. The agent file
 owns how issues are read and how the workspace is isolated.
 
+## Interaction contract
+
+End with a routing result the workflow can consume:
+
+```
+routing_status: ready | blocked | needs_revision
+owner: issue-author | spec-writer | workflow | human
+requested_action: post questions on the issue | update the spec artifacts | proceed to spec-review
+```
+
+Missing issue context is `blocked` with `owner: issue-author`; the agent file
+posts the questions and marks the issue awaiting information. Artifact changes
+after review are `needs_revision` with `owner: spec-writer`. Never leave a
+blocking question only in chat.
+
 ## Preconditions
 
 - One or more issue references. If none is supplied, ask. Read each issue and its
