@@ -1,6 +1,6 @@
 ---
 name: git-workflow
-description: Use when committing, branching, isolating parallel work, resolving conflicts, finishing a branch, or preparing a release.
+description: Use before committing, pushing, branching, or opening a pull request; when writing or reviewing a commit message; when choosing a commit or changelog convention; when isolating parallel work; when resolving conflicts; or when preparing a release.
 ---
 
 # Git Workflow
@@ -56,10 +56,13 @@ A commit is one logical change, made after its tests pass:
    work is present.
 2. Read `git diff --staged`. Check for secrets and unrelated edits.
 3. Run the focused tests, full suite, lint, and type check that the repo defines.
-4. Write a message that explains **why**, not what the diff already shows. Use the
-   repository's type convention, for example `feat:`, `fix:`, `refactor:`,
-   `test:`, `docs:`, `chore:`.
-5. Commit without bypassing hooks. If a hook fails, fix the cause.
+4. Read recent commits (`git log --oneline -20`) and match the repository's
+   area or type, scopes, subject casing, and body style. If a documented
+   convention exists, it wins; do not impose a generic one.
+5. Write a message that explains **why**, not what the diff already shows. Match
+   the convention you found, for example `feat:`, `fix:`, `refactor:`, `test:`,
+   `docs:`, `chore:`, or a domain scope such as `host:`.
+6. Commit without bypassing hooks. If a hook fails, fix the cause.
 
 Keep standalone refactoring separate from feature work. Slice-local refactoring
 that makes the next test cheaper may travel with the slice commit. Target roughly

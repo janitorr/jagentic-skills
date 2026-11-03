@@ -88,6 +88,10 @@ Pending trigger test: `visual-explainer` added the user phrases "show me",
 this out". The description has not been tested for should-fire or should-not-fire
 behavior.
 
+Pending trigger test: `git-workflow` now names commit messages, commit and
+changelog conventions, push, and pull requests explicitly. The description has
+not been tested for should-fire or should-not-fire behavior.
+
 Pending routing-contract test: the five stage skills now emit `routing_status`,
 `owner`, and `requested_action`. `docs/workflow.md` defines the intended
 transitions, but no workflow has been tested against those signals yet.
