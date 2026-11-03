@@ -1,6 +1,6 @@
 ---
 name: issue-to-openspec
-description: Use when turning an issue into an OpenSpec change; when the user says "propose this", "write the spec", "explore this issue", or "create a change"; or when an issue is ready for planning but context may be missing.
+description: Use when turning an issue into an OpenSpec change, including its design and task breakdown; when the user says "propose this", "write the spec", "explore this issue", or "create a change"; or when an issue is ready for planning but context may be missing.
 ---
 
 # Issue to OpenSpec
@@ -20,6 +20,9 @@ writes the artifacts; neither implements.
 This skill owns the handoff and the exit criteria. OpenSpec owns scaffolding,
 schema rules, validation, artifact paths, and the `--store` rule. The agent file
 owns how issues are read and how the workspace is isolated.
+
+Design decisions use the `deep-module-design` vocabulary when the change creates
+or reshapes a module, interface, or seam.
 
 ## Interaction contract
 
@@ -104,7 +107,8 @@ decisions, open questions, risks, and deferred items.
 - [ ] Scope and non-goals are explicit.
 - [ ] Externally observable behavior and acceptance criteria are settled.
 - [ ] Impacted capabilities and existing specs are identified.
-- [ ] Material design decisions are made, or explicitly deferred with an owner.
+- [ ] Material design decisions are made, using `deep-module-design` for module,
+  interface, and seam choices, or explicitly deferred with an owner.
 - [ ] Risks, unknowns, and rollback or migration concerns are recorded.
 
 If the user wants to stop earlier, write the partial record to the same place and
@@ -114,6 +118,11 @@ Before proposing, ask for an explicit request to proceed, such as "propose it".
 Exploration alone does not authorize artifact creation.
 
 ### 4. Propose
+
+When the change creates or reshapes a module, interface, or seam, use
+`deep-module-design` to settle the interface, callers, and seam before writing
+`design.md` and `tasks.md`. Record the chosen option and why the alternatives
+lost.
 
 Invoke the `openspec-propose` skill. OpenSpec creates the artifacts. Branch and
 commit behavior follow the agent file's workspace policy; if propose would create
@@ -169,6 +178,8 @@ Next: spec-review for change <name>
 - [ ] Required artifacts exist, validate strictly, and trace to the issues.
 - [ ] The `specs` artifact is either present with testable deltas or deliberately
       skipped with a rationale.
+- [ ] Module, interface, or seam decisions used `deep-module-design`, or the
+      change does not touch them.
 - [ ] The handoff records the change, branch, base commit, issues, and validation
       result.
 - [ ] No implementation happened.

@@ -90,3 +90,7 @@ and `git-workflow` were the first expanded.
 Pending routing-contract test: the five stage skills now emit `routing_status`,
 `owner`, and `requested_action`. `docs/workflow.md` defines the intended
 transitions, but no workflow has been tested against those signals yet.
+
+Pending cross-skill test: `issue-to-openspec` now points at `deep-module-design`
+when a change creates or reshapes a module, interface, or seam. No run has
+verified that the pointer fires or changes the design artifacts.
