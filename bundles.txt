@@ -1,0 +1,5 @@
+# <name> <git-url>
+addyosmani-agent-skills     https://github.com/addyosmani/agent-skills.git
+mattpocock-skills           https://github.com/mattpocock/skills.git
+obra-superpowers            https://github.com/obra/superpowers.git
+humanlayer-skills           https://github.com/humanlayer/skills.git
