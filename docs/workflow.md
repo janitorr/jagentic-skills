@@ -12,7 +12,8 @@ defines the real ones for a repository.
 | Workflow | Which stage runs next, loop limits, escalation, and when to wait for a human |
 | Agent file | GitHub mechanics: comments, labels, review state, workspace policy |
 
-A skill never calls another skill and never assumes a specific label or CLI.
+A stage skill does not invoke another stage skill and does not assume a specific
+tracker or label CLI. It may invoke OpenSpec and the named supporting skills.
 
 ## Routing result
 
@@ -20,7 +21,7 @@ Every stage ends with:
 
 ```
 routing_status: ready | blocked | needs_revision
-owner: issue-author | spec-writer | developer | human
+owner: issue-author | spec-writer | developer | workflow | human
 requested_action: <what the environment should do next>
 ```
 
@@ -37,14 +38,18 @@ flowchart TD
     C -- human answers, label removed --> B
     B -- ready --> D[spec-review]
     D -- needs revision / spec-writer --> B
+    D -- needs revision / issue-author --> C
     D -- ready + human approval marker --> E[vertical-slice-tdd]
     E -- ready --> F[code-review]
+    E -- blocked / spec-writer --> B
     F -- needs revision / developer --> E
+    F -- needs revision / spec-writer --> B
     F -- ready + human sign-off --> G[archive]
 ```
 
-The `needs-information` wait sits on the issue-to-openspec edge. It is not a
-retry: the stage cannot proceed until a human answers.
+This is the happy path plus the named exceptions. The `needs-information` wait
+can sit on the `issue-to-openspec` or `spec-review` edge. It is not a retry: the
+stage cannot proceed until a human answers.
 
 ## Human-information loop versus rework loop
 
@@ -75,14 +80,18 @@ spec-review
 
 ## GitHub mapping
 
-| Semantic action | GitHub operation |
-|---|---|
-| `request_information` | `gh issue comment <n> --body-file -` and `gh issue edit <n> --add-label needs-information`; wait |
-| `request_spec_changes` | `gh pr review <n> --request-changes --body-file -`; inline comments for file-level findings; rerun `issue-to-openspec` on new commits |
-| `request_code_changes` | `gh pr review <n> --request-changes --body-file -`; inline comments; rerun `vertical-slice-tdd` on new commits |
-| `approve_spec` | Human sets the configured approval marker, for example a `ready-for-dev` label |
-| `sign_off_code` | Human approves the PR; then the change owner archives with the OpenSpec archive workflow |
-| `blocked_design_drift` | Comment on the change or PR with the drift; return to `issue-to-openspec` and `spec-review` |
+Normalize the prose in a skill's `requested_action` to one of these semantic
+actions before mapping it to GitHub.
+
+| Semantic action | Skill `requested_action` examples | GitHub operation |
+|---|---|---|
+| `publish_issues` | "publish issues" | `gh issue create` or the configured tracker operation |
+| `request_information` | "answer the missing questions", "post questions on the issue" | `gh issue comment <n> --body-file -` and `gh issue edit <n> --add-label needs-information`; wait |
+| `request_spec_changes` | "post findings as review comments and request changes", "update the spec artifacts" | `gh pr review <n> --request-changes --body-file -`; inline comments for file-level findings; rerun `issue-to-openspec` on new commits |
+| `request_code_changes` | "post review comments and request changes" | `gh pr review <n> --request-changes --body-file -`; inline comments; rerun `vertical-slice-tdd` on new commits |
+| `approve_spec` | "record approval" | Human sets the configured approval marker, for example a `ready-for-dev` label |
+| `sign_off_code` | "human sign-off" | Human approves the PR; then the change owner archives with the OpenSpec archive workflow |
+| `blocked_design_drift` | "update the artifacts" | Comment on the change or PR with the drift; return to `issue-to-openspec` and `spec-review` |
 
 Review comments belong on the PR that owns the artifact. A status hidden in chat
 is not a routing signal.

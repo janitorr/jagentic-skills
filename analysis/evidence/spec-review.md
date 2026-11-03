@@ -1,13 +1,13 @@
 # Evidence: spec-review
 
-Pilot baseline, one repetition per condition. This is not the five-repetition
-evidence `skill-forge` asks for, and it does not certify the skill. It checks
-whether the current text behaves plausibly before investing in a full eval.
+Pilot plus a five-repetition run. This is still a partial record, not a
+certification. The pilot used one repetition per condition; the five-repetition
+run is recorded below.
 
 ## Fixtures
 
-`fixtures/seeded` and `fixtures/clean` are small OpenSpec projects with a
-`task-search` capability and an `add-task-search` change.
+`spec-review/fixtures/seeded` and `spec-review/fixtures/clean` are small OpenSpec
+projects with a `task-search` capability and an `add-task-search` change.
 
 Seeded defects:
 
@@ -21,12 +21,15 @@ Seeded defects:
 - The delta duplicates an existing capability requirement while declaring the
   capability new.
 
-The clean fixture resolves all five and passes strict validation.
+The clean fixture resolves all six and passes strict validation.
 
 ```bash
-cd fixtures/seeded && openspec validate add-task-search --strict
+cd analysis/evidence/spec-review/fixtures/seeded
+openspec validate add-task-search --strict
 # exit 1: ADDED "Search stays fast" must include at least one scenario
-cd fixtures/clean && openspec validate add-task-search --strict
+
+cd ../clean
+openspec validate add-task-search --strict
 # Change 'add-task-search' is valid
 ```
 
@@ -131,6 +134,6 @@ What needs a harder fixture or more reps:
 ## Follow-up
 
 1. Add a subtler seeded defect and a second clean variant.
-2. Run five repetitions of seeded and clean for control and skill.
+2. Run five repetitions on the harder fixture, for control and skill.
 3. Add a trigger test with should-fire and should-not-fire prompts.
 4. Only then treat `spec-review` as verified.

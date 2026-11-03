@@ -5,13 +5,14 @@ record, not a certification.
 
 ## Fixture
 
-`fixtures/template` is a small Python `unittest` repo with an OpenSpec change
-`add-slugify`, an `APPROVED` marker, and a documented test command
-(`python3 run_tests.py`).
+`vertical-slice-tdd/fixtures/template` is a small Python `unittest` repo with an
+OpenSpec change `add-slugify`, an `APPROVED` marker, and a documented test
+command (`python3 run_tests.py`).
 
-`src/text.py` starts with a wrong `slugify` (`return text`), so a slug test
-fails with an assertion, not an error. The task file asks only to implement and
-verify; it does not prescribe test-first.
+`src/text.py` starts with a wrong `slugify` (`return text`). A newly written slug
+test fails with an assertion, not an error. The tracked template ships only the
+baseline trim test; the task file asks to implement and verify, and does not
+prescribe test-first.
 
 Test outcomes are logged by `run_tests.py` and by `tests/__init__.py`, which
 patches `unittest.TextTestRunner`. This captures both the documented runner and

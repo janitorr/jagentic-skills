@@ -15,17 +15,19 @@ that a skill works.
 | `vertical-slice-tdd` | `analysis/evidence/vertical-slice-tdd.md` plus fixture | TDD ceiling; approval gate discriminates |
 | All other skills | none | Unverified |
 
-The `spec-review` fixtures are small OpenSpec projects:
+The `spec-review` fixtures are small OpenSpec projects under
+`spec-review/fixtures/`:
 
-- `fixtures/seeded`: six known defects, including a requirement with no
-  scenario, missing auth scoping, an unverified index assumption, and
+- `spec-review/fixtures/seeded`: six known defects, including a requirement with
+  no scenario, missing auth scoping, an unverified index assumption, and
   layer-batched tasks.
-- `fixtures/clean`: the same change with those defects resolved; strict
-  validation passes.
+- `spec-review/fixtures/clean`: the same change with those defects resolved;
+  strict validation passes.
 
-The `vertical-slice-tdd` fixture is a small Python `unittest` repo with an
-OpenSpec change, a documented test command, and an `APPROVED` marker. Test
-outcomes are logged so test-first behavior can be scored from disk.
+The `vertical-slice-tdd` fixture is a small Python `unittest` repo at
+`vertical-slice-tdd/fixtures/template`, with an OpenSpec change, a documented
+test command, and an `APPROVED` marker. Test outcomes are logged so test-first
+behavior can be scored from disk.
 
 ## What we learned
 
@@ -43,7 +45,7 @@ outcomes are logged so test-first behavior can be scored from disk.
   the skill raised gate compliance from 60% to 100% in this fixture.
 - No TDD or review-recall advantage over a strong control has been demonstrated.
 
-## Why we paused
+## Why there is no standing suite
 
 - Both TDD and spec-review fixtures hit ceilings, so more repetitions on them add
   cost without information.

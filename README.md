@@ -16,14 +16,22 @@ sync.sh          # clone/update every bundle listed in bundles.txt
 bundles.txt      # one "<name> <git-url>" per line
 ```
 
+## Prerequisites
+
+- git and bash
+- Python 3 with PyYAML
+
+Contributing: see `AGENTS.md`.
+
 ## Bundle workflow
 
 1. List bundles in `bundles.txt`.
 2. `./sync.sh` - clone or fast-forward each bundle into `vendor/`.
 3. `python3 scripts/inventory.py` - regenerate `analysis/inventory.md`.
-4. Compare bundles per category in `analysis/comparison.md`.
-5. Record what was combined, and what was left out, in `analysis/synthesis.md`.
-6. `./scripts/sync-skills.sh` - copy `skills/` into `.opencode/skills/` after
+4. Read `analysis/comparison.md` for the historical cross-bundle comparison;
+   record the current comparison in `analysis/synthesis.md` and
+   `analysis/coverage.md`.
+5. `./scripts/sync-skills.sh` - copy `skills/` into `.opencode/skills/` after
    adding or editing a skill.
 
 `skills/` is the source of truth. `.opencode/skills/` is a generated mirror that
@@ -33,8 +41,6 @@ OpenCode discovers; do not edit it directly.
 a vendored skill is unmapped, so the inventory cannot silently go stale.
 
 Evaluation status and the plan for resuming it: `analysis/evidence/README.md`.
-`spec-review` and `vertical-slice-tdd` have partial behavioral evidence; the other
-eight are unverified.
 
 ## Current synthesis
 
@@ -59,10 +65,10 @@ Supporting skills, callable at any point:
 | `git-workflow` | Commits, branches, worktrees, conflicts, finishing, releases |
 | `documentation` | ADRs, READMEs, reference pages, changelogs, and agent instructions |
 
-The reviews never fix what they find; remediation is a separate pass after the
-human reviews the report. Spec review hands off through the approval marker the
-agent file defines (for example, a `ready-for-dev` label). Implementation commits
-once per green slice.
+Reviewers never fix what they find. The owning stage may rework findings
+agent-to-agent; human approval and merge sign-off remain fixed gates. Spec review
+hands off through the approval marker the agent file defines (for example, a
+`ready-for-dev` label). Implementation commits once per green slice.
 
 Skills are environment-agnostic. An agent file supplies the tracker operations,
 approval marker, review destination, and workspace policy; the same skill can run

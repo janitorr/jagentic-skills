@@ -221,30 +221,34 @@ and standalone review/PR mechanics already covered inside `review-loop`.
 
 ---
 
-## Pipeline-aligned selection (decided)
+## Pipeline-aligned selection (historical)
 
-The target workflow is fixed, and each stage is launched as a local `/command` or
-a GitHub workflow:
+This section records the first five-stage selection. Later supporting skills were
+added; the current set is in `analysis/synthesis.md` and `analysis/coverage.md`.
+
+The target workflow was fixed, and each stage was launched as a local `/command`
+or a GitHub workflow:
 
 ```
-interview -> GitHub issue(s)
+interview -> issue(s)
   -> openspec-explore (always) -> openspec-propose
   -> spec review (agent) -> human review
   -> vertical-slice TDD
   -> code review (agent) -> human review
 ```
 
-That makes the pipeline, not the category list, the unit of distillation. The
-selected set is five stage skills. Reviews are read-only and stop at a human
-gate; fixes are a separate pass.
+That made the pipeline, not the category list, the unit of distillation. The
+selected set was five stage skills. Reviewers are read-only; the owning stage may
+rework findings agent-to-agent, but human approval and merge sign-off remain
+fixed gates.
 
-| Stage | Selected skill | Absorbs | Why this boundary |
+| Stage | Selected skill | Draws from | Why this boundary |
 |---|---|---|---|
-| 1 | `issue-interview` | interview-me, grilling, brainstorming, idea-refine | Produces issue artifacts, not a spec; the issue is the source of truth for later review. |
+| 1 | `issue-interview` | interview-me, grilling, brainstorming | Produces issue artifacts, not a spec; the issue is the source of truth for later review. |
 | 2 | `issue-to-openspec` | rpi, spec-driven-development, to-spec | Owns the explore-first rule and the propose handoff; OpenSpec owns artifact creation. |
 | 3 | `spec-review` | doubt-driven-development, code-review axes, source-driven-development | Adversarial fresh-context review of artifacts against issue, source, specs, docs. |
 | 4 | `vertical-slice-tdd` | incremental-implementation, 3x TDD, verification-before-completion | Owns slicing, test-first, checkboxes, evidence, and design-drift pauses. |
-| 5 | `code-review` | code-review-and-quality, two-axis review, requesting/receiving review | Separates spec, standards, and quality axes; read-only findings. |
+| 5 | `code-review` | code-review-and-quality, two-axis review, requesting review | Separates spec, standards, and quality axes; read-only findings. |
 
 Dropped or absorbed:
 

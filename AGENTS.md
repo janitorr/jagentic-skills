@@ -46,8 +46,8 @@ user to name the skill.
 - Keep skills environment-agnostic. Tracker operations, the approval marker, the
   review destination, and workspace/push policy belong to agent files, not
   skills. OpenSpec remains fixed.
-- Update `README.md` and `analysis/synthesis.md` when the skill set or boundary
-  changes.
+- Update `README.md`, `analysis/synthesis.md`, and `analysis/coverage.md` when
+  the skill set or boundary changes.
 
 ## When adding or updating a vendored bundle
 
@@ -74,8 +74,8 @@ user to name the skill.
 
 ## When running an eval
 
-- Read `analysis/evidence/README.md` first. It records what is verified, why
-  evals are paused, and how to resume.
+- Read `analysis/evidence/README.md` first. It records what is verified, the
+  current status, and how to resume.
 - One skill at a time, per `skill-forge`. Do not batch untested skills.
-- Do not present an unverified skill as passing. Eight of the ten have no
-  behavioral evidence.
+- Do not present an unverified skill as passing; check
+  `analysis/evidence/README.md` for the current status.

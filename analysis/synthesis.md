@@ -44,7 +44,6 @@ needs an undefined environment operation asks instead of assuming a CLI.
 | `issue-interview` | Hypothesis plus confidence; one question at a time; explicit yes; out-of-scope line | addyosmani `interview-me` |
 | | Design tree, frontier rounds, recommended answer per question, facts by agent | mattpocock `grilling` |
 | | Know what you know, look before asking, size the work | superpowers `brainstorming` |
-| | Divergent variants then converge; "Not Doing" list | addyosmani `idea-refine` |
 | | Persist the artifact, stop the turn after confirmation | humanlayer `rpi` |
 | `issue-to-openspec` | Explore before proposing; task directory; phase handoff | humanlayer `rpi`, OpenSpec explore/propose |
 | | Spec as a gated artifact; assumptions surfaced; capability map | addyosmani `spec-driven-development` |
@@ -61,8 +60,7 @@ needs an undefined environment operation asks instead of assuming a CLI.
 | | Evidence before completion; task checkbox only when complete | superpowers `verification-before-completion`, OpenSpec apply |
 | `code-review` | Spec axis vs standards axis, never merged | mattpocock `code-review` |
 | | Correctness, readability, architecture, security, performance; severity; structural remedies | addyosmani `code-review-and-quality` |
-| | Receiver verifies findings and pushes back with evidence | superpowers `receiving-code-review` |
-| | Read-only report, human gate, separate remediation pass | decided workflow |
+| | Read-only report; owning stage may rework findings; human gate | decided workflow |
 
 Supporting skills:
 
@@ -113,6 +111,7 @@ Supporting skills:
    `ready-for-dev` label).
 4. Tasks are checked only when the specified behavior is fully implemented;
    deferred tasks stay unchecked with a reason.
-5. Code review is read-only; fixes happen in a separate pass after human review.
+5. Reviewers are read-only. The owning stage may rework findings agent-to-agent;
+   human approval and merge sign-off remain fixed gates.
 6. Implementation commits once per green slice. This is an explicit override of
    `openspec-apply`'s default single commit at run completion.
