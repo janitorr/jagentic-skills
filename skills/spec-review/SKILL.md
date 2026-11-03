@@ -48,21 +48,23 @@ Keep the axes separate. Report each one, even when it passes.
 |---|---|---|
 | Problem fit | Does the proposal solve the stated problem? Does scope match the issue? Are non-goals explicit and respected? | An issue requirement with no corresponding artifact; behavior the issue never asked for |
 | Spec correctness | Are requirements and scenarios testable, complete, and consistent with existing specs? Are deltas correct? | A requirement with no scenario that can fail; contradictions, duplicates, or missing edge cases |
-| Design soundness | Are decisions justified against alternatives and constraints? Does it fit the architecture? | Invented APIs, unexplained data shapes, changed observable behavior, unstated failure modes |
+| Design soundness | Are decisions justified against alternatives and constraints? Does it fit the architecture? | Invented APIs, unexplained data shapes, changed observable behavior, unstated failure modes. Use `deep-module-design` for module, interface, and seam terms. |
 | Task executability | Are tasks vertical slices with acceptance and verification? Could a fresh agent execute each without guessing? | Horizontal layer batching; missing acceptance; stale file paths; ordering that blocks |
 | Repo and doc fit | Does it follow documented conventions? Does it conflict with existing behavior, docs, or prior decisions? | Convention drift; conflict with current code or a prior ADR |
 
 ### 3. Falsify
 
-List the three to five assumptions the change most depends on. For each, find
-evidence in the source, tests, specs, or official documentation. Mark it
-confirmed, contradicted, or unverified.
+List the load-bearing assumptions the change most depends on, typically three to
+five. Do not pad the list to reach a count. For each, find evidence in the
+source, tests, specs, or official documentation. Mark it confirmed, contradicted,
+or unverified.
 
 For framework-specific claims, check official documentation rather than memory.
 Cite what you checked.
 
 ### 4. Report findings
 
+Report each finding under one axis, so the same defect does not appear twice.
 Label every finding and state its remedy:
 
 | Label | Meaning | Remedy |
@@ -83,23 +85,30 @@ Fix direction: <the change to make, not the rewritten text>
 ```
 
 Prefer a small table or diagram over a wall of prose when it makes the finding
-clearer. Post the report to the review destination defined by the agent file.
+clearer. When a visual would carry the point, use `visual-explainer` and post it
+with the report. Post the report to the review destination defined by the agent
+file.
 
 ### 5. Verdict and gate
 
-Map severity to the verdict:
+The verdict is capped by the evidence:
 
 - Any **Critical** or **Required** finding: **needs revision**.
-- Only **Optional**, **Nit**, or **FYI** findings: **ready for human review**.
+- Any load-bearing assumption still **unverified**: at least a **Required**
+  finding, and **needs revision**.
+- A failed strict validation, or an unavailable required source: **needs
+  revision**.
+- Only **Optional**, **Nit**, or **FYI** findings, with every load-bearing
+  assumption confirmed or contradicted: **ready for spec approval**.
 
 End with findings by severity, the three highest-risk issues, any questions the
 human must answer, and the verdict.
 
 Then stop. Do not edit artifacts, implement, or start remediation.
 
-On **ready**, ask the human to review the findings and, if they accept them,
-record approval with the marker the agent file defines (for example, a label or a
-comment). Do not record it yourself. Hand off:
+On **ready for spec approval**, ask the human to review the findings and, if they
+accept them, record approval with the marker the agent file defines (for example,
+a label or a comment). Do not record it yourself. Hand off:
 
 ```
 Next: vertical-slice-tdd for change <name>
@@ -116,6 +125,8 @@ stop. Do not implement.
 - [ ] Strict validation ran, and its output is recorded.
 - [ ] Each finding quotes its source and states impact and remedy.
 - [ ] The highest-risk assumptions were confirmed or contradicted with evidence.
+- [ ] A load-bearing unverified assumption, failed strict validation, or
+      unavailable required source capped the verdict at **needs revision**.
 - [ ] The report was posted to the configured review destination.
 - [ ] No files were modified and no implementation started.
 - [ ] The verdict follows the severity mapping, and the approval marker or

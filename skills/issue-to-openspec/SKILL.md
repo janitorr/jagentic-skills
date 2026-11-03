@@ -80,7 +80,11 @@ If several issues touch the same capability, explore them together. If one issue
 needs multiple independently shippable changes, propose only the first change,
 report the order, and stop; re-run this skill for each subsequent change.
 
-### 3. Exit explore only when the record is complete
+### 3. Exit explore only when the decision record is complete
+
+Record the exploration where the agent file's review destination says: an issue
+comment, a scratch decision file, or a design note. The record lists settled
+decisions, open questions, risks, and deferred items.
 
 - [ ] Scope and non-goals are explicit.
 - [ ] Externally observable behavior and acceptance criteria are settled.
@@ -88,16 +92,17 @@ report the order, and stop; re-run this skill for each subsequent change.
 - [ ] Material design decisions are made, or explicitly deferred with an owner.
 - [ ] Risks, unknowns, and rollback or migration concerns are recorded.
 
-If the user wants to stop earlier, write down what remains open and stop without
-proposing. Do not let an incomplete exploration become an artifact.
+If the user wants to stop earlier, write the partial record to the same place and
+stop without proposing. Do not let an incomplete exploration become an artifact.
 
-Before proposing, confirm with the user that exploration is complete and they
-want a change. Exploration alone does not authorize artifact creation.
+Before proposing, ask for an explicit request to proceed, such as "propose it".
+Exploration alone does not authorize artifact creation.
 
 ### 4. Propose
 
-Invoke the `openspec-propose` skill. It creates the branch and every required
-artifact in dependency order, then commits them.
+Invoke the `openspec-propose` skill. OpenSpec creates the artifacts. Branch and
+commit behavior follow the agent file's workspace policy; if propose would create
+a branch or commit that the policy forbids, stop and ask.
 
 If proposal writing exposes a material ambiguity that exploration missed, pause
 and return to explore. Do not resolve a scope question inside the artifact.
@@ -144,7 +149,8 @@ Next: spec-review for change <name>
 - [ ] Every issue and its comments were read, and every template section is
       present.
 - [ ] The OpenSpec root exists, or the report explains why it does not.
-- [ ] Explore ran before propose and the user confirmed the capture.
+- [ ] Explore ran before propose, and the decision record exists and the user
+      explicitly asked to proceed.
 - [ ] Required artifacts exist, validate strictly, and trace to the issues.
 - [ ] The `specs` artifact is either present with testable deltas or deliberately
       skipped with a rationale.

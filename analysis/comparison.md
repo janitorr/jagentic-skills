@@ -1,4 +1,6 @@
-# Cross-bundle comparison
+> Historical note: this comparison predates the pipeline-aligned synthesis and
+> the five supporting skills. The current set is recorded in
+> `analysis/synthesis.md` and `analysis/coverage.md`.
 
 Four bundles, 86 skills, 14 categories. This document compares how each bundle
 handles the same underlying work, names the recurring themes, and proposes a

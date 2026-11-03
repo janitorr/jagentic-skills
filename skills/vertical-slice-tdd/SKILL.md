@@ -1,6 +1,6 @@
 ---
 name: vertical-slice-tdd
-description: Use when implementing an approved OpenSpec change test-first, one vertical slice at a time.
+description: Use when an approved OpenSpec change is ready to implement, or when about to write code before a failing test.
 ---
 
 # Vertical Slice TDD
@@ -23,7 +23,7 @@ cadence. The agent file owns the workspace, push, and pull-request policy.
 
 ## Preconditions
 
-- `spec-review` returned **ready for human review**.
+- `spec-review` returned **ready for spec approval**.
 - The approval marker defined by the agent file is present on the issue, pull
   request, or change. Check it the way the agent file defines. If it is absent,
   stop; do not infer approval from conversation.
@@ -74,9 +74,12 @@ Before the first test, find how this repository actually builds and tests:
 language and package manager, checked-in wrappers, focused-test command, full
 suite, lint and type check. Use the repo's commands, never a guessed default.
 
-Determine whether the suite is hermetic: it runs offline and touches no external
-services or network. If it is not, plan to run the focused test plus build and
-record which suites were excluded and why.
+Determine whether the suite is hermetic: it runs offline, starts no external
+services, and its config and commands contain no network or service dependency.
+Check the test config and commands; if the environment supports it, run the
+focused test with network disabled and record the evidence. If the suite is not
+hermetic, plan to run the focused test plus build and record which suites were
+excluded and why.
 
 ### 3. Rules for every slice
 
@@ -88,15 +91,16 @@ record which suites were excluded and why.
 - One behavior per test. An "and" in the name usually means split it.
 - Keep tests readable over DRY. Duplication that makes a test self-contained is
   acceptable.
-- Refactor after green when it makes the next test cheaper; otherwise skip.
+- Refactor after green when it makes the next test cheaper and stays inside the
+  slice; commit it with the slice. Standalone refactoring is a separate change.
 
 ### 4. Run the slice loop
 
 For each slice:
 
 1. **Name the seam and the first test in one line.** If the seam is new or the
-   interface is contested, ask before writing. If it is an existing seam,
-   proceed.
+   interface is contested, ask before writing; use `deep-module-design` to place
+   it. If it is an existing seam, proceed.
 2. **Write one failing test.** One behavior, one clear name, real code paths.
 3. **Watch it fail for the right reason.** Run the focused test. A pass means
    the test is wrong or the behavior already exists. An error means fix the
@@ -110,11 +114,11 @@ For each slice:
 7. **Check the task.** Mark the task complete in the tracked task file only when
    the specified behavior is fully implemented. Leave deferred tasks unchecked
    with a reason.
-8. **Commit.** Commit per slice. This overrides the default `openspec-apply-change` cadence, which commits once
-   when the run completes. Stage only the files this
-   slice changed and the tracked task file. Use the repo's commit convention.
-   Never bypass hooks with `--no-verify`. Push or open a pull request only as the
-   agent file's delivery policy allows.
+8. **Commit.** Commit per slice using the `git-workflow` skill. This skill
+   overrides only the cadence: one commit per green slice instead of
+   `openspec-apply-change`'s single commit at run completion. `git-workflow` owns
+   staging, message, hooks, and pre-commit checks. Push or open a pull request
+   only as the agent file's delivery policy allows.
 
 ### 5. Pause on design drift
 
@@ -126,8 +130,9 @@ Stop and report when:
   to narrow, defer, or accept an exception.
 - A task cannot be made green without changing another task's contract.
 
-Update the artifacts through OpenSpec and get approval before continuing. Do not
-absorb scope silently, and do not rewrite the spec to match the code.
+Update the artifacts through OpenSpec and return to `spec-review`. Implementation
+resumes only when the approval marker is present again. Do not absorb scope
+silently, and do not rewrite the spec to match the code.
 
 ### 6. Complete the change
 

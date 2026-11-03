@@ -65,8 +65,8 @@ justify this to anyone, what would you actually want?"
 Stop when every template section (problem, outcome, in scope, out of scope,
 acceptance, context) carries a direct user answer or a fact you verified, with
 its source noted. No section may rest on an inference. If confidence has not
-risen across two rounds, name the missing foundation and step back; do not keep
-grinding.
+risen across two rounds, name the missing foundation, ask the user to supply or
+explicitly defer it, and stop the turn if they cannot.
 
 ### 4. Split into issues
 

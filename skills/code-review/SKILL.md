@@ -46,7 +46,9 @@ git diff <fixed-point>...HEAD
 git log <fixed-point>..HEAD --oneline
 ```
 
-Confirm the ref resolves and the diff is non-empty before reviewing.
+Confirm the ref resolves and the diff is non-empty before reviewing. Run
+`git status --porcelain`. If uncommitted changes exist, include them explicitly
+with `git diff` or stop and ask; `HEAD` alone does not cover them.
 
 ### 2. Load the sources
 
@@ -71,7 +73,7 @@ Use three headings and keep them separate.
 |---|---|
 | Spec | Requirements missing or partial; behavior not asked for; requirements implemented incorrectly. Quote the artifact line. |
 | Standards | Documented-rule violations with the rule cited. Apply the smell baseline in `references/smells.md` as labelled judgement calls; a documented repo standard overrides it; skip anything tooling enforces. |
-| Quality | Correctness and edge cases; error paths; test quality; architecture and coupling; security boundaries; N+1, unbounded work, and hot-path cost. |
+| Quality | Correctness and edge cases; error paths; test quality; architecture and coupling; security boundaries; N+1, unbounded work, and hot-path cost. Use `deep-module-design` for module, interface, and seam findings. |
 
 ### 5. Probe the tests
 
@@ -88,7 +90,9 @@ suite is hermetic, run the probe in the isolation location the agent file define
 
 The focused test must **fail** against the mutation. If it passes, record a
 **Required** finding: the mutation survived. If the suite is not hermetic or the
-environment cannot support an isolated copy, skip the probe and record why.
+environment cannot support an isolated copy, mark the test-quality axis
+**unverified** and name the skip in the verdict. Do not return **ready for merge
+sign-off** without human acceptance of that gap.
 
 ### 6. Run the verification
 
@@ -111,6 +115,8 @@ Label every finding and state its action:
 Each finding states file and line, evidence, impact, and a fix direction. Within
 each axis, order by leverage: correctness and security first, then structural
 issues, then nits. Report each finding under one axis, with a verdict per axis.
+When a visual would make a finding clearer, use `visual-explainer` and post it
+with the report.
 
 Post the report to the review destination defined by the agent file.
 
@@ -119,15 +125,16 @@ Post the report to the review destination defined by the agent file.
 Map severity to the gate:
 
 - Any **Critical** or **Required** finding: **needs revision**.
-- Only **Optional**, **Nit**, or **FYI** findings: **ready for human review**.
+- Only **Optional**, **Nit**, or **FYI** findings: **ready for merge sign-off**.
 
 End with a verdict for each axis (**pass** or **changes required**), the worst
-issue within each axis, and the overall gate.
+issue within each axis, and the overall gate. The severity labels are scoped to
+merge review, not to spec review.
 
 Then stop. Do not edit code or apply fixes.
 
-- On **ready**, hand off to the human for sign-off. After sign-off, the change
-  owner archives it with the `openspec-archive-change` skill.
+- On **ready for merge sign-off**, hand off to the human for sign-off. After
+  sign-off, the change owner archives it with the `openspec-archive-change` skill.
 - On **needs revision**, name the remediation path: artifact problems return to
   `spec-review`, code problems return to `vertical-slice-tdd`. Do not start
   either pass in this turn.
