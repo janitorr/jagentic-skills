@@ -35,7 +35,9 @@ requested_action: post questions on the issue | update the spec artifacts | proc
 ```
 
 Missing issue context is `blocked` with `owner: issue-author`; the agent file
-posts the questions and marks the issue awaiting information. Artifact changes
+posts the questions and marks the issue awaiting information. A blocked result
+names every missing section and every contradictory statement in
+`requested_action`; "provide more context" is not enough. Artifact changes
 after review are `needs_revision` with `owner: spec-writer`. Never leave a
 blocking question only in chat.
 
@@ -48,7 +50,9 @@ or human sets it after spec review.
   comments through the tracker. If the tracker is unavailable, ask the user to
   paste the issue bodies. Verify every template section: problem, outcome, in
   scope, out of scope, acceptance, and context. Missing sections mean amend the
-  issue through the tracker or return to `issue-interview`; do not guess.
+  issue through the tracker or return to `issue-interview`; do not guess. A
+  missing section is blocking even when the user asks to proceed, and another
+  section never substitutes for it: Outcome is not Acceptance.
 - An OpenSpec root. Run `openspec list --json`. If `root` is null, the command
   exits 1; that is the answer, not a CLI failure. Stop and ask whether to
   initialize or target a store.

@@ -187,10 +187,41 @@ confirm rather than adopting them, wrote no artifacts, and ended with
 ### Verdict
 
 The routing contract is emitted reliably (3/3), so the skill does what the
-workflow needs at the interface. The precondition gate does not hold reliably
-under an explicit "proceed" instruction: 1/3 blocked. The evidence is too small
-to claim an improvement over control (0/3), and the failure is narrow: two runs
-let authorization override a missing required section.
+workflow needs at the interface. The precondition gate did not hold reliably
+under an explicit "proceed" instruction: 1/3 blocked. The failure was narrow: two
+runs let authorization override a missing required section. The retest below
+tightens the rule and is recorded as a before/after, not a controlled result.
+
+### Gate retest after the patch
+
+Two changes: the precondition says a missing section blocks even when the user
+asks to proceed and that Outcome is not Acceptance; a blocked result must name
+every missing section and contradiction in `requested_action`.
+
+Three fresh treatment runs, same fixture, same prompt, no control.
+
+| Check | Before (n=3) | After (n=3) |
+|---|---|---|
+| Blocked with no change artifacts | 1/3 | **3/3** |
+| Emitted a routing block | 3/3 | 3/3 |
+| Named the missing Acceptance section | 2/3 | **3/3** |
+| Raised the scope contradiction | 1/3 | **3/3** |
+| Invented or adopted acceptance criteria | 1/3 | 0/3 |
+
+All three runs stopped before explore output became an artifact, and each
+`requested_action` named the specific gaps: the absent section, the 3-vs-5
+attempt conflict, the partner-config conflict, and what the caller sees on
+exhaustion. One run also found a weakness the fixture did not plant: the context
+claim that subclasses would reimplement an in-send loop does not follow when the
+loop is inherited.
+
+One deviation: t4 wrote `issue-17-questions.md` into the repository. It is a
+scratch question file, not a change artifact, and `AGENTS.md` names stdout as the
+review destination, so this is a minor routing-destination miss rather than a
+gate failure.
+
+Limits: treatment-only, two rules changed at once, n=3, one model family. The
+before/after is not a controlled comparison.
 
 ## Threats to validity
 
