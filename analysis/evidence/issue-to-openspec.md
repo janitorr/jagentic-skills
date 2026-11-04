@@ -11,8 +11,12 @@ created by the spec writer 0/3; blocked 3/3; `pass` through the real pipeline
 **Link refactor (2026-11-04).** The skill no longer restates the OpenSpec project
 check, the `--store` rule, the spec-read commands, or the artifact status. It
 defers those to `openspec-explore` and `openspec-propose`; the stage keeps the
-issue gate, task slicing, the strict-validation gate, and the handoff. Behavior is
-unchanged and not retested.
+issue gate, task slicing, the strict-validation gate, and the handoff.
+
+**Revision route (2026-11-04).** A reviewer's `needs_revision` now enters the
+same skill on a revision route: `openspec-update-change` reconciles the existing
+artifacts, while an intent change starts a new change through
+`openspec-propose`. Behavior is not retested.
 
 ## Question
 

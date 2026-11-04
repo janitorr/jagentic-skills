@@ -1,6 +1,6 @@
 ---
 name: issue-to-openspec
-description: Use when turning an issue into an OpenSpec change, including its design and task breakdown; when the user says "propose this", "write the spec", "explore this issue", or "create a change"; or when an issue is ready for planning but context may be missing.
+description: Use when turning an issue into an OpenSpec change, including its design and task breakdown; when the user says "propose this", "write the spec", "explore this issue", or "create a change"; when an issue is ready for planning but context may be missing; or when a reviewer's `needs_revision` must be folded into an existing change.
 ---
 
 # Issue to OpenSpec
@@ -13,13 +13,14 @@ defined, ask; do not assume a specific CLI or service.
 
 ## Overview
 
-Turn one or more issues into an OpenSpec change. Explore always runs first, even
-when the issue looks complete. Explore resolves decisions; `openspec-propose`
-writes the artifacts; neither implements.
+Turn one or more issues into an OpenSpec change, or revise one after review.
+Explore always runs first for a new change, even when the issue looks complete.
+Explore resolves decisions; `openspec-propose` writes new artifacts;
+`openspec-update-change` revises existing artifacts; none implements.
 
-This skill owns the handoff and the exit criteria. OpenSpec owns scaffolding,
-schema rules, validation, artifact paths, and the `--store` rule. The agent file
-owns how issues are read and how the workspace is isolated.
+This skill owns the route, the handoff, and the exit criteria. OpenSpec owns
+scaffolding, schema rules, validation, artifact paths, revision, and the `--store`
+rule. The agent file owns how issues are read and how the workspace is isolated.
 
 Design decisions use the `deep-module-design` vocabulary when the change creates
 or reshapes a module, interface, or seam.
@@ -33,27 +34,29 @@ verdict: pass | blocked | needs_revision
 reason: <one line naming the missing input or the failing artifact>
 ```
 
-`pass` means the change is proposed and validates strictly. Missing issue context
-is `blocked`; name every missing section and every contradictory statement in
-the reason, because "provide more context" is not enough. Artifact changes after
-review are `needs_revision`. The persona posts questions or requests changes.
-Never leave a blocking question only in chat.
+`pass` means the change is proposed or revised and validates strictly. Missing
+issue context is `blocked`; name every missing section and every contradictory
+statement in the reason, because "provide more context" is not enough. Artifact
+changes after review are `needs_revision`; route them through
+`openspec-update-change`. The persona posts questions or requests changes. Never
+leave a blocking question only in chat.
 
 Never create the approval marker yourself. It records a human gate; the reviewer
 or human sets it after spec review.
 
 ## Preconditions
 
-- One or more issue references. If none is supplied, ask. Read each issue and its
+- One or more issue references, or one change name plus the reviewer's findings
+  for a revision. If none is supplied, ask. Read each issue and its
   comments through the tracker. If the tracker is unavailable, ask the user to
   paste the issue bodies. Verify every template section: problem, outcome, in
   scope, out of scope, acceptance, and context. Missing sections mean amend the
   issue through the tracker or return to `issue-interview`; do not guess. A
   missing section is blocking even when the user asks to proceed, and another
   section never substitutes for it: Outcome is not Acceptance.
-- An OpenSpec root. Use the project check in `openspec-explore` and
-  `openspec-propose`; if there is no root, follow their branch for an explicit
-  OpenSpec request. Do not re-derive the check here.
+- An OpenSpec root. Use the project check in `openspec-explore`,
+  `openspec-propose`, and `openspec-update-change`; if there is no root, follow
+  their branch for an explicit OpenSpec request. Do not re-derive the check here.
 - Project context: the target repo's `AGENTS.md` / `CLAUDE.md`,
   `openspec/config.yaml`, and the repo's documented commands.
 - A base and workspace policy from the agent file. Record the base commit. If
@@ -61,6 +64,16 @@ or human sets it after spec review.
   existing work.
 
 ## Process
+
+### 0. Route the request
+
+- **New change:** no artifacts exist yet. Run explore, then `openspec-propose`.
+- **Reviewer revision:** an existing change received `needs_revision` and the
+  request refines it. Run `openspec-update-change`; it reconciles the existing
+  artifacts and confirms each edit. Skip explore and the decision-record
+  checklist unless the revision reopens a settled decision.
+- **Intent change:** the request changes what the change is for. Start a new
+  change with `openspec-propose`; do not rewrite the old one.
 
 ### 1. Read the source
 
@@ -74,7 +87,9 @@ silently choose one.
 ### 2. Explore
 
 Invoke the `openspec-explore` skill with the brief below. Explore owns the
-exploration and runs even when the issue looks complete.
+exploration and runs even when a new issue looks complete. For a reviewer
+revision, run explore only if the revision reopens a settled decision; a
+refinement of settled decisions goes straight to `openspec-update-change`.
 
 ```markdown
 ## Issues
@@ -119,7 +134,7 @@ stop without proposing. Do not let an incomplete exploration become an artifact.
 Before proposing, ask for an explicit request to proceed, such as "propose it".
 Exploration alone does not authorize artifact creation.
 
-### 4. Propose
+### 4. Propose or revise
 
 When the change creates or reshapes a module, interface, or seam, use
 `deep-module-design` to settle the interface, callers, and seam before writing
@@ -132,19 +147,24 @@ acceptance criterion plus its verification, and slice by scenario, not by layer.
 An error taxonomy, then a retry loop, then wiring is three layers; "a transient
 failure recovers" and "exhaustion reports failure" are two slices.
 
-Invoke the `openspec-propose` skill. It owns scaffolding, artifact order, status,
-validation, and the `--store` rule; do not restate them here. This skill supplies
-the issue trace and the slicing rule. Branch and commit behavior follow the agent
-file's workspace policy; if propose would create a branch or commit that the
-policy forbids, stop and ask.
+For a new change, invoke `openspec-propose`. For a reviewer revision, invoke
+`openspec-update-change`; it owns the existing artifacts and confirms each edit.
+Do not create a missing artifact from this skill; point to the workflow's
+continue path.
+
+Both workflows own scaffolding, artifact order, status, validation, and the
+`--store` rule; do not restate them here. This skill supplies the issue trace and
+the slicing rule. Branch and commit behavior follow the agent file's workspace
+policy; if a workflow would create a branch or commit that the policy forbids,
+stop and ask.
 
 If proposal writing exposes a material ambiguity that exploration missed, pause
 and return to explore. Do not resolve a scope question inside the artifact.
 
 ### 5. Verify before handing off
 
-`openspec-propose` owns the artifact status; use what it reports. This stage adds
-one gate: strict validation.
+The OpenSpec workflow owns the artifact status; use what it reports. This stage
+adds one gate: strict validation.
 
 ```bash
 openspec validate "<name>" --type change --strict
@@ -153,7 +173,7 @@ openspec validate "<name>" --type change --strict
 Confirm the result and the issue-specific criteria:
 
 - Every required artifact is `done` or deliberately `skipped` with a stated
-  reason, as `openspec-propose` reports.
+  reason, as the OpenSpec workflow reports.
 - `proposal.md` links or cites the originating issue(s).
 - The spec delta states the operations that apply: added, modified, and removed
   requirements, each with testable scenarios. If `specs` is `skipped`, verify the
@@ -169,8 +189,9 @@ Confirm the result and the issue-specific criteria:
 Report:
 
 - Change name, branch, and the approved base commit.
+- Whether this was a new change or a reviewer revision.
 - Issue identifiers and links.
-- Artifacts created, plus any deliberately skipped.
+- Artifacts created or revised, plus any deliberately skipped.
 - Strict validation result.
 - Any deferred questions or risks.
 
@@ -181,8 +202,11 @@ Then stop. Do not implement, run apply, or archive.
 - [ ] Every issue and its comments were read, and every template section is
       present.
 - [ ] The OpenSpec root exists, or the report explains why it does not.
-- [ ] Explore ran before propose, and the decision record exists and the user
-      explicitly asked to proceed.
+- [ ] Explore ran before propose for a new change, or the revision went through
+      `openspec-update-change`; the decision record exists and the user explicitly
+      asked to proceed.
+- [ ] A reviewer request revised existing artifacts through
+      `openspec-update-change`; an intent change started a new change instead.
 - [ ] Required artifacts exist, validate strictly, and trace to the issues.
 - [ ] The `specs` artifact is either present with testable deltas or deliberately
       skipped with a rationale.
