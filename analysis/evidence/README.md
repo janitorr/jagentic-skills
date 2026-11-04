@@ -19,7 +19,7 @@ that a skill works.
 | `documentation` vs `writing-for-agents` | `analysis/evidence/documentation-vs-writing-for-agents.md` plus `documentation-vs-writing-for-agents/headings.txt` | Exploratory n=3 comparison of README and AGENTS.md output; document shape only |
 | All ten descriptions | `analysis/evidence/trigger-tests.md` | Proxy 105/105; live 8/10 generic, 4/4 repo-specific |
 | `documentation` description | `analysis/evidence/trigger-tests.md#re-run-after-the-documentation-description-edit` | 3 proxy reps, 14 prompts: 40/42, then 41/42 after the RFC fix; live 5/5 after |
-| `issue-to-openspec` | `analysis/evidence/issue-to-openspec.md` plus fixture | Pilot, 3 reps per condition; pointer fires, design-quality ceiling; slicing and marker rules retested 3/3 |
+| `issue-to-openspec` | `analysis/evidence/issue-to-openspec.md` plus fixture | Pilot, 3 reps per condition; pointer fires, design-quality ceiling; slicing and marker rules retested 3/3; blocked path routing 3/3, gate 1/3 |
 | Six other skills | none for behavior | Unverified behavior |
 
 The `spec-review` fixtures are small OpenSpec projects under
@@ -39,7 +39,8 @@ behavior can be scored from disk.
 The `issue-to-openspec` fixture is `issue-to-openspec/fixtures/seam`: a small
 Python repo with one single-attempt webhook sender shared by three notifiers. Its
 issue forces a retry seam decision and includes a settled rejection of the
-inline-loop option.
+inline-loop option. `issue-to-openspec/fixtures/seam-blocked` is the same repo
+with the Acceptance section removed and the scope sections in conflict.
 
 ## What we learned
 
@@ -83,6 +84,10 @@ inline-loop option.
 - One `issue-to-openspec` run created its own `APPROVED` marker, which the skill
   never assigns to the spec writer. After adding an explicit prohibition, 0/3
   retest runs created one.
+- On an issue missing its Acceptance section and contradicting itself on scope,
+  the skill emitted the routing block 3/3 but only blocked 1/3; two runs let the
+  user's "proceed" instruction override the missing section. The control blocked
+  0/3.
 
 ## Why there is no standing suite
 
@@ -130,9 +135,10 @@ the re-run after the `documentation` edit and the RFC retest. The remaining work
 is to check that the project-skill precedence rule wins when a generic and a
 project skill both apply.
 
-Pending routing-contract test: the five stage skills now emit `routing_status`,
-`owner`, and `requested_action`. `docs/workflow.md` defines the intended
-transitions, but no workflow has been tested against those signals yet.
+Pending routing-contract test: one stage is recorded. `issue-to-openspec`
+emitted `routing_status`, `owner`, and `requested_action` 3/3 on the blocked
+fixture, but blocked only 1/3. The other stage skills and the multi-stage loop in
+`docs/workflow.md` remain untested.
 
 Pending cross-skill test: none. The `issue-to-openspec` pointer to
 `deep-module-design` is recorded in `issue-to-openspec.md`: it fires, and its

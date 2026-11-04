@@ -134,9 +134,72 @@ separate them. Before/after is not a controlled comparison, and n=3 still fits
 sampling noise. The fixture, however, discriminated 0/6 before and 3/3 after on
 task shape, which is the strongest signal in this record.
 
+## Blocked-routing test
+
+The pilot above used an issue with every template section, so it never exercised
+the `blocked` path. This test uses `issue-to-openspec/fixtures/seam-blocked`,
+which is the same fixture with two defects:
+
+- the **Acceptance criteria** section is deleted;
+- **In scope** says "Partner-level retry count, so each partner can choose three
+  or five attempts", while **Out of scope** says "Partner-facing retry
+  configuration".
+
+Both call for a question, not an assumption. The skill says a missing section
+means amend the issue or return to `issue-interview`, and never guess.
+
+### Method
+
+Six fresh `general` subagents, three per condition, each in its own copy with a
+git baseline. Every prompt included "This is my explicit request to proceed and
+propose the change", so authorization was not the blocker. Treatment loaded
+`issue-to-openspec`; control was told to use its own judgment and load no skill
+files.
+
+### Results
+
+| Check | Control (n=3) | Skill (n=3) |
+|---|---|---|
+| Emitted a `routing_status` / `owner` / `requested_action` block | 0/3 | **3/3** |
+| Correctly blocked (`blocked` + `issue-author`, no artifacts) | 0/3 | **1/3** |
+| Created change artifacts anyway | 3/3 | 2/3 |
+| Named the missing Acceptance section | 0/3 | 2/3 |
+| Raised the scope contradiction as a question | 0/3 | 1/3 |
+
+The one correct run (t2) did everything the skill asks: listed the absent
+section, quoted the contradiction, drafted acceptance criteria for the author to
+confirm rather than adopting them, wrote no artifacts, and ended with
+`blocked / issue-author / post questions on the issue`.
+
+### Failure modes
+
+- **t1 missed the missing section outright.** Its report says "All required
+  template sections were present; no blocking gaps", resolved the scope
+  contradiction by making the attempt count a constructor argument, and proposed
+  with `routing_status: ready`.
+- **t3 saw the missing section and proceeded anyway.** It treated Outcome as
+  acceptance and recorded the assumption, then proposed. That is a documented
+  guess, not a silent one, but the skill's precondition does not allow it.
+- **All three controls proceeded.** Each interpreted the scope contradiction as
+  "internal per-partner value, no partner-facing UI", which is a reasonable
+  reading; none asked, and none mentioned the missing Acceptance section.
+
+### Verdict
+
+The routing contract is emitted reliably (3/3), so the skill does what the
+workflow needs at the interface. The precondition gate does not hold reliably
+under an explicit "proceed" instruction: 1/3 blocked. The evidence is too small
+to claim an improvement over control (0/3), and the failure is narrow: two runs
+let authorization override a missing required section.
+
 ## Threats to validity
 
 - Three repetitions per condition, one model family.
+- The blocked fixture has one missing heading and one scope contradiction; a
+  careful reader can detect either, so the control's 0/3 reflects its choice to
+  proceed, not an inability to notice.
+- The prompt's explicit "proceed" authorization is pressure that a real
+  maintainer might not apply; it is deliberate, to test whether the gate holds.
 - The fixture names `deep-module-design` nowhere, but the issue mentions the
   rejected inline loop, which pushes every condition toward a wrapper.
 - The missing `openspec-explore` and `openspec-propose` skills make both arms
