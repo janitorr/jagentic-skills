@@ -38,8 +38,10 @@ Missing issue context is `blocked` with `owner: issue-author`; the agent file
 posts the questions and marks the issue awaiting information. A blocked result
 names every missing section and every contradictory statement in
 `requested_action`; "provide more context" is not enough. Artifact changes
-after review are `needs_revision` with `owner: spec-writer`. Never leave a
-blocking question only in chat.
+after review are `needs_revision` with `owner: spec-writer`. On `ready`, use
+`owner: workflow` with `proceed to spec-review`; use `human` only when a person
+must act before the next stage can run. Never leave a blocking question only in
+chat.
 
 Never create the approval marker yourself. It records a human gate; the reviewer
 or human sets it after spec review.

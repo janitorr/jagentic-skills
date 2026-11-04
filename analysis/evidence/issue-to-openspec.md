@@ -320,3 +320,24 @@ contract, not a pipeline failure.
 - The prompt named the workflow skills, so this is not a discovery test.
 - The fixture issue is complete and pre-authorized; the blocked path is not
   exercised here.
+
+### Owner retest after the patch
+
+One line was added to the interaction contract: on `ready`, use `owner:
+workflow` with `proceed to spec-review`; use `human` only when a person must act
+before the next stage.
+
+Three fresh runs on the same fixture, same prompt, real workflow skills:
+
+| Check | Before | After |
+|---|---|---|
+| `ready` with `owner: workflow` | 2/3 | **3/3** |
+| Emitted the routing block | 3/3 | 3/3 |
+| Loaded `deep-module-design` | 3/3 | 3/3 |
+| Chose the wrapper design | 2/3 | 3/3 |
+| Created an approval marker | 0/3 | 0/3 |
+| Strict validation passes | 3/3 | 3/3 |
+
+The owner inconsistency is closed. The wrapper shift from 2/3 to 3/3 is not
+attributable to a one-line routing change; treat it as sampling until a larger
+run says otherwise.
