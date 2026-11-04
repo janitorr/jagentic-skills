@@ -1,6 +1,6 @@
 ---
 name: documentation
-description: Use when writing or revising a README, ADR, changelog, reference page, inline comment, onboarding guide, or agent instructions file; when recording why a decision was made or changing a public API; when documentation is stale, duplicated, or missing; or when the user asks how something should be documented.
+description: Use when writing or revising a README, ADR, changelog, reference page, tutorial, runbook, onboarding guide, inline comment, or agent instructions file; when recording why a decision was made or changing a public API; when documentation is stale, duplicated, or missing; or when the user asks how something should be documented.
 ---
 
 # Documentation
@@ -40,18 +40,27 @@ If one document serves several audiences, separate the sections by job. Do not
 blend a tutorial, a reference, and a decision record into one undifferentiated
 page.
 
-### 2. Choose the artifact
+This is a planning step. State the audience and job to yourself; write them into
+the document only when the reader needs them, as a runbook names its on-call
+reader. Do not add an audience or "about this document" section by default. A
+code comment, a changelog entry, and an API page never have one.
 
-Pick one branch and read only the step that owns it.
+### 2. Choose the artifact
 
 | Artifact | Use when | Step |
 |---|---|---|
-| ADR | A decision would be expensive to reverse | 3 |
+| ADR or RFC | A decision would be expensive to reverse; an RFC is the same record before acceptance | 3 |
 | README | Someone needs to run, understand, or contribute to the project | 4 |
 | Reference or API page | A public surface needs types, errors, and examples | 5 |
-| Inline comment | A non-obvious constraint or gotcha lives beside the code | 5 |
-| Agent instructions file | The project needs durable rules and pointers for agents | 6 |
-| Changelog | Consumers need to know what changed and whether to care | 3, with `git-workflow` owning release timing |
+| Tutorial, how-to, or migration guide | A reader must complete a task in order | 6 |
+| Runbook | An operator must diagnose and act under time pressure | 6 |
+| Onboarding guide | A new team member needs access, context, and a first task | 6 |
+| Inline comment | A non-obvious constraint or gotcha lives beside the code | 7 |
+| Agent instructions file | The project needs durable rules and pointers for agents | 8 |
+| Changelog or release notes | Consumers need to know what changed and whether to care | 3, with `git-workflow` owning release timing |
+
+Pick one branch and read only the step that owns it. A document that fits no
+branch is usually two documents; split it before inventing a format.
 
 ### 3. Write the decision record
 
@@ -64,19 +73,63 @@ Record the alternatives and why they lost. Do not delete old ADRs; supersede the
 with a new record that links back. A decision record without its constraints is
 just an announcement.
 
+An RFC is the same record with status `proposed`; reviewers act on the
+alternatives and consequences, so those sections carry the weight.
+
+For a changelog, follow the repository's convention. If none exists, use Keep a
+Changelog's categories in order: added, changed, deprecated, removed, fixed,
+security. Write each entry as what changed for the consumer, not what the
+developer did. Keep the categories that apply; when the brief names a category
+with no changes, record `None` rather than dropping it silently. Link a compare
+range only when the repository URL is known.
+
 ### 4. Write the README
 
 Cover, in order: one-paragraph identity, quick start, commands, architecture
 overview, and contributing. Every command must be copy-pasteable and current.
 Link to ADRs for the reasoning; do not restate it.
 
-### 5. Write inline documentation
+### 5. Write the reference page
+
+Lead with the endpoint, command, or symbol. Give authentication and required
+inputs first, then outputs, then each error with its cause and action, then one
+complete example. Use tables for parameters and status codes when the reader
+scans rather than reads.
+
+Document the observed behavior. Do not enumerate fields, invent an error
+envelope, or promise a limit the source does not show; mark an unknown
+explicitly instead.
+
+### 6. Write a procedural document
+
+Tutorials, how-tos, migration guides, runbooks, and onboarding guides are a
+sequence a reader follows, so they share a spine. State the outcome in one
+sentence. List prerequisites, including access. Number the steps; give each a
+copy-pasteable command and the result that confirms it worked. Add what to do
+when a step fails. End with the next step or the escalation path.
+
+- **Tutorial or how-to:** one outcome, and no options that do not serve it.
+- **Migration guide:** add the before and after state, the breaking changes, the
+  order that matters, and how to roll back.
+- **Runbook:** the alert and its impact, the states that look alike and how to
+  tell them apart, one fix per known cause, warnings beside destructive steps,
+  verification, and escalation. Diagnosis comes before the risky step.
+- **Onboarding guide:** access prerequisites, a map of repositories or services,
+  the first task, required reading, and who to ask. Order it by what unblocks
+  the reader, not by team org chart.
+
+### 7. Write inline documentation
 
 Comment the **why** and the gotcha, not the **what**. A comment that restates the
 code should be deleted. Commented-out code should be deleted; history is in git.
 Link a non-obvious constraint to its ADR.
 
-### 6. Write agent instructions
+The output is one annotated stub: the docstring and the comments in place, not a
+document about them. No title, audience line, section headings, summary table, or
+second code block, unless you are inserting the stub into a larger document that
+already has that structure.
+
+### 8. Write agent instructions
 
 - Keep project identity, map, tech stack, and the command table bare. They apply
   to nearly every task.
@@ -89,7 +142,7 @@ Link a non-obvious constraint to its ADR.
 - Prefer file-path references over code snippets; snippets go stale.
 - Keep one authoritative place per rule. Point to it rather than copying it.
 
-### 7. Write for the reader
+### 9. Write for the reader
 
 Lead with the decision or the answer. Use concrete names, values, paths, and
 commands. Preserve qualifiers, units, and uncertainty. Replace stock
@@ -99,14 +152,14 @@ wording is the point, quote it; otherwise paraphrase.
 Cite primary sources for technical claims. Verify every command and example
 before publishing it.
 
-### 8. Prune
+### 10. Prune
 
 - One meaning, one authoritative file.
 - Link to code, configuration, or a spec instead of restating it.
 - Remove stale pages, dead links, and duplicate explanations.
 - If a document only repeats the code, delete it or replace it with a pointer.
 
-### 9. Review for accuracy and clarity
+### 11. Review for accuracy and clarity
 
 Check the document against its sources: code, decisions, and external docs.
 Restore any lost caveat, verify examples still run, and explain any unresolved
@@ -120,10 +173,13 @@ needs one.
 
 ## Verification
 
-- [ ] The audience and the job are stated.
-- [ ] The artifact matches the job: ADR, README, reference, comment, agent rules,
-      or changelog.
-- [ ] Decisions include context, alternatives, and consequences.
+- [ ] The artifact matches its branch: ADR or RFC, README, reference, procedural
+      document, comment, agent rules, or changelog.
+- [ ] Audience and job shaped the document without becoming a default section.
+- [ ] Decision records include context, alternatives, and consequences.
+- [ ] Reference pages document observed behavior and include one complete example.
+- [ ] Procedural documents give prerequisites, ordered steps, expected results,
+      and a failure path.
 - [ ] Commands, paths, and examples were verified.
 - [ ] Agent rules use observable conditions, keep commands, and omit
       tool-enforceable style rules.

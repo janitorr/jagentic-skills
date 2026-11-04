@@ -63,7 +63,7 @@ Supporting skills, callable at any point:
 | `deep-module-design` | Interfaces, seams, simplification, and migration |
 | `skill-forge` | Authoring and revising skills against a baseline failure |
 | `git-workflow` | Commits, branches, worktrees, conflicts, finishing, releases |
-| `documentation` | ADRs, READMEs, reference pages, changelogs, and agent instructions |
+| `documentation` | ADRs, READMEs, reference pages, changelogs, agent instructions, onboarding guides, runbooks, and how-to docs |
 
 Reviewers never fix what they find. The owning stage may rework findings
 agent-to-agent; human approval and merge sign-off remain fixed gates. A design

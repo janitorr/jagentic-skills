@@ -83,7 +83,7 @@ Supporting skills:
 | | Detect isolation, prefer native tools, verify ignored, clean baseline | superpowers `using-git-worktrees` |
 | | Verify, present integration options, merge, cleanup, explicit discard | superpowers `finishing-a-development-branch` |
 | | Block destructive git operations rather than relying on reminders | mattpocock `git-guardrails-claude-code` |
-| `documentation` | ADRs, README, inline why, API docs, changelog, agent docs, prose review | addyosmani `documentation-and-adrs` |
+| `documentation` | ADRs, README, inline why, API docs, changelog, agent docs, procedural docs (tutorial, runbook, onboarding, migration), prose review | addyosmani `documentation-and-adrs` |
 | | Agent instructions: bare foundations, conditional rules, keep commands, prune tool territory | humanlayer `improve-claude-md`, mattpocock `writing-for-agents` |
 | | Context pointers and one source of truth | addyosmani `context-engineering` |
 | | Verify framework claims against primary sources | addyosmani `source-driven-development` |
@@ -96,8 +96,9 @@ Supporting skills:
   stage skill states the minimum context a fresh agent needs.
 - `git-workflow` owns local git discipline and release versioning. Push, pull
   request, archive, and deploy policy remain with the agent file and OpenSpec.
-- `documentation` owns docs, ADRs, READMEs, and agent instruction files.
-  `skill-forge` owns `SKILL.md` files; the two do not overlap.
+- `documentation` owns docs, ADRs, READMEs, reference pages, procedural docs,
+  and agent instruction files. `skill-forge` owns `SKILL.md` files; the two do
+  not overlap.
 - No duplicated OpenSpec commands. The skills reference `openspec-explore`,
   `openspec-propose`, and `openspec-apply-change` rather than reimplementing
   their scaffolding, validation, or checkbox rules.

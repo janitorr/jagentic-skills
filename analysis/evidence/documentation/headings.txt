@@ -1,0 +1,60 @@
+# Heading sequences, treatment and control, 2026-11-04
+# One line group per artifact. ">" separates the two conditions.
+
+adr
+  skill:   ADR: ... | Status | Date | Context | Decision | Alternatives considered | Consequences
+  control: ADR-0001: ... | (metadata block) | Context | Decision | Consequences > Positive, Negative, Follow-up
+
+readme
+  skill:   geoshard | Quick start | Commands > split, validate, merge | Configuration | Architecture | Contributing | License
+  control: geoshard | Installation | Usage > split, validate, merge | Configuration | Development | License
+
+api
+  skill:   POST /v1/exports | Authentication | Request body | Response | Errors | Example
+  control: POST /v1/exports | Authentication | Request body > Example request | Responses > 202, 400, 404, 409, 429 | Lifecycle | Errors at a glance
+
+changelog
+  skill:   Changelog | [2.4.0] - 2026-11-02 | Added | Changed | Deprecated | Fixed | Security
+  control: Changelog | [2.4.0] - 2026-11-02 | Added | Changed | Deprecated | Fixed | Security
+
+agents
+  skill:   dockyard | Repository map | Commands | Rules | Deployment
+  control: AGENTS.md | Repository layout | Commands | Rules > three H3 rules | Formatting and hooks | Deployment
+
+inline
+  skill:   Inline documentation: `ingest_batch` | Audience and job | Annotated function | Constraints the comments defend
+  control: `ingest_batch` inline documentation | Annotated stub
+
+onboarding
+  skill:   Onboarding: Atlas Backend | What Atlas Is | The Six Repositories | Your First Week | Run the Local Stack | Deploying | On-Call | Required Reading | Where to Ask
+  control: Onboarding: Atlas Backend Engineer | What Atlas Is | Your First Week at a Glance | Day 1 > credentials, local stack, layout | Day 2 > event ordering, idempotency | Day 3: Pair on One Ticket | Deploying > staging, production | On-Call | Where to Ask | First-Week Checklist
+
+runbook
+  skill:   Runbook: ... | What the alert means | Triage | Cause 1: Poison job | Cause 2: S3 throttling | Cause 3: Scheduler duplicates | Drain caveats | Escalation | Verify recovery | After the incident | Confidence and open gaps
+  control: Runbook: ... | At a glance | Architecture summary | Diagnosis | Known causes and fixes > three causes | Remediation: backlog drain | Verification | Escalation | Post-incident
+
+# Post-patch retest, 2026-11-04
+# inline r1-r3 after the step-1 fix; r4-r6 after the step-7 tightening.
+
+inline
+  r1: ingest_batch | Comments beside the load-bearing lines
+  r2: (none)
+  r3: `ingest_batch(path, *, max_rows=10_000)`
+  r4-r6: (none; single code block)
+
+onboarding
+  r1: Onboarding: Atlas Backend Engineer, Week One | Prerequisites and Access | The Atlas Repositories | Day 1: Run the Local Stack | Required Reading: Two ADRs | Day 2-3: Pair on One Ticket | Deploying Atlas | Day 4-5: Shadow On-Call | Who to Ask | Next Steps
+  r2: Onboarding: Atlas backend engineer | Before you start | The repositories | Day 1: run the local stack | Required reading: the two ADRs | Day 2-3: pair on one ticket | Day 4-5: shadow on-call | Deploying | On-call | Who to ask | When you are stuck
+  r3: Onboarding: Atlas backend engineer | Before day one: access | The six repositories | Required reading | Your first week | Deploying | On-call | Who to ask
+
+runbook
+  r1: Runbook: ... | Alert and impact | Prerequisites | Confirm the alert | Tell the causes apart | Fix: poison job | Fix: S3 throttling | Fix: duplicate enqueue | Verify recovery | Escalate
+  r2: Runbook: ... | Impact | Prerequisites | Triage | Fix by cause > three causes | Drain procedure | Verify recovery | Escalate
+  r3: Export queue lag exceeds 10 minutes | Outcome | Prerequisites | Alert and impact | Diagnose | Tell the causes apart | Drain and restart the workers | Fix a poison job | Fix S3 throttling | Fix duplicate enqueues | Verify recovery | Escalate | Open questions
+
+api
+  r1-r3: POST /v1/exports | Authentication | Request body | Response | Errors | Example
+
+changelog
+  r1: [2.4.0] - 2026-11-02 | Added | Changed | Deprecated | Fixed | Security
+  r2-r3: Changelog | [2.4.0] - 2026-11-02 | Added | Changed | Deprecated | Fixed | Security

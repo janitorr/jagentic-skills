@@ -20,7 +20,7 @@ commands or agent files).
 | 9 | Frontend and UI | — | Missing | No accessibility, design-system, or real-browser verification skill. |
 | 10 | Delivery, git, repo hygiene | `git-workflow`, agent file | Partial | Commits, branches, worktrees, finishing, and releases are covered. CI gates and issue triage are not. |
 | 11 | Security, performance, observability | `code-review` axes | Partial | Review checks them; no skill owns threat modeling, profiling, or instrumentation. |
-| 12 | Docs, research, teaching, visual explanation | `documentation`, `visual-explainer` | Partial | ADRs, READMEs, reference pages, agent instructions, and visual explanation are covered. Research and multi-session teaching are not. |
+| 12 | Docs, research, teaching, visual explanation | `documentation`, `visual-explainer` | Partial | ADRs, READMEs, reference pages, changelogs, agent instructions, onboarding guides, runbooks, and how-to docs are covered. Research and multi-session teaching are not. |
 | 13 | Meta: skills, context, agent docs | `skill-forge`, `documentation` | Covered | Skill authoring and agent docs have owners. |
 | 14 | Misc utilities | — | Skipped | Too narrow to generalize. |
 
@@ -32,7 +32,7 @@ commands or agent files).
 | `deep-module-design` | Depth, seams, interfaces, domain terms, simplification, migration | codebase-design, api-and-interface-design, code-simplification, deprecation-and-migration, domain-modeling |
 | `skill-forge` | Skill authoring, baseline testing, wording micro-tests, pruning | writing-skills, writing-for-agents, context-engineering, improve-claude-md |
 | `git-workflow` | Commits, branches, worktrees, conflicts, finishing, versioning | git-workflow-and-versioning, using-git-worktrees, finishing-a-development-branch, git-guardrails |
-| `documentation` | ADRs, READMEs, reference pages, changelogs, agent instructions | documentation-and-adrs, writing-for-agents, improve-claude-md, context-engineering |
+| `documentation` | ADRs, READMEs, reference pages, changelogs, agent instructions, onboarding guides, runbooks, how-to docs | documentation-and-adrs, writing-for-agents, improve-claude-md, context-engineering |
 
 ## Remaining gaps
 

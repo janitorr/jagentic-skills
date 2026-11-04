@@ -2,8 +2,8 @@
 
 Status: **opportunistic**. Targeted tests run when a skill or behavior warrants
 it; there is no standing eval suite. Two skills have partial behavioral evidence;
-all ten descriptions passed a trigger pilot; eight skills are still unverified for
-behavior.
+one skill has an exploratory format probe; all ten descriptions passed a trigger
+pilot; seven skills are still unverified for behavior.
 
 This note is the place to resume. Do not treat the absence of evidence as proof
 that a skill works.
@@ -14,8 +14,9 @@ that a skill works.
 |---|---|---|
 | `spec-review` | `analysis/evidence/spec-review.md` plus fixtures | Pilot plus five repetitions per condition; ceiling effect |
 | `vertical-slice-tdd` | `analysis/evidence/vertical-slice-tdd.md` plus fixture | TDD ceiling; approval gate discriminates |
+| `documentation` | `analysis/evidence/documentation.md` plus `documentation/headings.txt` | Exploratory format probe (n=1 per type) plus post-patch retest (n=3 per changed type); retest has no control |
 | All ten descriptions | `analysis/evidence/trigger-tests.md` | Proxy 105/105; live 8/10 generic, 4/4 repo-specific |
-| Eight other skills | none for behavior | Unverified behavior |
+| Seven other skills | none for behavior | Unverified behavior |
 
 The `spec-review` fixtures are small OpenSpec projects under
 `spec-review/fixtures/`:
@@ -46,6 +47,11 @@ behavior can be scored from disk.
   required marker; 0/5 skill runs did. This is the first discriminating result:
   the skill raised gate compliance from 60% to 100% in this fixture.
 - No TDD or review-recall advantage over a strong control has been demonstrated.
+- The `documentation` format probe found the skill changed shape only where it
+  gave an explicit recipe, had no branch for onboarding guides or runbooks, and
+  leaked a planning step into an inline-comment deliverable. After the patch,
+  five changed branches produced the intended shape in 3/3 runs each; the retest
+  has no control, so superiority over no skill is still unshown.
 
 ## Why there is no standing suite
 
@@ -83,8 +89,9 @@ Resume when one of these happens:
 ## Known debt
 
 `skill-forge` requires baseline, micro-test, and trigger evidence for each skill.
-Only `spec-review` and `vertical-slice-tdd` have partial records. The other eight
-are behavior-shaping documents with no observed behavior behind them. That is
+Only `spec-review` and `vertical-slice-tdd` have partial behavioral records;
+`documentation` has an exploratory n=1 probe only. The other seven are
+behavior-shaping documents with no observed behavior behind them. That is
 accepted temporary debt, not a completed verification.
 
 Pending trigger work: the proxy and live selector passes are recorded. The
