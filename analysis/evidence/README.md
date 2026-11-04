@@ -19,7 +19,7 @@ that a skill works.
 | `documentation` vs `writing-for-agents` | `analysis/evidence/documentation-vs-writing-for-agents.md` plus `documentation-vs-writing-for-agents/headings.txt` | Exploratory n=3 comparison of README and AGENTS.md output; document shape only |
 | All ten descriptions | `analysis/evidence/trigger-tests.md` | Proxy 105/105; live 8/10 generic, 4/4 repo-specific |
 | `documentation` description | `analysis/evidence/trigger-tests.md#re-run-after-the-documentation-description-edit` | 3 proxy reps, 14 prompts: 40/42, then 41/42 after the RFC fix; live 5/5 after |
-| `issue-to-openspec` | `analysis/evidence/issue-to-openspec.md` plus fixture | Pilot, 3 reps per condition; pointer fires, design-quality ceiling, task-shape rule missed |
+| `issue-to-openspec` | `analysis/evidence/issue-to-openspec.md` plus fixture | Pilot, 3 reps per condition; pointer fires, design-quality ceiling; slicing and marker rules retested 3/3 |
 | Six other skills | none for behavior | Unverified behavior |
 
 The `spec-review` fixtures are small OpenSpec projects under
@@ -76,12 +76,13 @@ inline-loop option.
   fingerprint: a deletion test, a test-surface argument, and an explicit module
   responsibility, none of which appeared in the control. It did not improve the
   design choice or the alternatives analysis, which the control already did well.
-- The same runs found that the skill's "tasks are vertical slices" rule is not
-  followed in either condition: 0/6 runs sliced by behavior. Every task carried a
-  verification step, so the rule is half-enforced and needs a recipe, not another
-  checklist line.
-- One `issue-to-openspec` run created its own `APPROVED` marker. The skill names
-  the marker only through the agent file and never says who may create it.
+- The same runs found that the skill's "tasks are vertical slices" rule was not
+  followed in either condition: 0/6 runs sliced by behavior, though every task
+  carried a verification step. Adding a slicing recipe moved the treatment to
+  3/3 on a retest.
+- One `issue-to-openspec` run created its own `APPROVED` marker, which the skill
+  never assigns to the spec writer. After adding an explicit prohibition, 0/3
+  retest runs created one.
 
 ## Why there is no standing suite
 

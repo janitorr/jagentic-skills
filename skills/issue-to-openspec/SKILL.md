@@ -39,6 +39,9 @@ posts the questions and marks the issue awaiting information. Artifact changes
 after review are `needs_revision` with `owner: spec-writer`. Never leave a
 blocking question only in chat.
 
+Never create the approval marker yourself. It records a human gate; the reviewer
+or human sets it after spec review.
+
 ## Preconditions
 
 - One or more issue references. If none is supplied, ask. Read each issue and its
@@ -123,6 +126,12 @@ When the change creates or reshapes a module, interface, or seam, use
 `deep-module-design` to settle the interface, callers, and seam before writing
 `design.md` and `tasks.md`. Record the chosen option and why the alternatives
 lost.
+
+Write tasks as slices. A slice is the smallest change that produces one
+observable behavior and can stand alone. Give each task one behavior or
+acceptance criterion plus its verification, and slice by scenario, not by layer.
+An error taxonomy, then a retry loop, then wiring is three layers; "a transient
+failure recovers" and "exhaustion reports failure" are two slices.
 
 Invoke the `openspec-propose` skill. OpenSpec creates the artifacts. Branch and
 commit behavior follow the agent file's workspace policy; if propose would create

@@ -106,9 +106,33 @@ rate.
 - The pointer fires and leaves a recognizable artifact fingerprint.
 - It does not demonstrably improve the chosen design or the alternatives
   analysis against a strong control.
-- The task-shape rule in the skill is not followed by the skill's own runs, so
-  the body needs a slicing recipe, not another checklist item.
-- The approval-marker rule needs an explicit owner.
+- The task-shape rule was not followed by the skill's own runs; the retest below
+  shows a recipe fixes it on this fixture.
+- The approval-marker rule had no owner; the retest below shows the explicit
+  line holds.
+
+## Retest after the patch
+
+Two lines were added to the skill: a slicing recipe in step 4 and an explicit
+"never create the approval marker" in the interaction contract. Three fresh
+treatment runs on the same fixture, same prompt, no control.
+
+| Check | Before (n=3) | After (n=3) |
+|---|---|---|
+| Tasks sliced by observable behavior | 0/3 | **3/3** |
+| Spec writer created an approval marker | 1/3 | **0/3** |
+| `deep-module-design` loaded | 3/3 | 3/3 |
+| Strict validation passes | 3/3 | 3/3 |
+
+All three runs now name task sections after behavior ("Transient 5xx failure
+recovers", "Retries exhausted reports failure", "Permanent 4xx rejection is
+immediate") instead of layers. One run (t6) kept a pure classification section
+before the behavior sections, so the recipe is followed but not mechanically.
+
+Limits: the retest is treatment-only, changes two rules at once, and cannot
+separate them. Before/after is not a controlled comparison, and n=3 still fits
+sampling noise. The fixture, however, discriminated 0/6 before and 3/3 after on
+task shape, which is the strongest signal in this record.
 
 ## Threats to validity
 
