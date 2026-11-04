@@ -8,6 +8,12 @@ Current result: pointer 3/3; tasks sliced by behavior 3/3; approval marker
 created by the spec writer 0/3; blocked 3/3; `pass` through the real pipeline
 3/3. The contract is `verdict` + `reason`; owner fields below are historical.
 
+**Link refactor (2026-11-04).** The skill no longer restates the OpenSpec project
+check, the `--store` rule, the spec-read commands, or the artifact status. It
+defers those to `openspec-explore` and `openspec-propose`; the stage keeps the
+issue gate, task slicing, the strict-validation gate, and the handoff. Behavior is
+unchanged and not retested.
+
 ## Question
 
 The skill tells the spec writer to use `deep-module-design` when a change

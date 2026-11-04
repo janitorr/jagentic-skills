@@ -51,17 +51,14 @@ or human sets it after spec review.
   issue through the tracker or return to `issue-interview`; do not guess. A
   missing section is blocking even when the user asks to proceed, and another
   section never substitutes for it: Outcome is not Acceptance.
-- An OpenSpec root. Run `openspec list --json`. If `root` is null, the command
-  exits 1; that is the answer, not a CLI failure. Stop and ask whether to
-  initialize or target a store.
+- An OpenSpec root. Use the project check in `openspec-explore` and
+  `openspec-propose`; if there is no root, follow their branch for an explicit
+  OpenSpec request. Do not re-derive the check here.
 - Project context: the target repo's `AGENTS.md` / `CLAUDE.md`,
   `openspec/config.yaml`, and the repo's documented commands.
 - A base and workspace policy from the agent file. Record the base commit. If
   the agent file does not define a base or isolation, ask. Do not disturb
   existing work.
-
-If the project uses an OpenSpec store, append `--store <id>` to the OpenSpec
-commands below as its store rule requires.
 
 ## Process
 
@@ -69,9 +66,9 @@ commands below as its store rule requires.
 
 Extract from each issue: problem, outcome, in-scope, out-of-scope, acceptance,
 context links, and open questions. Then read the codebase reality: current branch
-and status, existing specs (`openspec list --specs --json`), relevant specs in
-full (`openspec show "<spec-id>" --type spec`), integration points, nearby tests,
-and docs. Record any conflict between an issue and an existing spec; do not
+and status, existing specs, relevant code, tests, and docs. Identify impacted
+capabilities and read the relevant specs in full; `openspec-explore` defines the
+read commands. Record any conflict between an issue and an existing spec; do not
 silently choose one.
 
 ### 2. Explore
@@ -135,24 +132,28 @@ acceptance criterion plus its verification, and slice by scenario, not by layer.
 An error taxonomy, then a retry loop, then wiring is three layers; "a transient
 failure recovers" and "exhaustion reports failure" are two slices.
 
-Invoke the `openspec-propose` skill. OpenSpec creates the artifacts. Branch and
-commit behavior follow the agent file's workspace policy; if propose would create
-a branch or commit that the policy forbids, stop and ask.
+Invoke the `openspec-propose` skill. It owns scaffolding, artifact order, status,
+validation, and the `--store` rule; do not restate them here. This skill supplies
+the issue trace and the slicing rule. Branch and commit behavior follow the agent
+file's workspace policy; if propose would create a branch or commit that the
+policy forbids, stop and ask.
 
 If proposal writing exposes a material ambiguity that exploration missed, pause
 and return to explore. Do not resolve a scope question inside the artifact.
 
 ### 5. Verify before handing off
 
+`openspec-propose` owns the artifact status; use what it reports. This stage adds
+one gate: strict validation.
+
 ```bash
-openspec status --change "<name>" --json
 openspec validate "<name>" --type change --strict
 ```
 
-Confirm:
+Confirm the result and the issue-specific criteria:
 
 - Every required artifact is `done` or deliberately `skipped` with a stated
-  reason. Use `requires` edges, not status alone.
+  reason, as `openspec-propose` reports.
 - `proposal.md` links or cites the originating issue(s).
 - The spec delta states the operations that apply: added, modified, and removed
   requirements, each with testable scenarios. If `specs` is `skipped`, verify the
