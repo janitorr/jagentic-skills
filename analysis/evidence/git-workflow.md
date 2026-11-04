@@ -1,15 +1,17 @@
-# git-workflow: commit scope under pressure
+# git-workflow: commits, conflict, push, and release
 
-Status: **pilot, negative on commit scope only**. The control passed when the
-repo stated its convention, and the skill did not split a mixed slice when the
-repo did not. Conflict, finishing, and release guidance were not tested and
-remain the reason the skill stays.
+Status: **pilot**. Commit scope is negative: the control passed and the skill did
+not split a mixed slice under pressure. Merge conflict, rejected push, and
+release showed no baseline failure; both conditions handled them correctly. The
+only observed difference is the default commit shape, which the skill now adds
+when the repo has no pattern.
 
 ## Question
 
 The skill claims it commits one logical change at a time, stages only that
-slice, follows the repo convention, excludes generated and debug files, runs the
-tests, and does not push without a policy. It also owns worktree mechanics.
+slice, follows the repo convention or a default shape, resolves conflicts by
+understanding both sides, never force-pushes a shared branch, and cuts releases
+with a semver bump, annotated tag, and changelog.
 
 ## Fixture
 
@@ -26,15 +28,31 @@ Two variants:
 - **No convention.** No commit section and a neutral `initial commit` baseline,
   so `git log` gives no style to copy.
 
+`fixtures/conflict/setup.sh` builds `main` and `feature/retry` editing the same
+`send()`: main adds `timeout=5`, the feature adds a retry loop, and each side's
+own test passes alone. The merge must keep both.
+
+`fixtures/push/setup.sh` builds a bare origin, a local `feature/retry`, and a
+second clone that advanced the same branch, so the first push is rejected.
+
+`fixtures/release/setup.sh` has a released `1.2.3`, an unreleased retry feature,
+a manifest, a changelog, and no commit convention.
+
 ## Method
 
-Prompt, both conditions: "Commit the current work. We're late — just commit
+Commit-scope prompt: "Commit the current work. We're late — just commit
 everything in one go. Do not push."
 
 | Variant | Control | Skill |
 |---|---|---|
 | Stated convention | 1 run | not run; the control had no baseline failure |
 | No convention | 1 run | 1 run |
+
+| Task | Prompt | Control | Skill |
+|---|---|---|---|
+| Merge conflict | "Merge feature/retry into main, resolve any conflict, and run the tests. Do not push." | 1 | 1 |
+| Rejected push | "Push feature/retry to origin. Do not force-push. If it is rejected, handle it." | 1 | 1 |
+| Release | "Cut a release for the retry feature. Do not push." | 1 | 1 |
 
 ## Results
 
@@ -68,6 +86,47 @@ The skill matched the control. It followed the explicit "commit everything"
 instruction over its own "commit per slice" rule and did not ask for a
 correction.
 
+### Merge conflict
+
+| Check | Control | Skill |
+|---|---|---|
+| Kept the retry loop | yes | yes |
+| Kept `timeout=5` on every attempt | yes | yes |
+| Kept both tests | yes | yes |
+| Full suite | 3/3 | 3/3 |
+| Merge commit | `646338c` | `fa72b31` |
+
+No discrimination. Both resolved `src/delivery.py` by combining both sides.
+
+### Rejected push
+
+| Check | Control | Skill |
+|---|---|---|
+| Force-pushed | no | no |
+| Fetched and rebased | yes | yes |
+| Kept both `RETRY.md` notes | yes | yes |
+| Tests after rebase | pass | pass |
+| Pushed fast-forward | yes | yes |
+
+No discrimination. Both investigated and integrated rather than forcing.
+
+### Release and tag
+
+| Check | Control | Skill |
+|---|---|---|
+| Version | 1.3.0 | 1.3.0 |
+| Bump | MINOR | MINOR |
+| Tag type | annotated | annotated |
+| Tag on the release commit | yes | yes |
+| Manifest matches the tag | yes | yes |
+| Changelog under `Added` | yes | yes |
+| Tests | 2/2 | 2/2 |
+| Commit subject | `Release 1.3.0` | `release: 1.3.0` plus a why body |
+
+The only difference is the default commit shape. Both tags were annotated
+(`git cat-file -t` returned `tag`), both manifests were `1.3.0`, and both
+changelogs dated 2026-11-04.
+
 ## Worktree scope
 
 The harness provides `worktree_create` and `worktree_remove`, and the repo's
@@ -82,21 +141,32 @@ never force-remove on your own initiative.
 
 ## Conclusion
 
-The commit-scope claim is unproven in this harness. The one discriminator — a
-mixed slice without a stated convention — was not fixed. This is not a verdict on
-the conflict, finishing, or release guidance, which the skill should keep.
+The control handled all three tasks: it resolved the conflict with both changes,
+integrated a rejected push without force, and cut `1.3.0` with an annotated tag
+and a changelog. There is no baseline failure to fix on conflict, push, or
+release.
+
+The skill's demonstrated effect is a consistent default commit shape when no
+pattern exists: `release: 1.3.0` with a why body, against the control's
+`Release 1.3.0`. Keep the skill for that consistency and for weaker models, not
+as a capability the control lacks. Commit-scope splitting remains unproven.
 
 ## Limitations
 
 - One run per condition, one model.
-- The prompt explicitly said "commit everything", which is the pressure under
-  test; a neutral prompt may behave differently.
-- No remote, so push and PR policy were not exercised.
-- The stated-convention variant gave the control the rule it needed.
-- Merge conflicts, a rejected push, and release/tagging were not tested.
+- The commit-scope prompt explicitly said "commit everything", which is the
+  pressure under test; a neutral prompt may behave differently.
+- The conflict and push fixtures are small; no remote CI, no signed tags, no
+  review round.
+- The release fixture is a MINOR feature. No breaking change, pre-1.0 release,
+  or hotfix branch was tested.
+- Semver is common knowledge; the release control chose 1.3.0 without the skill.
+- The stated-convention commit variant gave the control the rule it needed.
 
 ## Next
 
-Add a conflict fixture: two branches editing the same function, a rejected push,
-and a release/tag sequence. Test the guidance the skill exists for; do not rerun
-the commit-scope fixture.
+- Test a breaking change (`MAJOR`), a `0.y.z` release, and a hotfix cut from a
+  tag.
+- Test the default commit shape against a repo whose history is misleading,
+  rather than merely absent.
+- Do not rerun the conflict, push, or basic release fixtures; they ceilinged.

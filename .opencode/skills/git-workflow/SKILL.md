@@ -1,6 +1,6 @@
 ---
 name: git-workflow
-description: Use before any git commit, push, branch, merge, rebase, or pull request; when writing, reviewing, or choosing a commit message or convention; when isolating parallel work; when resolving conflicts or a rejected push; when inspecting or undoing history; or when preparing a version, tag, changelog, or release.
+description: Use before any git commit, push, branch, merge, rebase, or pull request; when writing, reviewing, or choosing a commit message or convention; when isolating parallel work; when resolving conflicts or a rejected push; when inspecting or undoing history; or when preparing a version, tag, or release.
 ---
 
 # Git Workflow
@@ -55,11 +55,20 @@ A commit is one logical change, made after its tests pass:
 2. Read `git diff --staged`. Check for secrets and unrelated edits.
 3. Run the focused tests, full suite, lint, and type check that the repo defines.
 4. Read recent commits (`git log --oneline -20`) and match the repository's
-   area or type, scopes, subject casing, and body style. If a documented
-   convention exists, it wins; do not impose a generic one.
-5. Write a message that explains **why**, not what the diff already shows. Match
-   the convention you found, for example `feat:`, `fix:`, `refactor:`, `test:`,
-   `docs:`, `chore:`, or a domain scope such as `host:`.
+   area or type, scopes, subject casing, and body style. A documented or visible
+   convention wins.
+5. Write a message that explains **why**, not what the diff already shows. If
+   there is no identifiable pattern, use:
+
+   ```
+   <area>: <imperative lowercase summary>
+
+   <body explaining why, wrapped at 72 columns>
+   ```
+
+   `<area>` is the module or package the change touches, not a generic `feat` or
+   `fix`. Otherwise match the convention you found, for example `feat:`, `fix:`,
+   or a domain scope such as `host:`.
 6. Commit without bypassing hooks. If a hook fails, fix the cause.
 
 Keep standalone refactoring separate from feature work. Slice-local refactoring
@@ -107,16 +116,30 @@ Report files changed, files deliberately not touched, and any concerns. The
 
 ### 9. Version and release
 
-For anything with consumers:
+Semver applies to the public surface: API, CLI flags, config schema, file
+format, and observable behavior. Internal refactors do not move it.
 
-- Bump `MAJOR` for a breaking change, `MINOR` for compatible functionality, and
-  `PATCH` for a compatible fix.
-- Tag the release and let the tag be the source of truth; do not hand-edit a
-  version that can drift from it.
-- Write the changelog entry with the change, grouped by impact
-  (`Added`, `Changed`, `Fixed`, `Deprecated`, `Removed`, `Security`), in the
-  consumer's language. Use `documentation` for the changelog format; this skill
-  owns the version bump and tag. A changelog is not a raw commit log.
+| Change | Bump |
+|---|---|
+| Breaking public change: removed flag, changed response shape, new required config | `MAJOR` |
+| Compatible feature: new endpoint, flag, or optional field | `MINOR` |
+| Compatible fix: behavior correction, docs, dependency | `PATCH` |
+
+Before 1.0, `0.y.z` may make breaking changes in `MINOR`; say so in the
+changelog. A hotfix is a `PATCH` on the release line: branch from the tag, fix,
+tag `vX.Y.(Z+1)`, then merge the fix back.
+
+Tagging:
+
+- Annotated tag `vMAJOR.MINOR.PATCH` on the release commit. Prereleases append
+  `-rc.N` or `-beta.N`.
+- The tag is the source of truth. If a manifest carries a version, set it in the
+  release commit and verify it matches the tag.
+- One tag per release. Never move, reuse, or force-push a tag.
+- Write the changelog entry in the same commit, grouped by impact (`Added`,
+  `Changed`, `Fixed`, `Deprecated`, `Removed`, `Security`), in the consumer's
+  language, and link the tag. Use `documentation` for the changelog format; this
+  skill owns the version bump and tag. A changelog is not a raw commit log.
 
 ## Verification
 
@@ -124,8 +147,9 @@ For anything with consumers:
 - [ ] Baseline tests ran before the first change.
 - [ ] Each commit is atomic, tested, and stages only its own files.
 - [ ] No secrets, generated output, or unrelated changes were committed.
-- [ ] Commit messages explain why and follow the repo convention.
+- [ ] Commit messages explain why and follow the repo convention, or the default
+      shape when none exists.
 - [ ] No shared branch was force-pushed.
 - [ ] The integration choice was the human's, and the merged result passed tests.
-- [ ] Cleanup touched only worktrees this work created.
-- [ ] Version, tag, and changelog agree for any release.
+- [ ] Cleanup touched only workspaces this work created.
+- [ ] Version, annotated tag, and changelog agree for any release.

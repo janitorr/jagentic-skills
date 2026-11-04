@@ -179,6 +179,55 @@ regression from the RFC edit.
   isolated; the release-notes split shows n=3 is still noisy at adjacent
   boundaries.
 
+## Change-list routing
+
+`documentation` and `git-workflow` both mentioned "changelog", so a release
+prompt could route to either. The split is now explicit: `documentation` owns
+changelog and release-note content and format; `git-workflow` owns version, tag,
+and release timing.
+
+### Method
+
+Descriptions only, ten skills, high-recall policy. Eight prompts, three
+independent repetitions.
+
+### Proxy results
+
+| # | Prompt | Expected | Result |
+|---|---|---|---|
+| 1 | Write the changelog entry for the 1.3.0 release. | documentation | 3/3 |
+| 2 | Draft the release notes for the retry feature. | documentation | 3/3 |
+| 3 | Group the unreleased changes under Added and Fixed. | documentation | 3/3 |
+| 4 | Summarize what changed for consumers in this release. | documentation | 3/3 |
+| 5 | Cut the 1.3.0 release and tag it. | git-workflow | 3/3 |
+| 6 | Bump the version to 1.3.0 and tag the release commit. | git-workflow | 3/3 |
+| 7 | Commit and push the release. | git-workflow | 3/3 |
+| 8 | Merge the release branch and resolve the conflict. | git-workflow | 3/3 |
+
+24/24, with all three reps identical.
+
+### Live selector results
+
+| Prompt | Loaded |
+|---|---|
+| Write the changelog entry for the 1.3.0 release. | `documentation` |
+| Cut the 1.3.0 release and tag it. | `git-workflow-and-versioning` (global) |
+
+The changelog prompt reaches the local skill. The release prompt reaches a git
+workflow skill, but the global `git-workflow-and-versioning` rather than the
+local `git-workflow`. That is adjacent and defensible; it is not a
+documentation miss.
+
+### What this changed
+
+- Removed "changelog" from the `git-workflow` description.
+- Added "release notes" to the `documentation` description.
+
+### Limits
+
+One model family; proxy plus one live rep per prompt; no `NONE` prompts in this
+set.
+
 ## Appendix: prompt set
 
 | # | Prompt | Expected | Reps |
