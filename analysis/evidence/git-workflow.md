@@ -127,6 +127,10 @@ The only difference is the default commit shape. Both tags were annotated
 (`git cat-file -t` returned `tag`), both manifests were `1.3.0`, and both
 changelogs dated 2026-11-04.
 
+Both conditions hand-computed the version. The arithmetic is deterministic and
+belongs to a tool; the skill now prefers the repo's release tool or a semver CLI
+and records the bump decision in a footer, changeset, or label.
+
 ## Worktree scope
 
 The harness provides `worktree_create` and `worktree_remove`, and the repo's
@@ -161,12 +165,16 @@ as a capability the control lacks. Commit-scope splitting remains unproven.
 - The release fixture is a MINOR feature. No breaking change, pre-1.0 release,
   or hotfix branch was tested.
 - Semver is common knowledge; the release control chose 1.3.0 without the skill.
+- The release fixture had no release tool, so both conditions hand-computed the
+  version; a tool-assisted release is untested.
 - The stated-convention commit variant gave the control the rule it needed.
 
 ## Next
 
 - Test a breaking change (`MAJOR`), a `0.y.z` release, and a hotfix cut from a
   tag.
+- Test a repo with changesets or semantic-release, where the tool computes the
+  version and writes the tag.
 - Test the default commit shape against a repo whose history is misleading,
   rather than merely absent.
 - Do not rerun the conflict, push, or basic release fixtures; they ceilinged.

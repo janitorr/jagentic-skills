@@ -114,7 +114,9 @@ reproduction steps.
   rejected push, and release also showed no baseline failure: the control
   resolved both sides, rebased without force, and cut `1.3.0` with an annotated
   tag and changelog. The only difference was the default commit shape
-  (`release: 1.3.0` against `Release 1.3.0`).
+  (`release: 1.3.0` against `Release 1.3.0`). Both hand-computed the version;
+  the skill now prefers repo release tooling or a semver CLI and records the
+  bump decision in a footer, changeset, or label.
 - **Change lists route to documentation.** Removing "changelog" from
   `git-workflow` and adding "release notes" to `documentation` split eight
   prompts 24/24 in the proxy; the live changelog prompt loaded `documentation`.

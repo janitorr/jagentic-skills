@@ -116,14 +116,30 @@ Report files changed, files deliberately not touched, and any concerns. The
 
 ### 9. Version and release
 
-Semver applies to the public surface: API, CLI flags, config schema, file
-format, and observable behavior. Internal refactors do not move it.
+Use the repository's release tooling first: changesets, semantic-release,
+release-please, goreleaser, cargo-release, `npm version`, or whatever the repo
+already uses. The tool computes the version and writes the tag; do not retype
+either by hand.
+
+The tool needs a bump decision. Classify the change against the public surface:
+API, CLI flags, config schema, file format, and observable behavior. Internal
+refactors do not move it.
 
 | Change | Bump |
 |---|---|
 | Breaking public change: removed flag, changed response shape, new required config | `MAJOR` |
 | Compatible feature: new endpoint, flag, or optional field | `MINOR` |
 | Compatible fix: behavior correction, docs, dependency | `PATCH` |
+
+Record the decision where the tool can read it: a conventional-commit footer
+(`BREAKING CHANGE:` or `!`), a changeset, or a release label. That decision is
+the judgment call; the version string is not. If the classification is
+ambiguous, name the reading and the reason in the release note.
+
+If the repo has no release tool, compute with a semver CLI or the project's
+semver library (`semver bump minor 1.2.3`) rather than doing arithmetic by hand.
+If neither is available, show the current version, the bump, and the arithmetic
+for review.
 
 Before 1.0, `0.y.z` may make breaking changes in `MINOR`; say so in the
 changelog. A hotfix is a `PATCH` on the release line: branch from the tag, fix,
@@ -133,8 +149,9 @@ Tagging:
 
 - Annotated tag `vMAJOR.MINOR.PATCH` on the release commit. Prereleases append
   `-rc.N` or `-beta.N`.
-- The tag is the source of truth. If a manifest carries a version, set it in the
-  release commit and verify it matches the tag.
+- The tag is the source of truth. If a manifest carries a version, set it with
+  the release tool and verify it matches the tag; never hand-edit a version that
+  can drift.
 - One tag per release. Never move, reuse, or force-push a tag.
 - Write the changelog entry in the same commit, grouped by impact (`Added`,
   `Changed`, `Fixed`, `Deprecated`, `Removed`, `Security`), in the consumer's
@@ -152,4 +169,6 @@ Tagging:
 - [ ] No shared branch was force-pushed.
 - [ ] The integration choice was the human's, and the merged result passed tests.
 - [ ] Cleanup touched only workspaces this work created.
-- [ ] Version, annotated tag, and changelog agree for any release.
+- [ ] The version and tag came from the repo's release tool or a semver CLI, and
+      match the manifest and changelog.
+- [ ] The bump is justified by a commit footer, changeset, or release label.
