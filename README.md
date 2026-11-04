@@ -72,9 +72,10 @@ implementation waits for a new one. Spec review hands off through the approval
 marker the agent file defines (for example, a `ready-for-dev` label).
 Implementation commits once per green slice.
 
-Skills are environment-agnostic. An agent file supplies the tracker operations,
-approval marker, review destination, and workspace policy; the same skill can run
-locally or inside a GitHub workflow. The stage graph, verdict semantics, and
+Stage skills are environment-agnostic. An agent file supplies the tracker
+operations, approval marker, review destination, and workspace policy; the same
+skill can run locally or inside a GitHub workflow. Supporting skills are invoked
+directly by a human or an agent mid-task and need no agent file. The stage graph, verdict semantics, and
 delivery mapping live in `docs/workflow.md`.
 
 Each stage skill ends with a verdict — `pass`, `needs_revision`, or `blocked` —

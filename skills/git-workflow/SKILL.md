@@ -7,14 +7,16 @@ description: Use before any git commit, push, branch, merge, rebase, or pull req
 
 ## Environment
 
-The agent file defines the base branch, workspace isolation, push policy, and
-review destination. Read it before starting. If an operation is not defined, ask;
-do not assume a CLI or service.
+Invoked directly by a human or by an agent mid-task; there may be no agent file.
+Read the repository's instructions for the base branch, commit convention, and
+push policy. If none exists, use the defaults below. Ask before pushing or
+opening a pull request unless the instruction is explicit.
 
 ## Overview
 
 Git is the safety net. Keep the invariants below. The harness owns worktrees;
-the agent file owns push and review policy.
+the repo instructions own push and review policy, and the defaults below fill
+the gaps.
 
 ## Invariants
 

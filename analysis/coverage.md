@@ -18,7 +18,7 @@ commands or agent files).
 | 7 | Review and quality gates | `spec-review`, `code-review` | Partial | Giving review is covered. Receiving review and a written quality contract are not. |
 | 8 | Architecture and refactoring | `deep-module-design` | Covered | Interfaces, deep modules, simplification, and migration in one skill. |
 | 9 | Frontend and UI | — | Missing | No accessibility, design-system, or real-browser verification skill. |
-| 10 | Delivery, git, repo hygiene | `git-workflow`, agent file | Partial | Commits, branches, worktrees, finishing, and releases are covered. CI gates and issue triage are not. |
+| 10 | Delivery, git, repo hygiene | `git-workflow` | Partial | Commits, conflicts, pushes, and releases are covered. Worktree mechanics belong to the harness; CI gates and issue triage are not. |
 | 11 | Security, performance, observability | `code-review` axes | Partial | Review checks them; no skill owns threat modeling, profiling, or instrumentation. |
 | 12 | Docs, research, teaching, visual explanation | `documentation`, `visual-explainer` | Partial | ADRs, READMEs, reference pages, changelogs, agent instructions, onboarding guides, runbooks, and how-to docs are covered. Research and multi-session teaching are not. |
 | 13 | Meta: skills, context, agent docs | `skill-forge`, `documentation` | Covered | Skill authoring and agent docs have owners. |

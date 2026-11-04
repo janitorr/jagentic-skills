@@ -53,9 +53,11 @@ a global generic skill.
 - Edit `skills/<skill-id>/SKILL.md`, then run `./scripts/sync-skills.sh`.
 - Follow the `skill-forge` skill. A behavior-shaping change needs a baseline or
   micro-test record, or an explicit debt note in `analysis/evidence/README.md`.
-- Keep skills environment-agnostic. Tracker operations, the approval marker, the
-  review destination, and workspace/push policy belong to agent files, not
-  skills. OpenSpec remains fixed.
+- Keep skills environment-agnostic. For the five stage skills, tracker operations,
+  the approval marker, the review destination, and workspace/push policy belong
+  to agent files, not skills. The supporting skills are invoked directly by a
+  human or an agent mid-task; they read the repository's instructions and fall
+  back to their defaults. OpenSpec remains fixed.
 - Update `README.md`, `analysis/synthesis.md`, and `analysis/coverage.md` when
   the skill set or boundary changes.
 

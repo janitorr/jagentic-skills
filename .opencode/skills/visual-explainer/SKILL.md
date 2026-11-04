@@ -7,9 +7,9 @@ description: Use when the user says "show me", "visualize", "make it visual", "d
 
 ## Environment
 
-The agent file defines the tracker, approval marker, review destination, and
-workspace policy. Read it before starting. If an operation you need is not
-defined, ask; do not assume a specific CLI or service.
+Invoked directly by a human or by an agent mid-task; there may be no agent file.
+Read the repository's instructions for where artifacts live. If none exists, use
+`docs/` or the task folder.
 
 ## Overview
 
@@ -117,15 +117,16 @@ A one-pager is one self-contained HTML file for one issue:
 - Match the project's palette and type when they exist; otherwise default to a
   dark, low-glare neutral, not a full-page white sheet.
 - Set a viewport, check desktop and mobile widths, and add print styles.
-- Save it at a predictable path the agent file allows, and open it.
+- Save it at a predictable path the repository allows, and open it.
 
 ### 6. Save, show, verify
 
-Save the artifact where the agent file's workspace policy allows. Open it if the
-environment supports that. If a browser or renderer is available, verify ASCII
-alignment, Mermaid syntax, and HTML layout at desktop and mobile widths;
-otherwise state that the artifact is unverified. When the visual supports a
-review, post it with the review report; the review skill owns the destination.
+Save the artifact where the repository's convention allows, or in `docs/` when
+there is none. Open it if the environment supports that. If a browser or
+renderer is available, verify ASCII alignment, Mermaid syntax, and HTML layout at
+desktop and mobile widths; otherwise state that the artifact is unverified. When
+the visual supports a review, post it with the review report; the review skill
+owns the destination.
 
 ## Verification
 

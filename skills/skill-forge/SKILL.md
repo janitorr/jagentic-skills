@@ -7,10 +7,10 @@ description: Use when creating, editing, reviewing, or debugging a skill; when a
 
 ## Environment
 
-The agent file defines the tracker, approval marker, review destination, and
-workspace policy. Read it before starting. If an operation you need is not
-defined, ask; do not assume a specific CLI or service. Skills live where the
-repository's convention or the agent file says.
+Invoked directly by a human or by an agent mid-task; there may be no agent file.
+Read the repository's instructions for where skills live and how changes are
+reviewed. If none exists, use the repository's skill directory and the defaults
+in this skill.
 
 ## Overview
 

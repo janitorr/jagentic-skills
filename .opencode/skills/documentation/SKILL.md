@@ -7,10 +7,10 @@ description: Use when writing or revising a README, ADR or RFC, changelog, relea
 
 ## Environment
 
-The agent file defines the tracker, approval marker, review destination, and
-workspace policy. Read it before starting. If an operation you need is not
-defined, ask; do not assume a specific CLI or service. Documentation lives where
-the repository's convention says.
+Invoked directly by a human or by an agent mid-task; there may be no agent file.
+Read the repository's instructions (`AGENTS.md`, `CONTRIBUTING`, `README`) for
+the documentation convention and location. If none exists, use the defaults in
+this skill.
 
 ## Overview
 
@@ -177,10 +177,9 @@ Restore any lost caveat, verify examples still run, and explain any unresolved
 factual question rather than polishing it away. Clarity must not change the
 decision or its limits.
 
-Post the result to the review destination defined by the agent file. For a change
-description, update the pull request or issue; do not create a parallel report.
-This skill owns changelog content and format; `git-workflow` owns when a release
-needs one.
+Post the result where the repository's convention says, or update the pull
+request or issue when one exists; do not create a parallel report. This skill
+owns changelog content and format; `git-workflow` owns when a release needs one.
 
 ## Verification
 
@@ -198,4 +197,5 @@ needs one.
 - [ ] Each meaning has one authoritative source; duplicates were replaced with
       pointers.
 - [ ] Stale pages, dead links, and commented-out code were removed.
-- [ ] The result reached the configured review destination.
+- [ ] The result reached the destination the repository defines, or the working
+      tree when none exists.

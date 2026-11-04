@@ -7,9 +7,10 @@ description: Use when designing, reviewing, or reshaping a module, interface, AP
 
 ## Environment
 
-The agent file defines the tracker, approval marker, review destination, and
-workspace policy. Read it before starting. If an operation you need is not
-defined, ask; do not assume a specific CLI or service.
+Invoked directly by a human or by an agent mid-task; there may be no agent file.
+Read the repository's instructions (`AGENTS.md`, `CONTRIBUTING`, `README`) and
+the code before proposing a design. If a required operation is undefined and
+would change shared state, ask; otherwise use your judgment.
 
 ## Overview
 

@@ -30,12 +30,15 @@ what a review must prove.
 
 ## Environment boundary
 
-Skills own process and gates. Agent files own the environment: tracker
-operations (read, create, amend), the approval marker (label, comment, or other),
-the review destination (PR comment, issue comment, chat, or file), and workspace
-and delivery policy (base branch, isolation, temp location, push and PR rules).
-OpenSpec is fixed as the artifact system; it is not abstracted. A skill that
-needs an undefined environment operation asks instead of assuming a CLI.
+Skills own process and gates. For the five stage skills, agent files own the
+environment: tracker operations (read, create, amend), the approval marker (label,
+comment, or other), the review destination (PR comment, issue comment, chat, or
+file), and workspace and delivery policy (base branch, isolation, temp location,
+push and PR rules). Supporting skills are invoked directly by a human or by an
+agent mid-task; they read the repository's instructions and fall back to their
+defaults, with no agent file required. OpenSpec is fixed as the artifact system;
+it is not abstracted. A stage skill that needs an undefined environment operation
+asks instead of assuming a CLI.
 
 ## Provenance
 
