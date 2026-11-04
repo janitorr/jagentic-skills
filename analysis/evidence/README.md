@@ -13,7 +13,7 @@ that a skill works.
 
 | Skill | Evidence | Status |
 |---|---|---|
-| `spec-review` | `analysis/evidence/spec-review.md` plus fixtures | Pilot plus five repetitions per condition; ceiling effect |
+| `spec-review` | `analysis/evidence/spec-review.md` plus fixtures | Pilot plus five repetitions per condition; routing 3/3 on seeded, 4/9 ready on the repaired clean fixture; clean ceiling withdrawn |
 | `vertical-slice-tdd` | `analysis/evidence/vertical-slice-tdd.md` plus fixture | TDD ceiling; approval gate discriminates |
 | `documentation` | `analysis/evidence/documentation.md` plus `documentation/headings.txt` | Exploratory format probe (n=1 per type) plus post-patch retest (n=3 per changed type); retest has no control |
 | `documentation` vs `writing-for-agents` | `analysis/evidence/documentation-vs-writing-for-agents.md` plus `documentation-vs-writing-for-agents/headings.txt` | Exploratory n=3 comparison of README and AGENTS.md output; document shape only |
@@ -89,6 +89,15 @@ with the Acceptance section removed and the scope sections in conflict.
   user's "proceed" instruction override the missing section. After making the
   rule absolute and requiring the block to enumerate gaps, 3/3 blocked and named
   every gap. The control blocked 0/3.
+- `spec-review` emitted `routing_status`, `owner`, and `requested_action` 12/12
+  across the seeded and clean fixtures. Seeded was
+  `needs_revision` / `spec-writer` 3/3. The clean fixture reached
+  `ready` / `human` 4/9 across repaired cohorts; the other runs blocked on
+  fixture defects or on the untracked UI follow-up.
+- The earlier clean `5/5 ready, 0 false blocking` result was not reproducible.
+  The "clean" fixture still carried a seeded duplicate-requirement defect and
+  had no app shell, schema, or request contract. It has since been repaired;
+  that ceiling claim is withdrawn.
 
 ## Why there is no standing suite
 
@@ -136,10 +145,11 @@ the re-run after the `documentation` edit and the RFC retest. The remaining work
 is to check that the project-skill precedence rule wins when a generic and a
 project skill both apply.
 
-Pending routing-contract test: one stage is recorded. `issue-to-openspec`
-emitted `routing_status`, `owner`, and `requested_action` 3/3 on the blocked
-fixture; the gate held 1/3, then 3/3 after the precondition fix. The other stage
-skills and the multi-stage loop in `docs/workflow.md` remain untested.
+Pending routing-contract test: two stages are recorded. `issue-to-openspec`
+emitted the block 3/3 on the blocked fixture; the gate held 1/3, then 3/3 after
+the precondition fix. `spec-review` emitted the block 12/12 and used all three
+owner values correctly. The other stage skills and the multi-stage loop in
+`docs/workflow.md` remain untested.
 
 Pending cross-skill test: none. The `issue-to-openspec` pointer to
 `deep-module-design` is recorded in `issue-to-openspec.md`: it fires, and its

@@ -137,3 +137,89 @@ What needs a harder fixture or more reps:
 2. Run five repetitions on the harder fixture, for control and skill.
 3. Add a trigger test with should-fire and should-not-fire prompts.
 4. Only then treat `spec-review` as verified.
+
+## Routing-contract test
+
+The interaction contract had never been exercised. This run checks whether
+`spec-review` emits `routing_status`, `owner`, and `requested_action`, uses legal
+values, and maps the owner to the blocking pass.
+
+### Method
+
+Treatment only: the fields are skill-defined, so a no-skill control cannot emit
+them. Three fresh `general` subagents on the seeded fixture and three on the
+clean fixture per cohort, read-only, each in its own copy with a git baseline.
+The prompt supplied the environment the skill expects (local-file tracker,
+`issue.md`, stdout review destination, no approval marker, `main`, no push).
+
+### Results
+
+Seeded, final cohort:
+
+| Check | Result |
+|---|---|
+| Emitted all three fields | 3/3 |
+| Legal enum values | 3/3 |
+| Verdict | `needs_revision` 3/3 |
+| Owner | `spec-writer` 3/3 |
+| Action | `post findings as review comments and request changes` 3/3 |
+
+Clean fixture, final cohort (c25–c27):
+
+| Check | Result |
+|---|---|
+| Emitted all three fields | 3/3 |
+| Verdict | `ready` 1/3, `needs_revision` 2/3 |
+| Owner when ready | `human` 1/3 |
+| Owner when blocking | `issue-author` 1/3, `spec-writer` 1/3 |
+
+Across the self-contained clean cohorts (c19–c27, nine runs):
+`ready` / `human` 4/9, `needs_revision` / `spec-writer` 4/9,
+`needs_revision` / `issue-author` 1/9. The contract was emitted 9/9.
+
+### The clean fixture was not clean
+
+Earlier sections record clean runs returning `ready 5/5` with `0 false
+blocking`. That result is not reproducible with an unconstrained full review.
+The clean fixture still contained seeded defect D5: its delta added a requirement
+identical to the baseline's while the proposal declared the capability new. Full
+reviews also found that the fixture had no app shell, no schema, no request
+contract, and a 627-character requirement that failed strict validation after
+archive.
+
+Repair work, in order:
+
+- re-authored the change with `openspec new change` and `openspec instructions`;
+- added an app shell that parses the query string and maps a thrown 401;
+- added `schema/tasks.sql` and made the row shape match the code;
+- added `followup-search-ui.md` so the deferred UI is tracked;
+- split the oversized requirement into four requirements;
+- fixed the `user_id` / `userId` mismatch and the auth-before-term scoping;
+- fixed the scoping clauses after the final cohort (not rerun).
+
+The earlier clean result should be treated as superseded. The clean arm's
+ceiling claim in this record is withdrawn until it is re-baselined.
+
+### Interpretation
+
+- Emission and enum use are reliable: 12/12 across the two fixtures.
+- Owner mapping behaved correctly in every branch observed: `spec-writer` for
+  artifact defects, `human` for ready, `issue-author` when the issue scope was
+  the blocker.
+- The remaining disagreement is a judgment about API-only delivery versus the
+  issue's user-visible outcome, not a contract failure.
+- `ready` is not yet stable on the clean fixture (4/9), but the most common
+  blocking findings were fixture defects that are now fixed.
+
+### Limits
+
+- Treatment only; no control.
+- One model family, three reps per cohort.
+- Cohorts used different fixture revisions, so this is not one fixed treatment.
+- Reviewers disagree on whether the untracked UI follow-up is blocking.
+
+## Next: routing elsewhere
+
+`spec-review` is the second stage with a routing record, after
+`issue-to-openspec`. The other stage skills and the multi-stage loop in
+`docs/workflow.md` are still untested.

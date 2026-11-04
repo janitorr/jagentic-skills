@@ -1,8 +1,8 @@
 # Project instructions
 
 ## Commands
-- Test: `npm test`
-- Build: `npm run build`
+- Test: `node --test`
+- Build: `node --check src/app.js && node --check src/api.js && node --check src/auth.js && node --check src/search.js`
 
 ## Conventions
 - Every search endpoint requires authentication.

@@ -1,0 +1,5 @@
+CREATE TABLE tasks (
+  id TEXT PRIMARY KEY,
+  userId TEXT NOT NULL,
+  title TEXT NOT NULL
+);

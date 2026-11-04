@@ -1,7 +1,8 @@
 # task-search Specification
 
 ## Purpose
-Allow users to find their tasks by title.
+
+Allow users to find their own tasks by searching task titles.
 
 ## Requirements
 
