@@ -19,7 +19,7 @@ that a skill works.
 | `documentation` vs `writing-for-agents` | `analysis/evidence/documentation-vs-writing-for-agents.md` plus `documentation-vs-writing-for-agents/headings.txt` | Exploratory n=3 comparison of README and AGENTS.md output; document shape only |
 | All ten descriptions | `analysis/evidence/trigger-tests.md` | Proxy 105/105; live 8/10 generic, 4/4 repo-specific |
 | `documentation` description | `analysis/evidence/trigger-tests.md#re-run-after-the-documentation-description-edit` | 3 proxy reps, 14 prompts: 40/42, then 41/42 after the RFC fix; live 5/5 after |
-| `issue-to-openspec` | `analysis/evidence/issue-to-openspec.md` plus fixture | Pilot, 3 reps per condition; pointer fires, design-quality ceiling; slicing and marker rules retested 3/3; blocked path routing 3/3, gate 1/3 then 3/3 after the fix |
+| `issue-to-openspec` | `analysis/evidence/issue-to-openspec.md` plus fixture | Pilot, 3 reps per condition; pointer fires, design-quality ceiling; slicing and marker rules retested 3/3; blocked path routing 3/3, gate 1/3 then 3/3 after the fix; real pipelines used 3/3, routing owner 2/3 |
 | Six other skills | none for behavior | Unverified behavior |
 
 The `spec-review` fixtures are small OpenSpec projects under
@@ -98,6 +98,11 @@ with the Acceptance section removed and the scope sections in conflict.
   The "clean" fixture still carried a seeded duplicate-requirement defect and
   had no app shell, schema, or request contract. It has since been repaired;
   that ceiling claim is withdrawn.
+- With `openspec-explore` and `openspec-propose` installed, all three
+  `issue-to-openspec` runs used the real pipeline and produced strict-valid
+  artifacts. The pointer and the design ceiling did not move. One run emitted
+  `owner: human` with `proceed to spec-review`, which is a contract ambiguity
+  rather than a pipeline failure.
 
 ## Why there is no standing suite
 
@@ -147,8 +152,9 @@ project skill both apply.
 
 Pending routing-contract test: two stages are recorded. `issue-to-openspec`
 emitted the block 3/3 on the blocked fixture; the gate held 1/3, then 3/3 after
-the precondition fix. `spec-review` emitted the block 12/12 and used all three
-owner values correctly. The other stage skills and the multi-stage loop in
+the precondition fix. On a ready result the owner is ambiguous: two runs used
+`workflow`, one used `human`. `spec-review` emitted the block 12/12 and used all
+three owner values correctly. The other stage skills and the multi-stage loop in
 `docs/workflow.md` remain untested.
 
 Pending cross-skill test: none. The `issue-to-openspec` pointer to

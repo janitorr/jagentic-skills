@@ -254,3 +254,69 @@ done
 
 Then run six fresh agents with the prompts in "Conditions" and score the
 artifacts under `openspec/changes/`.
+
+## Retest with the OpenSpec workflow skills installed
+
+The first record was produced when `openspec-explore` and `openspec-propose`
+were absent from the catalog. Every run improvised, and steps 2 and 4 of the
+skill could not be followed as written. The six OpenSpec workflow skills are now
+installed. This retest uses the same seam fixture and the same prompt, except
+that the agents are told to use the workflow skills.
+
+### Method
+
+Three fresh `general` subagents, one per copy, each with a git baseline. Each
+loaded `issue-to-openspec`, read `AGENTS.md` and `issue.md`, had explicit
+authorization to propose, and was told not to implement, not to edit `src/` or
+`tests/`, and not to commit.
+
+### Results
+
+| Check | Original pilot (no workflow skills) | Workflow skills installed |
+|---|---|---|
+| Loaded `deep-module-design` | 3/3 | 3/3 |
+| Loaded `openspec-explore` and `openspec-propose` | 0/3 (absent) | 3/3 |
+| Chose the wrapper / seam-preserving design | 2/3 | 2/3 |
+| Deletion or test-surface argument | 3/3 | 3/3 |
+| Tasks sliced by observable behavior | 0/3; 3/3 after the slicing recipe | 3/3 |
+| Created its own approval marker | 1/3; 0/3 after the prohibition | 0/3 |
+| Strict validation passes | 3/3 | 3/3 |
+| Emitted the routing block | 3/3 | 3/3 |
+| Correct routing owner for `ready` | 3/3 | 2/3 |
+
+The task-shape and marker changes came from the earlier skill edits, not from
+the pipeline. The pipeline's own contribution is that every run followed
+`openspec new change` and the artifact instructions instead of improvising.
+
+One change is attributable to the pipeline: all three runs used
+`openspec new change` and the artifact instructions, and all three produced
+CLI-scaffolded changes (`.openspec.yaml`, and a `README.md` in one run). None
+touched `src/` or `tests/` and none committed.
+
+The design result is unchanged. Two runs chose the `RetryingSender` wrapper; one
+(t3) again chose a template method inside `WebhookSender` with a one-attempt
+hook, the option the issue says review rejected. It argued the hook prevents
+subclass reimplementation, so the conflict was surfaced rather than hidden.
+
+### Routing inconsistency
+
+t2 emitted:
+
+```
+routing_status: ready
+owner: human
+requested_action: proceed to spec-review
+```
+
+`human` is a legal enum value, but the next action is the next stage, which
+`docs/workflow.md` assigns to `workflow`. The skill lists the four allowed
+owners but never says which one a `ready` result uses. t1 and t3 emitted
+`owner: workflow`; t2 did not. This is a one-line gap in the interaction
+contract, not a pipeline failure.
+
+### Limits
+
+- Three repetitions, one model family, one fixture.
+- The prompt named the workflow skills, so this is not a discovery test.
+- The fixture issue is complete and pre-authorized; the blocked path is not
+  exercised here.
