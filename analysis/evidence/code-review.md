@@ -1,14 +1,15 @@
-# code-review: routing and seeded-defect test
+# code-review: clean and seeded diffs
 
-Status: **pilot**, three repetitions per condition. First behavioral record for
-`code-review`. It checks the routing contract and whether the skill catches a
-spec violation that the test suite misses.
+Status: **partial**, three runs per condition. Verifies the verdict and whether
+the skill catches a spec violation the test suite misses.
+
+Current result: clean `pass` 3/3; seeded `needs_revision` 3/3; the seeded defect
+and the test gap were found 3/3.
 
 ## Question
 
-`code-review` ends with `routing_status`, `owner`, and `requested_action`. Does
-it emit them correctly for a clean diff and for a diff with a code defect? Does
-it find a seeded defect that the suite passes?
+`code-review` ends with a `verdict` and a reason. Does it separate a clean diff
+from one with a code defect? Does it find a seeded defect that the suite passes?
 
 ## Fixture
 
@@ -93,11 +94,3 @@ cd /tmp/opencode/cr-seeded
 
 Prompt: load `code-review`, review `feature/add-slugify` against `main`, use the
 isolation directory for the mutation probe, do not edit tracked files.
-
-## Contract change
-
-The `routing_status` / `owner` / `requested_action` contract used in this record
-was retired on 2026-11-04. Skills now end with
-`verdict: pass | needs_revision | blocked` and a one-line reason; delivery
-belongs to the persona's agent file. Verdict, gate, and finding results in this
-record stand; owner and action columns no longer describe the skill.

@@ -16,6 +16,22 @@ A stage skill does not invoke another stage skill and does not assume a specific
 tracker or label CLI. It may invoke OpenSpec and the named supporting skills. The
 skill reports what happened; the persona decides how to deliver it.
 
+## Why verdicts
+
+Skills used to emit `routing_status`, `owner`, and `requested_action`. That made
+delivery policy a skill concern: two skills needed an explicit "ready means
+workflow" rule to match this document, and the rule could not be tested against a
+real persona.
+
+Alternatives rejected: keeping all three fields, which duplicates delivery policy
+in every stage; and moving all routing to an external orchestrator, which the
+persona already is, and which would leave a skill unable to say "blocked because
+input is missing".
+
+Consequence: the verdict and reason are the whole contract. This document owns
+the stage graph and gates; the agent file owns the tracker operations, labels,
+review state, and push policy.
+
 ## Verdict
 
 Every stage ends with:

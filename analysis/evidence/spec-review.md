@@ -1,8 +1,11 @@
-# Evidence: spec-review
+# spec-review: seeded, clean, and verdicts
 
-Pilot plus a five-repetition run. This is still a partial record, not a
-certification. The pilot used one repetition per condition; the five-repetition
-run is recorded below.
+Status: **partial**. Pilot plus five repetitions per condition, then a verdict
+test and a clean-fixture repair. Review recall still shows a ceiling.
+
+Current result: seeded `needs_revision` 3/3; clean `pass` 4/9 across repaired
+cohorts; the fixture defects are fixed. The old clean `5/5 ready` result is
+withdrawn.
 
 ## Fixtures
 
@@ -69,6 +72,9 @@ to edit.
 | Next stage named | No | Yes: `vertical-slice-tdd` |
 | Approval marker handled | No | Yes: notes none is defined |
 
+**Superseded:** the clean fixture later proved not clean; see the follow-up
+section. The clean verdict in this table is historical.
+
 ## Five-repetition run
 
 Five fresh runs per condition, scored against seeded defect IDs D1–D6 and a
@@ -131,18 +137,19 @@ What needs a harder fixture or more reps:
   quiet on adjacent tasks.
 - Five repetitions on the harder fixture, with every match read manually.
 
-## Follow-up
+## Earlier follow-up
 
 1. Add a subtler seeded defect and a second clean variant.
 2. Run five repetitions on the harder fixture, for control and skill.
 3. Add a trigger test with should-fire and should-not-fire prompts.
 4. Only then treat `spec-review` as verified.
 
-## Routing-contract test
+## Follow-up: routing and the clean-fixture repair
 
-The interaction contract had never been exercised. This run checks whether
-`spec-review` emits `routing_status`, `owner`, and `requested_action`, uses legal
-values, and maps the owner to the blocking pass.
+This run exercised the contract in use at the time. It checked whether
+`spec-review` emitted `routing_status`, `owner`, and `requested_action` with
+legal values and the right owner. Those fields were later retired; the verdict
+results below remain.
 
 ### Method
 
@@ -218,16 +225,8 @@ ceiling claim in this record is withdrawn until it is re-baselined.
 - Cohorts used different fixture revisions, so this is not one fixed treatment.
 - Reviewers disagree on whether the untracked UI follow-up is blocking.
 
-## Next: routing elsewhere
+## Next
 
 `spec-review` is the second stage with a routing record, after
 `issue-to-openspec`. The other stage skills and the multi-stage loop in
 `docs/workflow.md` are still untested.
-
-## Contract change
-
-The `routing_status` / `owner` / `requested_action` contract used in this record
-was retired on 2026-11-04. Skills now end with
-`verdict: pass | needs_revision | blocked` and a one-line reason; delivery
-belongs to the persona's agent file. Verdict, gate, and finding results in this
-record stand; owner and action columns no longer describe the skill.

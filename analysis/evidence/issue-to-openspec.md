@@ -1,9 +1,13 @@
-# issue-to-openspec: pointer and artifact test
+# issue-to-openspec: pointer, gate, and pipeline
 
-Status: **pilot**, three repetitions per condition. First behavioral record for
-`issue-to-openspec`. It verifies that the `deep-module-design` pointer fires and
-records what changes in the artifacts. It does not prove the artifacts are
-better.
+Status: **partial**, several three-run pilots. Verifies the `deep-module-design`
+pointer, task slicing, the approval-marker rule, the blocked path, and the real
+OpenSpec pipeline. Design quality still shows a ceiling.
+
+Current result: pointer 3/3; tasks sliced by behavior 3/3; approval marker
+created by the spec writer 0/3; blocked 3/3; `pass` through the real pipeline
+3/3. The contract is `verdict` + `reason`; owner-based results below are
+historical.
 
 ## Question
 
@@ -111,7 +115,7 @@ rate.
 - The approval-marker rule had no owner; the retest below shows the explicit
   line holds.
 
-## Retest after the patch
+## Follow-up: slicing and marker rules
 
 Two lines were added to the skill: a slicing recipe in step 4 and an explicit
 "never create the approval marker" in the interaction contract. Three fresh
@@ -134,7 +138,7 @@ separate them. Before/after is not a controlled comparison, and n=3 still fits
 sampling noise. The fixture, however, discriminated 0/6 before and 3/3 after on
 task shape, which is the strongest signal in this record.
 
-## Blocked-routing test
+## Follow-up: blocked gate
 
 The pilot above used an issue with every template section, so it never exercised
 the `blocked` path. This test uses `issue-to-openspec/fixtures/seam-blocked`,
@@ -186,9 +190,9 @@ confirm rather than adopting them, wrote no artifacts, and ended with
 
 ### Verdict
 
-The routing contract is emitted reliably (3/3), so the skill does what the
-workflow needs at the interface. The precondition gate did not hold reliably
-under an explicit "proceed" instruction: 1/3 blocked. The failure was narrow: two
+The routing contract in use at the time was emitted reliably 3/3, so the skill
+did what the workflow needed at the interface. The precondition gate did not hold
+reliably under an explicit "proceed" instruction: 1/3 blocked. The failure was narrow: two
 runs let authorization override a missing required section. The retest below
 tightens the rule and is recorded as a before/after, not a controlled result.
 
@@ -223,39 +227,7 @@ gate failure.
 Limits: treatment-only, two rules changed at once, n=3, one model family. The
 before/after is not a controlled comparison.
 
-## Threats to validity
-
-- Three repetitions per condition, one model family.
-- The blocked fixture has one missing heading and one scope contradiction; a
-  careful reader can detect either, so the control's 0/3 reflects its choice to
-  proceed, not an inability to notice.
-- The prompt's explicit "proceed" authorization is pressure that a real
-  maintainer might not apply; it is deliberate, to test whether the gate holds.
-- The fixture names `deep-module-design` nowhere, but the issue mentions the
-  rejected inline loop, which pushes every condition toward a wrapper.
-- The missing `openspec-explore` and `openspec-propose` skills make both arms
-  improvise the same stages; the treatments were told this explicitly.
-- Scoring is manual from files, with one reader.
-- The control instruction "do not load any skill files" is stronger than a real
-  session where skills are not mentioned at all.
-
-## Reproduce
-
-```bash
-mkdir -p /tmp/opencode/ito
-for r in t1 t2 t3 c1 c2 c3; do
-  cp -r analysis/evidence/issue-to-openspec/fixtures/seam /tmp/opencode/ito/$r
-  git -C /tmp/opencode/ito/$r init -q -b main
-  git -C /tmp/opencode/ito/$r add .
-  git -C /tmp/opencode/ito/$r -c user.email=eval@local -c user.name=eval \
-    commit -q -m "fixture baseline"
-done
-```
-
-Then run six fresh agents with the prompts in "Conditions" and score the
-artifacts under `openspec/changes/`.
-
-## Retest with the OpenSpec workflow skills installed
+## Follow-up: real OpenSpec pipeline
 
 The first record was produced when `openspec-explore` and `openspec-propose`
 were absent from the catalog. Every run improvised, and steps 2 and 4 of the
@@ -321,7 +293,7 @@ contract, not a pipeline failure.
 - The fixture issue is complete and pre-authorized; the blocked path is not
   exercised here.
 
-### Owner retest after the patch
+### Owner retest (historical)
 
 One line was added to the interaction contract: on `ready`, use `owner:
 workflow` with `proceed to spec-review`; use `human` only when a person must act
@@ -342,10 +314,34 @@ The owner inconsistency is closed. The wrapper shift from 2/3 to 3/3 is not
 attributable to a one-line routing change; treat it as sampling until a larger
 run says otherwise.
 
-## Contract change
+## Threats to validity
 
-The `routing_status` / `owner` / `requested_action` contract used in this record
-was retired on 2026-11-04. Skills now end with
-`verdict: pass | needs_revision | blocked` and a one-line reason; delivery
-belongs to the persona's agent file. Verdict, gate, and finding results in this
-record stand; owner and action columns no longer describe the skill.
+- Three repetitions per condition, one model family.
+- The blocked fixture has one missing heading and one scope contradiction; a
+  careful reader can detect either, so the control's 0/3 reflects its choice to
+  proceed, not an inability to notice.
+- The prompt's explicit "proceed" authorization is pressure that a real
+  maintainer might not apply; it is deliberate, to test whether the gate holds.
+- The fixture names `deep-module-design` nowhere, but the issue mentions the
+  rejected inline loop, which pushes every condition toward a wrapper.
+- The missing `openspec-explore` and `openspec-propose` skills make both arms
+  improvise the same stages; the treatments were told this explicitly.
+- Scoring is manual from files, with one reader.
+- The control instruction "do not load any skill files" is stronger than a real
+  session where skills are not mentioned at all.
+
+## Reproduce
+
+```bash
+mkdir -p /tmp/opencode/ito
+for r in t1 t2 t3 c1 c2 c3; do
+  cp -r analysis/evidence/issue-to-openspec/fixtures/seam /tmp/opencode/ito/$r
+  git -C /tmp/opencode/ito/$r init -q -b main
+  git -C /tmp/opencode/ito/$r add .
+  git -C /tmp/opencode/ito/$r -c user.email=eval@local -c user.name=eval \
+    commit -q -m "fixture baseline"
+done
+```
+
+Then run six fresh agents with the prompts in "Conditions" and score the
+artifacts under `openspec/changes/`.

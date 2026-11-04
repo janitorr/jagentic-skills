@@ -8,7 +8,7 @@ new skills that combine the strongest ideas from each.
 ```
 vendor/          # upstream bundles, cloned (not tracked - see sync.sh)
 analysis/        # category inventory, cross-bundle comparison, synthesis notes
-docs/            # workflow routing and GitHub artifact mapping
+docs/            # stage graph, verdicts, and delivery mapping
 skills/          # synthesized skills, the source of truth
 .opencode/skills # installed copies OpenCode discovers (generated)
 scripts/         # inventory generator and skill sync
@@ -74,5 +74,10 @@ Implementation commits once per green slice.
 
 Skills are environment-agnostic. An agent file supplies the tracker operations,
 approval marker, review destination, and workspace policy; the same skill can run
-locally or inside a GitHub workflow. Loop routing and the GitHub artifact mapping
-live in `docs/workflow.md`.
+locally or inside a GitHub workflow. The stage graph, verdict semantics, and
+delivery mapping live in `docs/workflow.md`.
+
+Each stage skill ends with a verdict — `pass`, `needs_revision`, or `blocked` —
+and a one-line reason. It does not name the next stage or a tracker operation;
+the persona's agent file maps the verdict to comments, labels, commits, and pull
+requests.

@@ -1,7 +1,10 @@
-# Evidence: vertical-slice-tdd
+# vertical-slice-tdd: TDD, gate, and verdicts
 
-Two experiments, five fresh-context runs per condition each. This is a partial
-record, not a certification.
+Status: **partial**. Two five-run experiments, then a blocked/pass verdict test.
+This is not a certification.
+
+Current result: TDD shows a ceiling; the approval marker discriminates (2/5
+control vs 0/5 skill); `blocked` 3/3 without the marker and `pass` 3/3 with it.
 
 ## Fixture
 
@@ -84,7 +87,7 @@ compliance from 60% to 100% in this fixture.
 - The gate result depends on `AGENTS.md` naming a concrete marker. A vague marker
   may not reproduce.
 
-## Follow-up
+## Earlier follow-up
 
 1. Harden the TDD fixture: a one-line bug fix, an existing partial implementation,
    or a task where writing the test is expensive under time pressure.
@@ -92,7 +95,7 @@ compliance from 60% to 100% in this fixture.
 3. Run five repetitions on the harder fixture before treating the TDD claim as
    verified.
 
-## Routing-contract test
+## Follow-up: blocked and pass verdicts
 
 The interaction contract had not been exercised. This test checks both branches:
 an approved change that should implement and hand off, and a change whose
@@ -144,11 +147,3 @@ the patch and three after.
 - The a1 silent failure shows the harness can drop a run; treat single-run
   differences as noise.
 - The design-drift branch (`blocked / spec-writer`) was not exercised.
-
-## Contract change
-
-The `routing_status` / `owner` / `requested_action` contract used in this record
-was retired on 2026-11-04. Skills now end with
-`verdict: pass | needs_revision | blocked` and a one-line reason; delivery
-belongs to the persona's agent file. Verdict, gate, and finding results in this
-record stand; owner and action columns no longer describe the skill.

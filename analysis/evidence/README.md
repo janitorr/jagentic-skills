@@ -56,73 +56,37 @@ narrows the whitespace regex so the suite passes while the spec is violated.
 
 ## What we learned
 
-- Five seeded `spec-review` runs with the skill and five without both found all
-  six defects and returned **needs revision**. The fixture is too easy to
-  discriminate.
-- Five clean `spec-review` runs with the skill and five without both avoided
-  blocking findings. The skill returned **ready for spec approval**; the control
-  returned **ready for human review**.
-- Five `vertical-slice-tdd` runs with the skill and five without both wrote a
-  failing test first, went green, checked tasks, and committed. TDD also hit a
-  ceiling.
-- In the approval-gate experiment, 2/5 control runs implemented without the
-  required marker; 0/5 skill runs did. This is the first discriminating result:
-  the skill raised gate compliance from 60% to 100% in this fixture.
-- No TDD or review-recall advantage over a strong control has been demonstrated.
-- The `documentation` format probe found the skill changed shape only where it
-  gave an explicit recipe, had no branch for onboarding guides or runbooks, and
-  leaked a planning step into an inline-comment deliverable. After the patch,
-  five changed branches produced the intended shape in 3/3 runs each; the retest
-  has no control, so superiority over no skill is still unshown.
-- Against `writing-for-agents`, our README duplicated every command (quick start
-  plus a command table) and our agent instructions had no completion criterion.
-  After patching, README repeats fell from 8 to 2 and criteria rose from 0 to 16;
-  agent-instruction negations fell from 6 to 2, and every file now states what
-  done means. Files are about 20% longer. This is document-shape evidence; no
-  downstream compliance test has been run.
-- After the `documentation` description edit, tutorial, runbook, migration-guide,
-  and release-notes prompts all routed to the local skill in both the proxy and
-  the live selector. RFC did not, because the body said "ADR or RFC" and the
-  description said only "ADR". Adding the word fixed it: 3/3 proxy and local
-  skill live.
-- The `issue-to-openspec` pointer to `deep-module-design` fires 3/3 and leaves a
-  fingerprint: a deletion test, a test-surface argument, and an explicit module
-  responsibility, none of which appeared in the control. It did not improve the
-  design choice or the alternatives analysis, which the control already did well.
-- The same runs found that the skill's "tasks are vertical slices" rule was not
-  followed in either condition: 0/6 runs sliced by behavior, though every task
-  carried a verification step. Adding a slicing recipe moved the treatment to
-  3/3 on a retest.
-- One `issue-to-openspec` run created its own `APPROVED` marker, which the skill
-  never assigns to the spec writer. After adding an explicit prohibition, 0/3
-  retest runs created one.
-- On an issue missing its Acceptance section and contradicting itself on scope,
-  the skill emitted the routing block 3/3 but only blocked 1/3; two runs let the
-  user's "proceed" instruction override the missing section. After making the
-  rule absolute and requiring the block to enumerate gaps, 3/3 blocked and named
-  every gap. The control blocked 0/3.
-- `spec-review` emitted the routing block 12/12 across the seeded and clean
-  fixtures. Seeded was `needs_revision` 3/3. The clean fixture reached `pass`
-  4/9 across repaired cohorts; the other runs blocked on fixture defects or on
-  the untracked UI follow-up.
-- The earlier clean `5/5 ready, 0 false blocking` result was not reproducible.
-  The "clean" fixture still carried a seeded duplicate-requirement defect and
-  had no app shell, schema, or request contract. It has since been repaired;
-  that ceiling claim is withdrawn.
-- With `openspec-explore` and `openspec-propose` installed, all three
-  `issue-to-openspec` runs used the real pipeline and produced strict-valid
-  artifacts. The pointer and the design ceiling did not move. One run emitted
-  `owner: human` with `proceed to spec-review`; that field was later retired
-  with the verdict contract, so the owner fix is historical.
-- `vertical-slice-tdd` stopped 3/3 when the `APPROVED` marker was deleted, with
-  no code changes and no fabricated marker. All approved runs implemented, kept
-  the suite green, and committed per slice.
-- One approved `vertical-slice-tdd` run produced no work and no report. It is
-  recorded as a harness failure, not a routing result.
-- `code-review` returned `pass` 3/3 on a clean diff and `needs_revision` 3/3 on
-  a seeded whitespace defect. The clean diff produced only Optional findings;
-  the seeded one was found by every run, including the missing non-space
-  whitespace test.
+These are stable findings. Each skill file keeps the method, tables, and
+reproduction steps.
+
+- **Review recall has a ceiling.** Seeded `spec-review` and TDD runs matched a
+  strong control on recall; the fixtures do not show a skill advantage there.
+- **Gates discriminate.** The approval marker changed behavior: 2/5 control TDD
+  runs implemented without it, 0/5 with the skill. After the absolute
+  preconditions, `issue-to-openspec` blocked 3/3 and fabricated no marker.
+- **Blocked paths are testable.** A missing Acceptance section plus a scope
+  contradiction moved from 1/3 correct blocks to 3/3 after the rule was made
+  absolute and the verdict had to enumerate the gaps.
+- **Pointers leave a fingerprint, not a better decision.** `issue-to-openspec`
+  loaded `deep-module-design` 3/3 and added a deletion test, a test-surface
+  argument, and a module responsibility; the chosen design did not improve.
+- **Recipes beat checklist lines.** The task-slicing rule was ignored 0/6 until
+  a worked recipe was added; then 3/3. The marker rule moved 1/3 to 0/3 the same
+  way.
+- **`code-review` separates clean from broken.** A seeded whitespace defect the
+  suite passed was found 3/3; clean diffs produced only Optional findings and
+  passed 3/3.
+- **The clean `spec-review` fixture was not clean.** It carried a seeded
+  duplicate-requirement defect and had no app shell or schema. The old
+  `5/5 ready` result is withdrawn; see `spec-review.md`.
+- **Descriptions route, with one gap.** Tutorial, runbook, migration-guide, and
+  release-notes prompts reached `documentation`; RFC did not until the word was
+  added.
+- **Documentation shape follows explicit recipes.** The format probe changed
+  shape only where the skill gave a recipe; the retest has no control.
+- **Skills report a verdict, not delivery fields.** `pass`, `needs_revision`,
+  and `blocked` plus a reason; the persona owns tracker operations. Owner-based
+  results are historical.
 
 ## Why there is no standing suite
 
@@ -150,8 +114,8 @@ Resume when one of these happens:
    should-fire / should-not-fire prompts, including adjacent skills.
 3. **Run three to five fresh repetitions per condition.** Control: no skill.
    Treatment: load the skill. Use the same files, commands, and output contract.
-4. **Score** defect recall, false blocking findings, verdict, next-stage handoff,
-   and approval-marker handling. Read every match manually.
+4. **Score** defect recall, false blocking findings, verdict and reason, and
+   approval-marker handling. Read every match manually.
 5. **Record** the result in `analysis/evidence/<skill>.md`. Include the control
    prompt, repetitions, verbatim failures, with-skill results, and trigger
    results.

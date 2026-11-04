@@ -1,4 +1,8 @@
-# Evidence: trigger descriptions
+# trigger descriptions: proxy and live selector
+
+Status: **partial**. Proxy and live selector evidence, plus a re-run after the
+`documentation` description edit. One model family; the live pass is one rep per
+prompt.
 
 Pilot, three independent repetitions, 35 prompts, descriptions only. This tests
 whether the current descriptions route a prompt to the right skill; it does not
@@ -113,7 +117,7 @@ load the skill, report the ID, change nothing.
 - The prompts are synthetic and short; long sessions may change selection.
 - Passing this pilot does not verify that a loaded skill improves the result.
 
-## Follow-up
+## Earlier follow-up
 
 1. Run live selector checks for the adjacent pairs, where a wrong load is most
    costly.
