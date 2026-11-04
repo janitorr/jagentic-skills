@@ -1,10 +1,10 @@
 # Evidence and evals
 
 Status: **opportunistic**. Targeted tests run when a skill or behavior warrants
-it; there is no standing eval suite. Five skills have partial behavioral
+it; there is no standing eval suite. Seven skills have partial behavioral
 evidence; one skill has an exploratory format probe; all ten descriptions passed
 a trigger pilot, and the `documentation` description was re-tested after its
-edit; four skills are still unverified for behavior.
+edit; two skills are still unverified for behavior.
 
 This note is the place to resume. Do not treat the absence of evidence as proof
 that a skill works.
@@ -28,7 +28,9 @@ in the records below are superseded; verdict, gate, and finding results stand.
 | `issue-to-openspec` | `analysis/evidence/issue-to-openspec.md` plus fixture | Pilot, 3 reps per condition; pointer fires, design-quality ceiling; slicing and marker rules retested 3/3; blocked verdict 3/3, gate 1/3 then 3/3; real pipelines 3/3; pass 3/3 |
 | `code-review` | `analysis/evidence/code-review.md` plus fixture | 3 reps per condition; clean → pass 3/3, seeded defect → needs_revision 3/3 |
 | `issue-interview` | `analysis/evidence/issue-interview.md` plus fixtures | Pilot plus two retests; final gate 2/2, confidence 12/12 responses, 6 questions per run; template n=1 |
-| Four other skills | none for behavior | Unverified behavior |
+| `git-workflow` | `analysis/evidence/git-workflow.md` plus fixture | Pilot, negative; control split under a stated convention, skill did not split the mixed slice under "commit everything" |
+| `visual-explainer` | `analysis/evidence/visual-explainer.md` plus fixture | Pilot, positive; diagram for a call path, prose for a one-liner; one-pager compared with `show-me` |
+| Two other skills | none for behavior | Unverified behavior |
 
 The `spec-review` fixtures are small OpenSpec projects under
 `spec-review/fixtures/`:
@@ -60,6 +62,14 @@ webhook repo with a local `tracker/issues/` tracker and no issue, and
 `webhooks-template`, the same repo with `bug_report` and `feature_request`
 templates under `.github/ISSUE_TEMPLATE/`. Runs replay
 `issue-interview/script.md`; publishing is a file on disk.
+
+The `git-workflow` fixture is built by `git-workflow/fixtures/setup.sh`: a repo
+with a timeout fix, a whitespace-only reflow, and an untracked `debug.log`, with
+or without a stated commit convention.
+
+The `visual-explainer` one-pager fixture is
+`visual-explainer/fixtures/onepager`: the webhook repo plus the issue from the
+interview pilot. The flow runs reuse `issue-interview/fixtures/webhooks`.
 
 ## What we learned
 
@@ -98,6 +108,18 @@ reproduction steps.
 - **A question turn is not a stage verdict.** Two runs emitted `blocked` after
   asking a question until the skill said a question turn is not the end of the
   stage.
+- **Commit discipline may already be a default.** With a stated convention the
+  control split the slices and excluded the debug file; the skill added nothing.
+  Without one, both mixed a whitespace reflow with the timeout fix.
+  `git-workflow` is a retirement candidate.
+- **A one-pager needs the code shape.** Control and the first skill page omitted
+  the diff; `show-me` included it and was more useful. The patched skill page
+  adds the diff and a verification table and sits between the two.
+- **Dark beats a white sheet for a page read at night.** The one-pager recipe
+  now defaults to a dark, low-glare neutral unless the project has a palette.
+- **Worktrees are harness-owned.** The skill's worktree mechanics duplicate
+  `worktree_create` and `worktree_remove`; workspace policy belongs to the agent
+  file.
 - **Templates are found, not followed completely.** Both conditions found the
   repo's `bug_report` template. Only the skill added the acceptance criteria and
   out-of-scope sections the template omitted.
@@ -149,13 +171,15 @@ Resume when one of these happens:
 ## Known debt
 
 `skill-forge` requires baseline, micro-test, and trigger evidence for each skill.
-`spec-review`, `vertical-slice-tdd`, `issue-to-openspec`, `code-review`, and
-`issue-interview` have partial behavioral records; `documentation` has an
-exploratory probe plus a no-control retest. The other four are behavior-shaping
-documents with no observed behavior behind them. That is accepted temporary debt,
-not a completed verification. `issue-interview` is a pilot plus two retests: the
-final gate and confidence line held 2/2, but the control was not rerun against
-the final wording.
+`spec-review`, `vertical-slice-tdd`, `issue-to-openspec`, `code-review`,
+`issue-interview`, `git-workflow`, and `visual-explainer` have partial behavioral
+records; `documentation` has an exploratory probe plus a no-control retest. The
+other two, `deep-module-design` and `skill-forge`, are behavior-shaping documents
+with no observed behavior behind them. That is accepted temporary debt, not a
+completed verification. `issue-interview` is a pilot plus two retests: the final
+gate and confidence line held 2/2, but the control was not rerun against the
+final wording. `git-workflow` is a negative pilot and a retirement candidate;
+`visual-explainer` is a one-run-per-condition pilot.
 
 Trigger work is complete. The proxy and live selector passes are recorded,
 including the re-run after the `documentation` edit and the RFC retest. The

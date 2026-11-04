@@ -100,6 +100,24 @@ paragraph; if the visual needs a legend, simplify the visual.
   visual.
 - **Debugging:** show the failing path and the boundary where expected and actual
   diverge.
+- **Issue brief or one-pager:** a standalone page for one issue. Lead with the
+  problem and outcome, then one timeline, call path, or decision table, then
+  scope, acceptance, and residual risk. Include the code shape when the issue
+  changes code, and a short test or verification table when acceptance matters.
+
+### One-pager recipe
+
+A one-pager is one self-contained HTML file for one issue:
+
+- Inline CSS; no external scripts, fonts, or network requests.
+- Use the issue's real values: file paths, attempt counts, statuses, dates.
+- Lead with the question and the smallest visual, then support it with scope,
+  acceptance, and residual risk. Add the code shape and a test table when the
+  issue has them.
+- Match the project's palette and type when they exist; otherwise default to a
+  dark, low-glare neutral, not a full-page white sheet.
+- Set a viewport, check desktop and mobile widths, and add print styles.
+- Save it at a predictable path the agent file allows, and open it.
 
 ### 6. Save, show, verify
 
@@ -117,3 +135,5 @@ review, post it with the review report; the review skill owns the destination.
 - [ ] Nothing unchanged or irrelevant is included.
 - [ ] A short paragraph states what the visual means.
 - [ ] The artifact renders correctly in its target medium.
+- [ ] A one-pager is self-contained: no external scripts, fonts, or network
+      requests.
