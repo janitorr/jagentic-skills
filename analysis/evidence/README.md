@@ -28,7 +28,7 @@ in the records below are superseded; verdict, gate, and finding results stand.
 | `issue-to-openspec` | `analysis/evidence/issue-to-openspec.md` plus fixture | Pilot, 3 reps per condition; pointer fires, design-quality ceiling; slicing and marker rules retested 3/3; blocked verdict 3/3, gate 1/3 then 3/3; real pipelines 3/3; pass 3/3 |
 | `code-review` | `analysis/evidence/code-review.md` plus fixture | 3 reps per condition; clean → pass 3/3, seeded defect → needs_revision 3/3 |
 | `issue-interview` | `analysis/evidence/issue-interview.md` plus fixtures | Pilot plus two retests; final gate 2/2, confidence 12/12 responses, 6 questions per run; template n=1 |
-| `git-workflow` | `analysis/evidence/git-workflow.md` plus fixture | Pilot, negative; control split under a stated convention, skill did not split the mixed slice under "commit everything" |
+| `git-workflow` | `analysis/evidence/git-workflow.md` plus fixture | Pilot, negative on commit scope; worktree mechanics trimmed to a harness pointer; conflict and release guidance untested |
 | `visual-explainer` | `analysis/evidence/visual-explainer.md` plus fixture | Pilot, positive; diagram for a call path, prose for a one-liner; one-pager compared with `show-me` |
 | Two other skills | none for behavior | Unverified behavior |
 
@@ -110,8 +110,9 @@ reproduction steps.
   stage.
 - **Commit discipline may already be a default.** With a stated convention the
   control split the slices and excluded the debug file; the skill added nothing.
-  Without one, both mixed a whitespace reflow with the timeout fix.
-  `git-workflow` is a retirement candidate.
+  Without one, both mixed a whitespace reflow with the timeout fix. The
+  commit-scope claim is unproven; the skill stays for conflict and release
+  guidance, which this pilot did not test.
 - **A one-pager needs the code shape.** Control and the first skill page omitted
   the diff; `show-me` included it and was more useful. The patched skill page
   adds the diff and a verification table and sits between the two.
@@ -178,8 +179,9 @@ other two, `deep-module-design` and `skill-forge`, are behavior-shaping document
 with no observed behavior behind them. That is accepted temporary debt, not a
 completed verification. `issue-interview` is a pilot plus two retests: the final
 gate and confidence line held 2/2, but the control was not rerun against the
-final wording. `git-workflow` is a negative pilot and a retirement candidate;
-`visual-explainer` is a one-run-per-condition pilot.
+final wording. `git-workflow` is a negative pilot on commit scope; its conflict
+and release guidance is untested. `visual-explainer` is a one-run-per-condition
+pilot.
 
 Trigger work is complete. The proxy and live selector passes are recorded,
 including the re-run after the `documentation` edit and the RFC retest. The

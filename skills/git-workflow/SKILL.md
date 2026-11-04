@@ -18,20 +18,18 @@ Git is the safety net. Commits are save points, branches are sandboxes, and
 history is documentation. The commit discipline matters more than the branching
 model.
 
-This skill owns commit mechanics: staging, message, hooks, and pre-commit checks.
-Other skills point here rather than restating them.
+This skill owns commit mechanics (staging, message, hooks, pre-commit checks),
+conflict resolution, branch finishing, and releases. Other skills point here
+rather than restating them.
 
 ## Process
 
 ### 1. Detect the workspace
 
-Before creating anything, determine whether you are in a normal checkout, a
-linked worktree, or a submodule. Prefer the platform's native isolation tool.
-Fall back to `git worktree` only when no native tool exists.
-
-If the worktree directory is project-local, verify it is ignored before creating
-it. Ask before adding isolation the user did not request. If isolation is blocked
-by the sandbox, work in place and say so.
+Before creating anything, check the workspace state. The harness or agent file
+defines how to isolate a stream and whether to create a worktree; use that
+mechanism, and ask before adding isolation the user did not request. If
+isolation is blocked, work in place and say so.
 
 ### 2. Verify a clean baseline
 
@@ -71,12 +69,13 @@ green slice rather than accumulating a large uncommitted tree.
 
 ### 5. Work in parallel streams
 
-Use one worktree per independent stream so agents do not switch branches under
-each other. Each worktree gets its own branch and its own baseline test run.
+Use the harness's isolation mechanism for independent streams so agents do not
+switch branches under each other. Each stream gets its own branch and its own
+baseline test run.
 
-Clean up only worktrees you created. If removal is refused because uncommitted
-files exist, show the files and ask what to do; never force-remove on your own
-initiative.
+Clean up only the workspaces you created. If cleanup is refused because
+uncommitted files exist, show the files and ask what to do; never force-remove on
+your own initiative.
 
 ### 6. Handle conflicts and rejected pushes
 
@@ -88,15 +87,14 @@ rather than forcing.
 ### 7. Finish the branch
 
 1. Run the full suite on the tree you are about to integrate.
-2. Detect whether the workspace is a normal checkout, a named-branch worktree, or
-   a detached HEAD.
+2. Detect the workspace state: normal checkout, named branch, or detached HEAD.
 3. Present the integration choices: merge locally, push and open a pull request,
    or keep the branch as-is. Let the human choose. The agent file defines whether
    pushing or opening a pull request is allowed.
 4. If merging, verify the merged result is green before deleting anything.
-5. Keep the worktree while a pull request is under review.
-6. Delete the branch and remove the worktree only after a green merge, and only
-   for workspaces you own.
+5. Keep the workspace while a pull request is under review.
+6. Delete the branch and clean up the workspace only after a green merge, and
+   only for workspaces you own.
 
 Discard work only when the human explicitly asks. Ask them to type
 `discard <branch-name>` exactly, and accept only that string; never infer consent

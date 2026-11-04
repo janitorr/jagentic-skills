@@ -1,7 +1,9 @@
 # git-workflow: commit scope under pressure
 
-Status: **pilot, negative**. The control passed when the repo stated its
-convention, and the skill did not split a mixed slice when the repo did not.
+Status: **pilot, negative on commit scope only**. The control passed when the
+repo stated its convention, and the skill did not split a mixed slice when the
+repo did not. Conflict, finishing, and release guidance were not tested and
+remain the reason the skill stays.
 
 ## Question
 
@@ -70,16 +72,19 @@ correction.
 
 The harness provides `worktree_create` and `worktree_remove`, and the repo's
 `AGENTS.md` says workspace policy belongs to the agent file. The skill's
-worktree mechanics in steps 1, 5, and 7 duplicate the harness. Keep only the
-decision rules (when to isolate, clean up only what you created, ask before a
-forced removal), or drop the section.
+worktree mechanics in steps 1, 5, and 7 duplicated the harness.
+
+The skill stays: the user values the commit, conflict, finishing, and release
+guidance, and this pilot did not test any of it beyond commit scope. The worktree
+mechanics were replaced with a pointer to the harness and agent file. The safety
+rules remain: ask before adding isolation, clean up only what you created, and
+never force-remove on your own initiative.
 
 ## Conclusion
 
-No demonstrated behavior in this harness. The one discriminator — a mixed slice
-without a stated convention — was not fixed. The skill is a candidate for
-retirement or a short policy note; more commit-scope reps would not add
-information.
+The commit-scope claim is unproven in this harness. The one discriminator — a
+mixed slice without a stated convention — was not fixed. This is not a verdict on
+the conflict, finishing, or release guidance, which the skill should keep.
 
 ## Limitations
 
@@ -88,8 +93,10 @@ information.
   test; a neutral prompt may behave differently.
 - No remote, so push and PR policy were not exercised.
 - The stated-convention variant gave the control the rule it needed.
+- Merge conflicts, a rejected push, and release/tagging were not tested.
 
 ## Next
 
-Decide: retire the skill, or narrow it to release/versioning and conflict
-resolution and test those instead. Do not rerun this fixture.
+Add a conflict fixture: two branches editing the same function, a rejected push,
+and a release/tag sequence. Test the guidance the skill exists for; do not rerun
+the commit-scope fixture.
