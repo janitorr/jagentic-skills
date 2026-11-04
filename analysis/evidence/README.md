@@ -1,10 +1,10 @@
 # Evidence and evals
 
 Status: **opportunistic**. Targeted tests run when a skill or behavior warrants
-it; there is no standing eval suite. Two skills have partial behavioral evidence;
-one skill has an exploratory format probe; all ten descriptions passed a trigger
-pilot, and the `documentation` description was re-tested after its edit; seven
-skills are still unverified for behavior.
+it; there is no standing eval suite. Three skills have partial behavioral
+evidence; one skill has an exploratory format probe; all ten descriptions passed
+a trigger pilot, and the `documentation` description was re-tested after its
+edit; six skills are still unverified for behavior.
 
 This note is the place to resume. Do not treat the absence of evidence as proof
 that a skill works.
@@ -19,7 +19,8 @@ that a skill works.
 | `documentation` vs `writing-for-agents` | `analysis/evidence/documentation-vs-writing-for-agents.md` plus `documentation-vs-writing-for-agents/headings.txt` | Exploratory n=3 comparison of README and AGENTS.md output; document shape only |
 | All ten descriptions | `analysis/evidence/trigger-tests.md` | Proxy 105/105; live 8/10 generic, 4/4 repo-specific |
 | `documentation` description | `analysis/evidence/trigger-tests.md#re-run-after-the-documentation-description-edit` | 3 proxy reps, 14 prompts: 40/42, then 41/42 after the RFC fix; live 5/5 after |
-| Seven other skills | none for behavior | Unverified behavior |
+| `issue-to-openspec` | `analysis/evidence/issue-to-openspec.md` plus fixture | Pilot, 3 reps per condition; pointer fires, design-quality ceiling, task-shape rule missed |
+| Six other skills | none for behavior | Unverified behavior |
 
 The `spec-review` fixtures are small OpenSpec projects under
 `spec-review/fixtures/`:
@@ -34,6 +35,11 @@ The `vertical-slice-tdd` fixture is a small Python `unittest` repo at
 `vertical-slice-tdd/fixtures/template`, with an OpenSpec change, a documented
 test command, and an `APPROVED` marker. Test outcomes are logged so test-first
 behavior can be scored from disk.
+
+The `issue-to-openspec` fixture is `issue-to-openspec/fixtures/seam`: a small
+Python repo with one single-attempt webhook sender shared by three notifiers. Its
+issue forces a retry seam decision and includes a settled rejection of the
+inline-loop option.
 
 ## What we learned
 
@@ -66,11 +72,21 @@ behavior can be scored from disk.
   the live selector. RFC did not, because the body said "ADR or RFC" and the
   description said only "ADR". Adding the word fixed it: 3/3 proxy and local
   skill live.
+- The `issue-to-openspec` pointer to `deep-module-design` fires 3/3 and leaves a
+  fingerprint: a deletion test, a test-surface argument, and an explicit module
+  responsibility, none of which appeared in the control. It did not improve the
+  design choice or the alternatives analysis, which the control already did well.
+- The same runs found that the skill's "tasks are vertical slices" rule is not
+  followed in either condition: 0/6 runs sliced by behavior. Every task carried a
+  verification step, so the rule is half-enforced and needs a recipe, not another
+  checklist line.
+- One `issue-to-openspec` run created its own `APPROVED` marker. The skill names
+  the marker only through the agent file and never says who may create it.
 
 ## Why there is no standing suite
 
-- Both TDD and spec-review fixtures hit ceilings, so more repetitions on them add
-  cost without information.
+- The TDD, spec-review, and issue-to-openspec fixtures all hit ceilings on
+  outcome quality, so more repetitions on them add cost without information.
 - Synthetic fixtures are only worth running when they can discriminate.
 - Real usage is a better source of misses than a synthetic clean/seeded pair.
 
@@ -103,10 +119,10 @@ Resume when one of these happens:
 ## Known debt
 
 `skill-forge` requires baseline, micro-test, and trigger evidence for each skill.
-Only `spec-review` and `vertical-slice-tdd` have partial behavioral records;
-`documentation` has an exploratory n=1 probe only. The other seven are
-behavior-shaping documents with no observed behavior behind them. That is
-accepted temporary debt, not a completed verification.
+`spec-review`, `vertical-slice-tdd`, and `issue-to-openspec` have partial
+behavioral records; `documentation` has an exploratory probe plus a no-control
+retest. The other six are behavior-shaping documents with no observed behavior
+behind them. That is accepted temporary debt, not a completed verification.
 
 Pending trigger work: the proxy and live selector passes are recorded, including
 the re-run after the `documentation` edit and the RFC retest. The remaining work
@@ -117,6 +133,6 @@ Pending routing-contract test: the five stage skills now emit `routing_status`,
 `owner`, and `requested_action`. `docs/workflow.md` defines the intended
 transitions, but no workflow has been tested against those signals yet.
 
-Pending cross-skill test: `issue-to-openspec` now points at `deep-module-design`
-when a change creates or reshapes a module, interface, or seam. No run has
-verified that the pointer fires or changes the design artifacts.
+Pending cross-skill test: none. The `issue-to-openspec` pointer to
+`deep-module-design` is recorded in `issue-to-openspec.md`: it fires, and its
+artifact effect is vocabulary, not design quality.
