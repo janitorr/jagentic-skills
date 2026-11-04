@@ -1,10 +1,10 @@
 # Evidence and evals
 
 Status: **opportunistic**. Targeted tests run when a skill or behavior warrants
-it; there is no standing eval suite. Four skills have partial behavioral
+it; there is no standing eval suite. Five skills have partial behavioral
 evidence; one skill has an exploratory format probe; all ten descriptions passed
 a trigger pilot, and the `documentation` description was re-tested after its
-edit; five skills are still unverified for behavior.
+edit; four skills are still unverified for behavior.
 
 This note is the place to resume. Do not treat the absence of evidence as proof
 that a skill works.
@@ -27,7 +27,8 @@ in the records below are superseded; verdict, gate, and finding results stand.
 | `documentation` description | `analysis/evidence/trigger-tests.md#re-run-after-the-documentation-description-edit` | 3 proxy reps, 14 prompts: 40/42, then 41/42 after the RFC fix; live 5/5 after |
 | `issue-to-openspec` | `analysis/evidence/issue-to-openspec.md` plus fixture | Pilot, 3 reps per condition; pointer fires, design-quality ceiling; slicing and marker rules retested 3/3; blocked verdict 3/3, gate 1/3 then 3/3; real pipelines 3/3; pass 3/3 |
 | `code-review` | `analysis/evidence/code-review.md` plus fixture | 3 reps per condition; clean → pass 3/3, seeded defect → needs_revision 3/3 |
-| Five other skills | none for behavior | Unverified behavior |
+| `issue-interview` | `analysis/evidence/issue-interview.md` plus fixtures | Pilot plus two retests; final gate 2/2, confidence 12/12 responses, 6 questions per run; template n=1 |
+| Four other skills | none for behavior | Unverified behavior |
 
 The `spec-review` fixtures are small OpenSpec projects under
 `spec-review/fixtures/`:
@@ -54,6 +55,12 @@ The `code-review` fixture is built by
 `main` is the stub, `feature/add-slugify` is the implementation, and `SEED=1`
 narrows the whitespace regex so the suite passes while the spec is violated.
 
+The `issue-interview` fixtures are `issue-interview/fixtures/webhooks`, the
+webhook repo with a local `tracker/issues/` tracker and no issue, and
+`webhooks-template`, the same repo with `bug_report` and `feature_request`
+templates under `.github/ISSUE_TEMPLATE/`. Runs replay
+`issue-interview/script.md`; publishing is a file on disk.
+
 ## What we learned
 
 These are stable findings. Each skill file keeps the method, tables, and
@@ -76,6 +83,24 @@ reproduction steps.
 - **`code-review` separates clean from broken.** A seeded whitespace defect the
   suite passed was found 3/3; clean diffs produced only Optional findings and
   passed 3/3.
+- **The interview gate needs its examples.** A control published a fabricated
+  issue on turn 1 from a vague ask. The first pilot held "Sounds good, go ahead"
+  2/2, but after the confidence rule one of two runs published on the same line.
+  Naming "go ahead" as non-confirming and requiring a yes that names the body
+  held 2/2.
+- **Confidence needs a per-response slot.** Before the rule said "every
+  response", the skill restated confidence on 11/17 turns and dropped it on the
+  soft-yes and publish replies. After the rule, 12/12, including the publish
+  reply.
+- **An unbounded interview needs a cap.** One pilot run asked 9 questions; six
+  was enough in the retests. The cap is eight, with "draft when the next answer
+  would not change the body" as the semantic stop.
+- **A question turn is not a stage verdict.** Two runs emitted `blocked` after
+  asking a question until the skill said a question turn is not the end of the
+  stage.
+- **Templates are found, not followed completely.** Both conditions found the
+  repo's `bug_report` template. Only the skill added the acceptance criteria and
+  out-of-scope sections the template omitted.
 - **The clean `spec-review` fixture was not clean.** It carried a seeded
   duplicate-requirement defect and had no app shell or schema. The old
   `5/5 ready` result is withdrawn; see `spec-review.md`.
@@ -124,26 +149,32 @@ Resume when one of these happens:
 ## Known debt
 
 `skill-forge` requires baseline, micro-test, and trigger evidence for each skill.
-`spec-review`, `vertical-slice-tdd`, `issue-to-openspec`, and `code-review` have
-partial behavioral records; `documentation` has an exploratory probe plus a
-no-control retest. The other five are behavior-shaping documents with no observed
-behavior behind them. That is accepted temporary debt, not a completed
-verification.
+`spec-review`, `vertical-slice-tdd`, `issue-to-openspec`, `code-review`, and
+`issue-interview` have partial behavioral records; `documentation` has an
+exploratory probe plus a no-control retest. The other four are behavior-shaping
+documents with no observed behavior behind them. That is accepted temporary debt,
+not a completed verification. `issue-interview` is a pilot plus two retests: the
+final gate and confidence line held 2/2, but the control was not rerun against
+the final wording.
 
-Pending trigger work: the proxy and live selector passes are recorded, including
-the re-run after the `documentation` edit and the RFC retest. The remaining work
-is to check that the project-skill precedence rule wins when a generic and a
-project skill both apply.
+Trigger work is complete. The proxy and live selector passes are recorded,
+including the re-run after the `documentation` edit and the RFC retest. The
+earlier "project-skill precedence" item was misframed: same-name collisions are
+resolved by the loader, so that is harness behavior, not a skill. The two generic
+prompts that loaded global skills named no project artifact, and repo-specific
+phrasing loaded the local skill 4/4. No trigger eval is pending.
 
-Pending verdict-contract test: four stages are recorded. `issue-to-openspec`
-reported `blocked` 3/3 on the blocked fixture; the gate held 1/3, then 3/3 after
-the precondition fix; `pass` 3/3 with the real pipeline. `spec-review` reported
-`needs_revision` 3/3 on seeded and `pass` 4/9 on the repaired clean fixture.
-`vertical-slice-tdd` reported `blocked` 3/3 without the marker and `pass` 3/3
-with it. `code-review` reported `pass` 3/3 on a clean diff and `needs_revision`
-3/3 on a seeded defect. `issue-interview` has no record, and the multi-stage loop
-in `docs/workflow.md` remains untested. Owner-based routing tests are retired
-with the contract.
+Pending verdict-contract test: four stages are recorded and one is a pilot.
+`issue-to-openspec` reported `blocked` 3/3 on the blocked fixture; the gate held
+1/3, then 3/3 after the precondition fix; `pass` 3/3 with the real pipeline.
+`spec-review` reported `needs_revision` 3/3 on seeded and `pass` 4/9 on the
+repaired clean fixture. `vertical-slice-tdd` reported `blocked` 3/3 without the
+marker and `pass` 3/3 with it. `code-review` reported `pass` 3/3 on a clean diff
+and `needs_revision` 3/3 on a seeded defect. `issue-interview` held the gate and reported `pass` 2/2 in the final retest;
+the control published on turn 1 in the pilot. Its `blocked` result came from a
+deferred design decision, not the seeded acceptance gap. The multi-stage loop in
+`docs/workflow.md` remains untested. Owner-based routing tests are retired with
+the contract.
 
 Pending cross-skill test: none. The `issue-to-openspec` pointer to
 `deep-module-design` is recorded in `issue-to-openspec.md`: it fires, and its
