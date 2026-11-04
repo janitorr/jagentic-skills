@@ -11,7 +11,7 @@ test the body or the live runtime selector.
 A later re-run covers the `documentation` description edit; see
 [Re-run after the documentation description edit](#re-run-after-the-documentation-description-edit).
 
-## Method
+## Pilot method
 
 - Ten current descriptions, no skill bodies.
 - A fresh context chose one skill ID or `NONE` for each prompt, applying the
@@ -19,7 +19,7 @@ A later re-run covers the `documentation` description edit; see
 - 30 should-fire prompts, three per skill, and 5 `NONE` prompts.
 - Three repetitions with the same prompt set.
 
-## Results
+## Pilot results
 
 | Measure | Result |
 |---|---|
@@ -39,7 +39,7 @@ Adjacent pairs stayed separate:
 - skill authoring vs documentation: prompts 22-24 vs 28-30
 - git workflow vs code review: prompts 25-27 vs 13-15
 
-## Live selector pass
+### Pilot live selector pass
 
 The descriptions-only run is a proxy. The live pass delegated prompts to fresh
 agents without naming a skill or pointing at a file.
@@ -69,47 +69,7 @@ Harness lesson: the first live pass let agents perform the task. Two of them
 edited the repo, and those edits were reverted. Trigger tests must be read-only:
 load the skill, report the ID, change nothing.
 
-## Prompt set
-
-| # | Prompt | Expected | Reps |
-|---|---|---|---|
-| 1 | This idea is vague. Interview me about what I actually want. | issue-interview | 3/3 |
-| 2 | The issue has no acceptance criteria. Help me make it ready. | issue-interview | 3/3 |
-| 3 | Grill me on this plan before I file it. | issue-interview | 3/3 |
-| 4 | Turn issue #42 into an OpenSpec change. | issue-to-openspec | 3/3 |
-| 5 | Write the spec for this issue. | issue-to-openspec | 3/3 |
-| 6 | Propose this change. | issue-to-openspec | 3/3 |
-| 7 | Review this proposal for gaps. | spec-review | 3/3 |
-| 8 | Is this OpenSpec change ready to implement? | spec-review | 3/3 |
-| 9 | Strict validation failed on this change. What is wrong? | spec-review | 3/3 |
-| 10 | Start coding this approved change. | vertical-slice-tdd | 3/3 |
-| 11 | Implement the tasks in add-slugify red-green-refactor. | vertical-slice-tdd | 3/3 |
-| 12 | Apply this OpenSpec change. | vertical-slice-tdd | 3/3 |
-| 13 | Review my PR. | code-review | 3/3 |
-| 14 | Review since main. | code-review | 3/3 |
-| 15 | Is this ready to merge? | code-review | 3/3 |
-| 16 | Show me how the auth flow works. | visual-explainer | 3/3 |
-| 17 | Diagram this service boundary. | visual-explainer | 3/3 |
-| 18 | Walk me through the data flow visually. | visual-explainer | 3/3 |
-| 19 | Should this be one module or two? | deep-module-design | 3/3 |
-| 20 | Where should the seam go? | deep-module-design | 3/3 |
-| 21 | How do I make this more testable? | deep-module-design | 3/3 |
-| 22 | This skill never fires when I need it. | skill-forge | 3/3 |
-| 23 | Create a skill for reviewing migrations. | skill-forge | 3/3 |
-| 24 | The agent ignores this rule under pressure. | skill-forge | 3/3 |
-| 25 | What commit message should I use? | git-workflow | 3/3 |
-| 26 | Rebase this branch onto main. | git-workflow | 3/3 |
-| 27 | My push was rejected. What now? | git-workflow | 3/3 |
-| 28 | Write an ADR for this decision. | documentation | 3/3 |
-| 29 | Update the README. | documentation | 3/3 |
-| 30 | AGENTS.md is stale and duplicates the README. | documentation | 3/3 |
-| 31 | What time is it? | NONE | 3/3 |
-| 32 | Rename this variable. | NONE | 3/3 |
-| 33 | Format this JSON. | NONE | 3/3 |
-| 34 | Explain this regex. | NONE | 3/3 |
-| 35 | Summarize this PR. | NONE | 3/3 |
-
-## Limitations
+## Pilot limits
 
 - The test used descriptions only; it did not exercise the live selector or load
   a skill body.
@@ -208,7 +168,7 @@ regression from the RFC edit.
   description did not change, so treat it as sampling noise rather than a
   regression, but it is a false positive in a `NONE` prompt.
 
-### Limitations
+### Re-run limits
 
 - The re-run uses three proxy reps and one live rep per prompt, one model family.
 - Live prompts ran in fresh agents with a repository path, not in an interactive
@@ -218,3 +178,43 @@ regression from the RFC edit.
 - The RFC retest reused the same fourteen prompts, so only one wording change is
   isolated; the release-notes split shows n=3 is still noisy at adjacent
   boundaries.
+
+## Appendix: prompt set
+
+| # | Prompt | Expected | Reps |
+|---|---|---|---|
+| 1 | This idea is vague. Interview me about what I actually want. | issue-interview | 3/3 |
+| 2 | The issue has no acceptance criteria. Help me make it ready. | issue-interview | 3/3 |
+| 3 | Grill me on this plan before I file it. | issue-interview | 3/3 |
+| 4 | Turn issue #42 into an OpenSpec change. | issue-to-openspec | 3/3 |
+| 5 | Write the spec for this issue. | issue-to-openspec | 3/3 |
+| 6 | Propose this change. | issue-to-openspec | 3/3 |
+| 7 | Review this proposal for gaps. | spec-review | 3/3 |
+| 8 | Is this OpenSpec change ready to implement? | spec-review | 3/3 |
+| 9 | Strict validation failed on this change. What is wrong? | spec-review | 3/3 |
+| 10 | Start coding this approved change. | vertical-slice-tdd | 3/3 |
+| 11 | Implement the tasks in add-slugify red-green-refactor. | vertical-slice-tdd | 3/3 |
+| 12 | Apply this OpenSpec change. | vertical-slice-tdd | 3/3 |
+| 13 | Review my PR. | code-review | 3/3 |
+| 14 | Review since main. | code-review | 3/3 |
+| 15 | Is this ready to merge? | code-review | 3/3 |
+| 16 | Show me how the auth flow works. | visual-explainer | 3/3 |
+| 17 | Diagram this service boundary. | visual-explainer | 3/3 |
+| 18 | Walk me through the data flow visually. | visual-explainer | 3/3 |
+| 19 | Should this be one module or two? | deep-module-design | 3/3 |
+| 20 | Where should the seam go? | deep-module-design | 3/3 |
+| 21 | How do I make this more testable? | deep-module-design | 3/3 |
+| 22 | This skill never fires when I need it. | skill-forge | 3/3 |
+| 23 | Create a skill for reviewing migrations. | skill-forge | 3/3 |
+| 24 | The agent ignores this rule under pressure. | skill-forge | 3/3 |
+| 25 | What commit message should I use? | git-workflow | 3/3 |
+| 26 | Rebase this branch onto main. | git-workflow | 3/3 |
+| 27 | My push was rejected. What now? | git-workflow | 3/3 |
+| 28 | Write an ADR for this decision. | documentation | 3/3 |
+| 29 | Update the README. | documentation | 3/3 |
+| 30 | AGENTS.md is stale and duplicates the README. | documentation | 3/3 |
+| 31 | What time is it? | NONE | 3/3 |
+| 32 | Rename this variable. | NONE | 3/3 |
+| 33 | Format this JSON. | NONE | 3/3 |
+| 34 | Explain this regex. | NONE | 3/3 |
+| 35 | Summarize this PR. | NONE | 3/3 |

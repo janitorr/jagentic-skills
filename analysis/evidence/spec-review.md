@@ -1,11 +1,18 @@
-# spec-review: seeded, clean, and verdicts
+# spec-review: recall, calibration, and verdicts
 
-Status: **partial**. Pilot plus five repetitions per condition, then a verdict
-test and a clean-fixture repair. Review recall still shows a ceiling.
+Status: **partial**. A pilot, a five-repetition run, and a later verdict test
+with a clean-fixture repair. Review recall still shows a ceiling.
 
 Current result: seeded `needs_revision` 3/3; clean `pass` 4/9 across repaired
-cohorts; the fixture defects are fixed. The old clean `5/5 ready` result is
-withdrawn.
+cohorts. The old clean `5/5 ready` result is withdrawn: the clean fixture was not
+clean.
+
+## Question
+
+Does `spec-review` find defects a strong control misses, avoid false blocking on
+a clean change, and produce a usable verdict? The earlier pilots tested recall
+and calibration; the later test exercised the verdict and repaired the clean
+fixture.
 
 ## Fixtures
 
@@ -14,15 +21,16 @@ projects with a `task-search` capability and an `add-task-search` change.
 
 Seeded defects:
 
-- A requirement (`Search stays fast`) with no scenario, so strict validation
+- D1: a requirement (`Search stays fast`) with no scenario, so strict validation
   fails.
-- The issue's authentication and per-user scoping acceptance criterion is absent
-  from the change artifacts.
-- A load-bearing design assumption ("the platform already added a GIN trigram
+- D2: the issue's authentication and per-user scoping criterion is absent from
+  the artifacts.
+- D3: a load-bearing design assumption ("the platform already added a GIN trigram
   index") is unverified and contradicted by a task that adds the index.
-- Tasks are batched by layer, not vertical slices.
-- The delta duplicates an existing capability requirement while declaring the
-  capability new.
+- D4: tasks are batched by layer, not vertical slices.
+- D5: the delta duplicates an existing requirement while declaring the capability
+  new.
+- D6: the design's fuzzy matching contradicts the spec's "contains".
 
 The clean fixture resolves all six and passes strict validation.
 
@@ -36,197 +44,110 @@ openspec validate add-task-search --strict
 # Change 'add-task-search' is valid
 ```
 
-## Conditions
+## Method
 
 Both conditions were fresh `general` subagents with no prior conversation.
 
 - **Control:** "Use your own judgment only. Do not load, read, or follow any
   skill files."
-- **Skill:** load `spec-review` via the skill tool, or read
-  `.opencode/skills/spec-review/SKILL.md` if the tool is unavailable, then review
-  the same fixture.
+- **Skill:** load `spec-review`, then review the same fixture.
 
-Both were given the same files, the same commands, and the same instruction not
-to edit.
+Both were given the same files, commands, and the instruction not to edit.
+
+The pilot used one run per condition. The five-repetition run used a compact
+output contract scored against D1–D6. The verdict test used three runs per
+fixture, treatment only, after the contract change; a no-skill control cannot
+emit a skill-defined verdict.
 
 ## Results
 
-| Check | Control / seeded | Skill / seeded |
+### Seeded review
+
+Pilot, full reports:
+
+| Check | Control | Skill |
 |---|---|---|
 | Strict validation failure found | Yes | Yes |
 | Missing auth / user-scoping found | Yes | Yes |
 | Index assumption contradicted | Yes | Yes, in a falsification table |
 | Horizontal tasks found | Yes | Yes |
 | Duplicate requirement / capability found | Yes | Yes |
-| Unverified assumption caps the verdict | Not explicitly | Yes: load-bearing assumption unverified |
+| Unverified assumption caps the verdict | Not explicitly | Yes |
 | Severity mapping stated | Yes | Yes |
-| Verdict | needs revision | needs revision |
-| Next stage named | No | Yes: `vertical-slice-tdd` |
-| Approval marker handled | No | Yes: notes none is defined, does not invent one |
+| Approval marker invented | No | No |
 
-| Check | Control / clean | Skill / clean |
-|---|---|---|
-| Blocking findings invented | No | No |
-| Findings | 1 Optional, 1 FYI | 4 Optional, 1 FYI |
-| Verdict | ready for human review | ready for spec approval |
-| Next stage named | No | Yes: `vertical-slice-tdd` |
-| Approval marker handled | No | Yes: notes none is defined |
-
-**Superseded:** the clean fixture later proved not clean; see the follow-up
-section. The clean verdict in this table is historical.
-
-## Five-repetition run
-
-Five fresh runs per condition, scored against seeded defect IDs D1–D6 and a
-clean-fixture false-positive check. The earlier pilot used full reports; this run
-used a compact output contract to make scoring consistent.
-
-Seeded defects:
-
-- D1: requirement with no scenario / strict validation failure
-- D2: missing auth or user-scoping requirement
-- D3: unverified index assumption
-- D4: horizontal layer-batched tasks
-- D5: duplicate requirement or wrong capability classification
-- D6: fuzzy-vs-contains semantics contradiction
+Five repetitions:
 
 | Condition | D1 | D2 | D3 | D4 | D5 | D6 | Verdict | False blocking |
 |---|---|---|---|---|---|---|---|---|
-| Control (5 runs) | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 | needs revision 5/5 | 0 |
-| Skill (5 runs) | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 | needs revision 5/5 | 0 |
+| Control (5) | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 | needs revision 5/5 | 0 |
+| Skill (5) | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 | needs revision 5/5 | 0 |
 
-| Condition | Clean verdict | False blocking | Next stage named |
-|---|---|---|---|
-| Control (5 runs) | ready for human review 5/5 | 0 | 5/5 |
-| Skill (5 runs) | ready for spec approval 5/5 | 0 | 5/5 |
+**Recall has a ceiling.** The control found every seeded defect. The skill's
+observable addition was a falsification table that made the unverified index
+assumption load-bearing, explicit severity mapping, correct handling of an
+undefined marker, and more edge-case coverage (empty term, case, fuzzy-vs-
+substring, API contract, the existing query).
 
-One skill run returned `APPROVAL_MARKER: missing` on the clean fixture while the
-other four returned `not-applicable`. The fixture defines no marker, so the
-correct behavior is to ask; the variance is in how that is reported, not in
-whether a marker was invented. No run invented a label or comment.
+### Clean review
 
-## Interpretation
+Pilot: the control reached "ready for human review" and the skill "ready for spec
+approval"; neither invented a blocking finding. Five repetitions returned ready
+5/5 in both conditions.
 
+**Superseded.** The clean fixture was not clean; see the verdict section below.
+These clean verdicts are historical.
 
-The pilot does not show that the skill finds defects the control misses. The
-control found the core seeded defects, and in the five-repetition run both
-conditions found all six defects and reached the same verdict. The fixture is too
-easy to discriminate on recall alone.
+### Verdict and fixture repair
 
-What the skill added, observed in the full-report pilot:
+The later test checked the verdict, not the retired owner fields. It ran three
+fresh reviews per fixture, read-only, with the environment the skill expects
+(local tracker, `issue.md`, stdout destination, no approval marker, `main`).
 
-- A falsification table that made the unverified index assumption load-bearing
-  and forced the verdict cap.
-- Explicit severity mapping and a stage-qualified verdict.
-- Correct handling of an undefined approval marker, with no invented label.
-- More edge-case coverage on the seeded fixture: empty term, case sensitivity,
-  fuzzy-vs-substring semantics, API contract, and the existing query.
+Seeded: `needs_revision` 3/3, all with artifact causes.
 
-What the five-repetition run did not show:
+Clean, across nine self-contained runs after repairs:
 
-- Any recall advantage over a plain senior-engineer review.
-- Any false-positive advantage on the clean fixture; both conditions were clean.
-- Reliable discrimination, because both conditions hit the ceiling.
-
-What needs a harder fixture or more reps:
-
-- A defect a competent reviewer would plausibly miss without the skill, such as a
-  requirement that contradicts an existing spec subtly, or an acceptance
-  criterion hidden in an issue comment.
-- Trigger behavior: whether the description fires on a review request and stays
-  quiet on adjacent tasks.
-- Five repetitions on the harder fixture, with every match read manually.
-
-## Earlier follow-up
-
-1. Add a subtler seeded defect and a second clean variant.
-2. Run five repetitions on the harder fixture, for control and skill.
-3. Add a trigger test with should-fire and should-not-fire prompts.
-4. Only then treat `spec-review` as verified.
-
-## Follow-up: routing and the clean-fixture repair
-
-This run exercised the contract in use at the time. It checked whether
-`spec-review` emitted `routing_status`, `owner`, and `requested_action` with
-legal values and the right owner. Those fields were later retired; the verdict
-results below remain.
-
-### Method
-
-Treatment only: the fields are skill-defined, so a no-skill control cannot emit
-them. Three fresh `general` subagents on the seeded fixture and three on the
-clean fixture per cohort, read-only, each in its own copy with a git baseline.
-The prompt supplied the environment the skill expects (local-file tracker,
-`issue.md`, stdout review destination, no approval marker, `main`, no push).
-
-### Results
-
-Seeded, final cohort:
-
-| Check | Result |
+| Verdict | Runs |
 |---|---|
-| Emitted all three fields | 3/3 |
-| Legal enum values | 3/3 |
-| Verdict | `needs_revision` 3/3 |
-| Owner | `spec-writer` 3/3 |
-| Action | `post findings as review comments and request changes` 3/3 |
+| `pass` | 4/9 |
+| `needs_revision`, artifact cause | 4/9 |
+| `needs_revision`, issue-scope cause | 1/9 |
 
-Clean fixture, final cohort (c25–c27):
+The verdict block was emitted 9/9. The `pass` rate is not yet stable, but the
+most common blocking findings were fixture defects, now fixed. One persistent
+dissent is a judgment call: the API-only change defers the issue's user-visible
+search box.
 
-| Check | Result |
-|---|---|
-| Emitted all three fields | 3/3 |
-| Verdict | `ready` 1/3, `needs_revision` 2/3 |
-| Owner when ready | `human` 1/3 |
-| Owner when blocking | `issue-author` 1/3, `spec-writer` 1/3 |
-
-Across the self-contained clean cohorts (c19–c27, nine runs):
-`ready` / `human` 4/9, `needs_revision` / `spec-writer` 4/9,
-`needs_revision` / `issue-author` 1/9. The contract was emitted 9/9.
-
-### The clean fixture was not clean
-
-Earlier sections record clean runs returning `ready 5/5` with `0 false
-blocking`. That result is not reproducible with an unconstrained full review.
-The clean fixture still contained seeded defect D5: its delta added a requirement
-identical to the baseline's while the proposal declared the capability new. Full
-reviews also found that the fixture had no app shell, no schema, no request
-contract, and a 627-character requirement that failed strict validation after
-archive.
-
-Repair work, in order:
+**The clean fixture was not clean.** It still carried D5: its delta added a
+requirement identical to the baseline while the proposal declared the capability
+new. Full reviews also found no app shell, no schema, no request contract, and a
+627-character requirement that failed strict validation after archive. Repair
+work:
 
 - re-authored the change with `openspec new change` and `openspec instructions`;
 - added an app shell that parses the query string and maps a thrown 401;
-- added `schema/tasks.sql` and made the row shape match the code;
+- added `schema/tasks.sql` and matched the row shape;
 - added `followup-search-ui.md` so the deferred UI is tracked;
-- split the oversized requirement into four requirements;
+- split the oversized requirement into four;
 - fixed the `user_id` / `userId` mismatch and the auth-before-term scoping;
 - fixed the scoping clauses after the final cohort (not rerun).
 
-The earlier clean result should be treated as superseded. The clean arm's
-ceiling claim in this record is withdrawn until it is re-baselined.
+The earlier `5/5 ready, 0 false blocking` claim is withdrawn. It was measured
+against a fixture that still contained a seeded defect.
 
-### Interpretation
+## Limits
 
-- Emission and enum use are reliable: 12/12 across the two fixtures.
-- Owner mapping behaved correctly in every branch observed: `spec-writer` for
-  artifact defects, `human` for ready, `issue-author` when the issue scope was
-  the blocker.
-- The remaining disagreement is a judgment about API-only delivery versus the
-  issue's user-visible outcome, not a contract failure.
-- `ready` is not yet stable on the clean fixture (4/9), but the most common
-  blocking findings were fixture defects that are now fixed.
+- One model family; one reader scoring manually.
+- The pilot used one run per condition; the five-repetition run used a compact
+  output contract that may suppress findings outside the scored list.
+- The verdict cohorts used different fixture revisions, so they are not one
+  fixed treatment.
+- Reviewers disagree on whether the deferred UI is blocking.
 
-### Limits
+## Reproduce
 
-- Treatment only; no control.
-- One model family, three reps per cohort.
-- Cohorts used different fixture revisions, so this is not one fixed treatment.
-- Reviewers disagree on whether the untracked UI follow-up is blocking.
-
-## Next
-
-`spec-review` is the second stage with a routing record, after
-`issue-to-openspec`. The other stage skills and the multi-stage loop in
-`docs/workflow.md` are still untested.
+Run a fresh agent in a copy of either fixture with the prompts under Method. For
+the seeded fixture, strict validation must fail before the review; for the clean
+fixture it must pass. Score D1–D6, false blocking, and the verdict. The seeded
+defects are listed above and in the fixture's `issue.md`.

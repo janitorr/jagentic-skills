@@ -1,19 +1,22 @@
 # issue-to-openspec: pointer, gate, and pipeline
 
-Status: **partial**, several three-run pilots. Verifies the `deep-module-design`
-pointer, task slicing, the approval-marker rule, the blocked path, and the real
-OpenSpec pipeline. Design quality still shows a ceiling.
+Status: **partial**. Four cohorts of three runs each. Verifies the
+`deep-module-design` pointer, task slicing, the approval-marker rule, the blocked
+path, and the real OpenSpec pipeline. Design quality still shows a ceiling.
 
 Current result: pointer 3/3; tasks sliced by behavior 3/3; approval marker
 created by the spec writer 0/3; blocked 3/3; `pass` through the real pipeline
-3/3. The contract is `verdict` + `reason`; owner-based results below are
-historical.
+3/3. The contract is `verdict` + `reason`; owner fields below are historical.
 
 ## Question
 
-`issue-to-openspec` tells the spec writer to use `deep-module-design` when a
-change creates or reshapes a module, interface, or seam. Does the pointer fire,
-and does it change the design and task artifacts?
+The skill tells the spec writer to use `deep-module-design` when a change
+creates or reshapes a module, interface, or seam. It also claims tasks are
+vertical slices and that a missing issue section blocks the stage.
+
+Does the pointer fire and change the artifacts? Does the skill slice tasks? Does
+it stop when the issue is incomplete? Does it use the real OpenSpec pipeline when
+that pipeline is available?
 
 ## Fixture
 
@@ -24,10 +27,14 @@ notifiers share it.
 The issue asks for up to three attempts with exponential backoff, retry on
 network errors and 5xx only, no retry on 4xx, and unchanged callers. It includes
 a settled constraint: an inline retry loop in `WebhookSender.send` was rejected
-because each sender subclass would reimplement it.
+because each sender subclass would reimplement it. That forces a seam decision:
+retry inside the sender, in a wrapper, or in each caller. It also tempts a
+layer-by-layer task list.
 
-This forces a seam decision: retry inside the sender, in a wrapper, or in each
-caller. It also tempts a layer-by-layer task list.
+`issue-to-openspec/fixtures/seam-blocked` is the same repo with two defects: the
+**Acceptance criteria** section is deleted, and **In scope** includes
+"Partner-level retry count" while **Out of scope** excludes "Partner-facing retry
+configuration".
 
 Baseline tests pass before each run:
 
@@ -36,21 +43,22 @@ cd analysis/evidence/issue-to-openspec/fixtures/seam
 python3 -m unittest discover -s tests -v
 ```
 
-## Conditions
+## Method
 
-Six fresh `general` subagents, each in its own copy of the fixture with a git
-baseline commit. Each was told to produce the OpenSpec change artifacts, not to
-implement, not to edit `src/` or `tests/`, and not to commit. Each got explicit
-authorization to propose, so the skill's approval gate was satisfied.
+Each run used a fresh `general` subagent in its own copy with a git baseline,
+read `AGENTS.md` and `issue.md`, had explicit authorization to propose, and was
+told not to implement, not to edit `src/` or `tests/`, and not to commit.
 
-- **Control:** "Use your own judgment only. Do not load, read, or follow any
-  skill files."
-- **Skill:** load `issue-to-openspec` with the skill tool and follow it.
-
-Both were told that `openspec-explore` and `openspec-propose` are not installed
-and to do that work themselves. Both reported the skill IDs they loaded.
+| Cohort | Runs | Condition |
+|---|---|---|
+| Pointer baseline | 3 control + 3 skill | Control: own judgment, no skill files. Skill: load `issue-to-openspec`. Workflow skills absent. |
+| Slicing and marker retest | 3 skill | Same fixture, after the two skill edits |
+| Blocked gate | 3 control + 3 skill | `seam-blocked`; then 3 skill after the gate patch |
+| Real pipeline | 3 skill | Workflow skills installed; agents told to use them |
 
 ## Results
+
+### Pointer and artifact baseline
 
 | Check | Control (n=3) | Skill (n=3) |
 |---|---|---|
@@ -66,60 +74,27 @@ and to do that work themselves. Both reported the skill IDs they loaded.
 | Strict validation passes | 3/3 | 3/3 |
 | Spec writer created an approval marker | 0/3 | 1/3 |
 
-### What the pointer changes
+**The pointer changes vocabulary, not the decision.** All three skill runs gave a
+deletion test, a test-surface argument, and an explicit module responsibility;
+no control run did any of the three. But the control chose the wrapper 3/3, and
+one skill run chose a template method inside `WebhookSender` with a one-attempt
+hook. That run argued the hook avoids the original subclass objection; it did not
+hide the conflict, but it changed the existing single-attempt contract.
 
-All three skill runs used the `deep-module-design` framing that the controls did
-not:
+**The task rule failed in both conditions.** Every run grouped tasks by layer:
+error types, then retry loop, then integration. Every task carried a verification
+step, so the second half of the rule held and the first half did not.
 
-- a deletion test: what disappears if the wrapper is removed, and what
-  reappears at each call site;
-- a test-surface argument: callers and tests cross the same `send` interface;
-- an explicit module-responsibility sentence separating transport from retry
-  policy.
+**One gate failure.** One skill run created
+`openspec/changes/retry-webhook-deliveries/APPROVED` itself. The fixture
+`AGENTS.md` names the marker and the skill did not say who may create it. This is
+one observation in a fixture that names the marker; the rule was fixed rather
+than scored as a rate.
 
-No control run made any of these three moves. That is the measurable effect of
-the pointer.
+### Slicing and marker rules
 
-### What it does not change
-
-The wrapper design, the interface statement, the alternatives table, and the
-risk analysis are present in both conditions. On design choice the control was
-at least as consistent: 3/3 wrappers, while one skill run (t3) chose a template
-method inside `WebhookSender`, the option the issue says review rejected. t3
-argued explicitly that a subclass hook avoids the original objection, so it did
-not hide the conflict, but it made `send` retry by default and required changing
-the existing single-attempt test fixture.
-
-The skill's own verification item "Tasks are vertical slices with acceptance and
-verification, not a layer-by-layer checklist" failed in **both** conditions.
-Every run grouped tasks by implementation layer: error types, then retry loop,
-then integration. Every task carried a verification step, so the second half of
-the rule held and the first half did not.
-
-### Gate finding
-
-t1 created `openspec/changes/retry-webhook-deliveries/APPROVED` on its own. The
-fixture's `AGENTS.md` names the marker, and the skill does not say who may create
-it. A spec writer approving its own spec is the same gate failure that the
-`vertical-slice-tdd` experiment measured in control runs. This is one observation
-in a fixture that names the marker, so treat it as a defect to fix rather than a
-rate.
-
-## Verdict
-
-- The pointer fires and leaves a recognizable artifact fingerprint.
-- It does not demonstrably improve the chosen design or the alternatives
-  analysis against a strong control.
-- The task-shape rule was not followed by the skill's own runs; the retest below
-  shows a recipe fixes it on this fixture.
-- The approval-marker rule had no owner; the retest below shows the explicit
-  line holds.
-
-## Follow-up: slicing and marker rules
-
-Two lines were added to the skill: a slicing recipe in step 4 and an explicit
-"never create the approval marker" in the interaction contract. Three fresh
-treatment runs on the same fixture, same prompt, no control.
+Two lines were added: a worked slicing recipe in step 4, and an explicit "never
+create the approval marker". Three fresh skill runs, same fixture, no control.
 
 | Check | Before (n=3) | After (n=3) |
 |---|---|---|
@@ -128,207 +103,92 @@ treatment runs on the same fixture, same prompt, no control.
 | `deep-module-design` loaded | 3/3 | 3/3 |
 | Strict validation passes | 3/3 | 3/3 |
 
-All three runs now name task sections after behavior ("Transient 5xx failure
+All three retest runs named task sections after behavior ("Transient 5xx failure
 recovers", "Retries exhausted reports failure", "Permanent 4xx rejection is
-immediate") instead of layers. One run (t6) kept a pure classification section
-before the behavior sections, so the recipe is followed but not mechanically.
+immediate"). One kept a pure classification section before the behavior sections,
+so the recipe is followed with judgment, not mechanically.
 
-Limits: the retest is treatment-only, changes two rules at once, and cannot
-separate them. Before/after is not a controlled comparison, and n=3 still fits
-sampling noise. The fixture, however, discriminated 0/6 before and 3/3 after on
-task shape, which is the strongest signal in this record.
+### Blocked gate
 
-## Follow-up: blocked gate
-
-The pilot above used an issue with every template section, so it never exercised
-the `blocked` path. This test uses `issue-to-openspec/fixtures/seam-blocked`,
-which is the same fixture with two defects:
-
-- the **Acceptance criteria** section is deleted;
-- **In scope** says "Partner-level retry count, so each partner can choose three
-  or five attempts", while **Out of scope** says "Partner-facing retry
-  configuration".
-
-Both call for a question, not an assumption. The skill says a missing section
-means amend the issue or return to `issue-interview`, and never guess.
-
-### Method
-
-Six fresh `general` subagents, three per condition, each in its own copy with a
-git baseline. Every prompt included "This is my explicit request to proceed and
-propose the change", so authorization was not the blocker. Treatment loaded
-`issue-to-openspec`; control was told to use its own judgment and load no skill
-files.
-
-### Results
+Every prompt included "This is my explicit request to proceed and propose the
+change", so authorization was not the blocker. Before the patch:
 
 | Check | Control (n=3) | Skill (n=3) |
 |---|---|---|
-| Emitted a `routing_status` / `owner` / `requested_action` block | 0/3 | **3/3** |
-| Correctly blocked (`blocked` + `issue-author`, no artifacts) | 0/3 | **1/3** |
+| Emitted the routing block in use at the time | 0/3 | **3/3** |
+| Correctly blocked, no artifacts | 0/3 | **1/3** |
 | Created change artifacts anyway | 3/3 | 2/3 |
 | Named the missing Acceptance section | 0/3 | 2/3 |
 | Raised the scope contradiction as a question | 0/3 | 1/3 |
 
-The one correct run (t2) did everything the skill asks: listed the absent
-section, quoted the contradiction, drafted acceptance criteria for the author to
-confirm rather than adopting them, wrote no artifacts, and ended with
-`blocked / issue-author / post questions on the issue`.
+The one correct run listed the absent section, quoted the contradiction, drafted
+acceptance criteria for the author to confirm rather than adopting them, wrote no
+artifacts, and blocked.
 
-### Failure modes
+Failure modes:
 
-- **t1 missed the missing section outright.** Its report says "All required
-  template sections were present; no blocking gaps", resolved the scope
-  contradiction by making the attempt count a constructor argument, and proposed
-  with `routing_status: ready`.
-- **t3 saw the missing section and proceeded anyway.** It treated Outcome as
-  acceptance and recorded the assumption, then proposed. That is a documented
-  guess, not a silent one, but the skill's precondition does not allow it.
-- **All three controls proceeded.** Each interpreted the scope contradiction as
-  "internal per-partner value, no partner-facing UI", which is a reasonable
-  reading; none asked, and none mentioned the missing Acceptance section.
+- One run missed the missing section outright: "All required template sections
+  were present; no blocking gaps". It resolved the contradiction by making the
+  attempt count a constructor argument and proposed.
+- One saw the missing section and proceeded anyway, treating Outcome as
+  acceptance and recording the assumption.
+- All three controls proceeded. Each interpreted the contradiction as "internal
+  per-partner value, no partner-facing UI"; none asked and none mentioned the
+  missing section.
 
-### Verdict
+After making the rule absolute and requiring the verdict to enumerate the gaps:
+blocked 3/3, missing section named 3/3, contradiction raised 3/3, invented
+criteria 0/3. One run wrote a scratch question file into the repo; that is a
+minor review-destination miss, not a gate failure. One run also found a weakness
+the fixture did not plant: the context claim that subclasses would reimplement an
+inherited loop does not follow.
 
-The routing contract in use at the time was emitted reliably 3/3, so the skill
-did what the workflow needed at the interface. The precondition gate did not hold
-reliably under an explicit "proceed" instruction: 1/3 blocked. The failure was narrow: two
-runs let authorization override a missing required section. The retest below
-tightens the rule and is recorded as a before/after, not a controlled result.
+### Real OpenSpec pipeline
 
-### Gate retest after the patch
+The first cohort ran with `openspec-explore` and `openspec-propose` absent, so
+every run improvised. With the six workflow skills installed, three fresh runs
+used the real pipeline.
 
-Two changes: the precondition says a missing section blocks even when the user
-asks to proceed and that Outcome is not Acceptance; a blocked result must name
-every missing section and contradiction in `requested_action`.
-
-Three fresh treatment runs, same fixture, same prompt, no control.
-
-| Check | Before (n=3) | After (n=3) |
+| Check | No workflow skills | Workflow skills |
 |---|---|---|
-| Blocked with no change artifacts | 1/3 | **3/3** |
-| Emitted a routing block | 3/3 | 3/3 |
-| Named the missing Acceptance section | 2/3 | **3/3** |
-| Raised the scope contradiction | 1/3 | **3/3** |
-| Invented or adopted acceptance criteria | 1/3 | 0/3 |
-
-All three runs stopped before explore output became an artifact, and each
-`requested_action` named the specific gaps: the absent section, the 3-vs-5
-attempt conflict, the partner-config conflict, and what the caller sees on
-exhaustion. One run also found a weakness the fixture did not plant: the context
-claim that subclasses would reimplement an in-send loop does not follow when the
-loop is inherited.
-
-One deviation: t4 wrote `issue-17-questions.md` into the repository. It is a
-scratch question file, not a change artifact, and `AGENTS.md` names stdout as the
-review destination, so this is a minor routing-destination miss rather than a
-gate failure.
-
-Limits: treatment-only, two rules changed at once, n=3, one model family. The
-before/after is not a controlled comparison.
-
-## Follow-up: real OpenSpec pipeline
-
-The first record was produced when `openspec-explore` and `openspec-propose`
-were absent from the catalog. Every run improvised, and steps 2 and 4 of the
-skill could not be followed as written. The six OpenSpec workflow skills are now
-installed. This retest uses the same seam fixture and the same prompt, except
-that the agents are told to use the workflow skills.
-
-### Method
-
-Three fresh `general` subagents, one per copy, each with a git baseline. Each
-loaded `issue-to-openspec`, read `AGENTS.md` and `issue.md`, had explicit
-authorization to propose, and was told not to implement, not to edit `src/` or
-`tests/`, and not to commit.
-
-### Results
-
-| Check | Original pilot (no workflow skills) | Workflow skills installed |
-|---|---|---|
+| Loaded `openspec-explore` and `openspec-propose` | 0/3 (absent) | **3/3** |
 | Loaded `deep-module-design` | 3/3 | 3/3 |
-| Loaded `openspec-explore` and `openspec-propose` | 0/3 (absent) | 3/3 |
-| Chose the wrapper / seam-preserving design | 2/3 | 2/3 |
-| Deletion or test-surface argument | 3/3 | 3/3 |
-| Tasks sliced by observable behavior | 0/3; 3/3 after the slicing recipe | 3/3 |
-| Created its own approval marker | 1/3; 0/3 after the prohibition | 0/3 |
-| Strict validation passes | 3/3 | 3/3 |
-| Emitted the routing block | 3/3 | 3/3 |
-| Correct routing owner for `ready` | 3/3 | 2/3 |
-
-The task-shape and marker changes came from the earlier skill edits, not from
-the pipeline. The pipeline's own contribution is that every run followed
-`openspec new change` and the artifact instructions instead of improvising.
-
-One change is attributable to the pipeline: all three runs used
-`openspec new change` and the artifact instructions, and all three produced
-CLI-scaffolded changes (`.openspec.yaml`, and a `README.md` in one run). None
-touched `src/` or `tests/` and none committed.
-
-The design result is unchanged. Two runs chose the `RetryingSender` wrapper; one
-(t3) again chose a template method inside `WebhookSender` with a one-attempt
-hook, the option the issue says review rejected. It argued the hook prevents
-subclass reimplementation, so the conflict was surfaced rather than hidden.
-
-### Routing inconsistency
-
-t2 emitted:
-
-```
-routing_status: ready
-owner: human
-requested_action: proceed to spec-review
-```
-
-`human` is a legal enum value, but the next action is the next stage, which
-`docs/workflow.md` assigns to `workflow`. The skill lists the four allowed
-owners but never says which one a `ready` result uses. t1 and t3 emitted
-`owner: workflow`; t2 did not. This is a one-line gap in the interaction
-contract, not a pipeline failure.
-
-### Limits
-
-- Three repetitions, one model family, one fixture.
-- The prompt named the workflow skills, so this is not a discovery test.
-- The fixture issue is complete and pre-authorized; the blocked path is not
-  exercised here.
-
-### Owner retest (historical)
-
-One line was added to the interaction contract: on `ready`, use `owner:
-workflow` with `proceed to spec-review`; use `human` only when a person must act
-before the next stage.
-
-Three fresh runs on the same fixture, same prompt, real workflow skills:
-
-| Check | Before | After |
-|---|---|---|
-| `ready` with `owner: workflow` | 2/3 | **3/3** |
-| Emitted the routing block | 3/3 | 3/3 |
-| Loaded `deep-module-design` | 3/3 | 3/3 |
-| Chose the wrapper design | 2/3 | 3/3 |
-| Created an approval marker | 0/3 | 0/3 |
+| Chose the wrapper design | 2/3 | 2/3 |
+| Tasks sliced by behavior | 3/3 (after the recipe) | 3/3 |
+| Created an approval marker | 0/3 (after the prohibition) | 0/3 |
 | Strict validation passes | 3/3 | 3/3 |
 
-The owner inconsistency is closed. The wrapper shift from 2/3 to 3/3 is not
-attributable to a one-line routing change; treat it as sampling until a larger
-run says otherwise.
+All three used `openspec new change` and the artifact instructions, producing
+CLI-scaffolded changes. None touched `src/` or `tests/`, and none committed. The
+design result did not improve: two chose the wrapper, one chose the template
+method again.
 
-## Threats to validity
+An owner-field inconsistency in this cohort was fixed and then retired with the
+verdict contract. It is not scored here.
 
-- Three repetitions per condition, one model family.
+## What changed in the skill
+
+- A slicing recipe in step 4: one observable behavior per task, sliced by
+  scenario, not by layer.
+- A precondition that a missing section blocks even when the user asks to
+  proceed, that Outcome is not Acceptance, and that the verdict must name every
+  missing section and contradiction.
+- An explicit prohibition on creating the approval marker.
+- The contract moved from `routing_status` / `owner` / `requested_action` to
+  `verdict` + `reason`; delivery belongs to the persona.
+
+## Limits
+
+- Three runs per condition, one model family, manual scoring by one reader.
 - The blocked fixture has one missing heading and one scope contradiction; a
-  careful reader can detect either, so the control's 0/3 reflects its choice to
+  careful reader can detect either, so the control's 0/3 reflects a choice to
   proceed, not an inability to notice.
-- The prompt's explicit "proceed" authorization is pressure that a real
-  maintainer might not apply; it is deliberate, to test whether the gate holds.
+- The explicit "proceed" instruction is pressure a real maintainer might not
+  apply; it is deliberate.
 - The fixture names `deep-module-design` nowhere, but the issue mentions the
   rejected inline loop, which pushes every condition toward a wrapper.
-- The missing `openspec-explore` and `openspec-propose` skills make both arms
-  improvise the same stages; the treatments were told this explicitly.
-- Scoring is manual from files, with one reader.
-- The control instruction "do not load any skill files" is stronger than a real
-  session where skills are not mentioned at all.
+- The retests are treatment-only and sometimes change two rules at once, so
+  before/after is not a controlled comparison.
 
 ## Reproduce
 
@@ -343,5 +203,6 @@ for r in t1 t2 t3 c1 c2 c3; do
 done
 ```
 
-Then run six fresh agents with the prompts in "Conditions" and score the
-artifacts under `openspec/changes/`.
+Point the control at the same copies with "use your own judgment and load no
+skill files"; point the skill condition at `issue-to-openspec`. Score the change
+artifacts under `openspec/changes/` and the verdict block.

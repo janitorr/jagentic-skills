@@ -39,10 +39,8 @@ mutation probe. Reviews were read-only; no tracked file could change.
 
 | Check | Clean (3) | Seeded (3) |
 |---|---|---|
-| Emitted the routing block | 3/3 | 3/3 |
-| Verdict | `ready` 3/3 | `needs_revision` 3/3 |
-| Owner | `human` 3/3 | `developer` 3/3 |
-| Action | `human sign-off` 3/3 | `post review comments and request changes` 3/3 |
+| Emitted the verdict block (contract at the time) | 3/3 | 3/3 |
+| Verdict | `pass` 3/3 | `needs_revision` 3/3 |
 | Seeded whitespace defect found | n/a | **3/3** |
 | Test-gap finding | n/a | **3/3** |
 | Mutation probe run | 3/3 | 3/3 |
@@ -63,17 +61,17 @@ None was promoted to Required, so the clean gate held.
 
 All three found the ` +` regex and quoted inputs such as `slugify("A\tB")`
 returning `"a\tb"`. All three also identified the missing non-space whitespace
-test, and two confirmed it with a mutation probe. Findings were routed
-`needs_revision / developer / post review comments and request changes`.
+test, and two confirmed it with a mutation probe. The verdict was
+`needs_revision` with a code cause.
 
 ## Interpretation
 
-- The two exercised branches map correctly: clean → `human` / sign-off, code
-  defect → `developer` / request changes.
+- The two exercised branches map correctly: clean → `pass`, code defect →
+  `needs_revision`.
 - The seeded defect discriminates: 3/3 clean passes, 3/3 seeded blocks, with no
   false blocking on the clean diff.
-- The `spec-writer` branch was not exercised. Artifact issues appeared only as
-  Optional findings; code defects dominated the verdict.
+- Only the code cause was needed. The `blocked` branch and artifact routing were
+  not exercised; artifact issues appeared only as Optional findings.
 
 ## Limits
 
