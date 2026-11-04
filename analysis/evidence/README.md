@@ -1,10 +1,10 @@
 # Evidence and evals
 
 Status: **opportunistic**. Targeted tests run when a skill or behavior warrants
-it; there is no standing eval suite. Three skills have partial behavioral
+it; there is no standing eval suite. Four skills have partial behavioral
 evidence; one skill has an exploratory format probe; all ten descriptions passed
 a trigger pilot, and the `documentation` description was re-tested after its
-edit; six skills are still unverified for behavior.
+edit; five skills are still unverified for behavior.
 
 This note is the place to resume. Do not treat the absence of evidence as proof
 that a skill works.
@@ -20,7 +20,8 @@ that a skill works.
 | All ten descriptions | `analysis/evidence/trigger-tests.md` | Proxy 105/105; live 8/10 generic, 4/4 repo-specific |
 | `documentation` description | `analysis/evidence/trigger-tests.md#re-run-after-the-documentation-description-edit` | 3 proxy reps, 14 prompts: 40/42, then 41/42 after the RFC fix; live 5/5 after |
 | `issue-to-openspec` | `analysis/evidence/issue-to-openspec.md` plus fixture | Pilot, 3 reps per condition; pointer fires, design-quality ceiling; slicing and marker rules retested 3/3; blocked path routing 3/3, gate 1/3 then 3/3; real pipelines 3/3; ready owner 3/3 after the fix |
-| Six other skills | none for behavior | Unverified behavior |
+| `code-review` | `analysis/evidence/code-review.md` plus fixture | 3 reps per condition; clean → ready/human 3/3, seeded defect → needs_revision/developer 3/3 |
+| Five other skills | none for behavior | Unverified behavior |
 
 The `spec-review` fixtures are small OpenSpec projects under
 `spec-review/fixtures/`:
@@ -41,6 +42,11 @@ Python repo with one single-attempt webhook sender shared by three notifiers. It
 issue forces a retry seam decision and includes a settled rejection of the
 inline-loop option. `issue-to-openspec/fixtures/seam-blocked` is the same repo
 with the Acceptance section removed and the scope sections in conflict.
+
+The `code-review` fixture is built by
+`code-review/fixtures/slugify/setup.sh` from the vertical-slice-tdd template:
+`main` is the stub, `feature/add-slugify` is the implementation, and `SEED=1`
+narrows the whitespace regex so the suite passes while the spec is violated.
 
 ## What we learned
 
@@ -109,6 +115,10 @@ with the Acceptance section removed and the scope sections in conflict.
   `proceed to code-review`.
 - One approved `vertical-slice-tdd` run produced no work and no report. It is
   recorded as a harness failure, not a routing result.
+- `code-review` routed a clean diff to `ready / human / human sign-off` 3/3 and
+  a seeded whitespace defect to `needs_revision / developer / request changes`
+  3/3. The clean diff produced only Optional findings; the seeded one was found
+  by every run, including the missing non-space whitespace test.
 
 ## Why there is no standing suite
 
@@ -146,23 +156,25 @@ Resume when one of these happens:
 ## Known debt
 
 `skill-forge` requires baseline, micro-test, and trigger evidence for each skill.
-`spec-review`, `vertical-slice-tdd`, and `issue-to-openspec` have partial
-behavioral records; `documentation` has an exploratory probe plus a no-control
-retest. The other six are behavior-shaping documents with no observed behavior
-behind them. That is accepted temporary debt, not a completed verification.
+`spec-review`, `vertical-slice-tdd`, `issue-to-openspec`, and `code-review` have
+partial behavioral records; `documentation` has an exploratory probe plus a
+no-control retest. The other five are behavior-shaping documents with no observed
+behavior behind them. That is accepted temporary debt, not a completed
+verification.
 
 Pending trigger work: the proxy and live selector passes are recorded, including
 the re-run after the `documentation` edit and the RFC retest. The remaining work
 is to check that the project-skill precedence rule wins when a generic and a
 project skill both apply.
 
-Pending routing-contract test: three stages are recorded. `issue-to-openspec`
+Pending routing-contract test: four stages are recorded. `issue-to-openspec`
 emitted the block 3/3 on the blocked fixture; the gate held 1/3, then 3/3 after
 the precondition fix; a ready result now uses `owner: workflow` 3/3.
 `spec-review` emitted the block 12/12 and used all three owner values correctly.
 `vertical-slice-tdd` blocked 3/3 with `human`, and ready 3/3 with `workflow`
-after the owner fix. `issue-interview` and `code-review` have no routing record,
-and the multi-stage loop in `docs/workflow.md` remains untested.
+after the owner fix. `code-review` routed clean 3/3 to `human` and a seeded code
+defect 3/3 to `developer`. `issue-interview` has no routing record, and the
+multi-stage loop in `docs/workflow.md` remains untested.
 
 Pending cross-skill test: none. The `issue-to-openspec` pointer to
 `deep-module-design` is recorded in `issue-to-openspec.md`: it fires, and its
