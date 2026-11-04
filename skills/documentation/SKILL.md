@@ -85,9 +85,12 @@ range only when the repository URL is known.
 
 ### 4. Write the README
 
-Cover, in order: one-paragraph identity, quick start, commands, architecture
-overview, and contributing. Every command must be copy-pasteable and current.
-Link to ADRs for the reasoning; do not restate it.
+Cover, in order: one-paragraph identity, a start-to-finish path, architecture
+overview, and contributing. The path is numbered inside one section; each step
+carries its command and a completion criterion, so a command appears once and
+the reader knows when it worked. Add a reference table only for material no step
+reaches. Every command must be copy-pasteable and current. Link to ADRs for the
+reasoning; do not restate it.
 
 ### 5. Write the reference page
 
@@ -141,6 +144,14 @@ already has that structure.
 - Delete conventions an agent can discover from consistent code patterns.
 - Prefer file-path references over code snippets; snippets go stale.
 - Keep one authoritative place per rule. Point to it rather than copying it.
+- Attach a completion criterion to the command list or the last rule without
+  naming the commands again, for example "a change is done when every check in
+  the table passes".
+- State the target, not the ban: "migrations are generated; edit the schema and
+  regenerate" rather than "never edit migrations". Keep a prohibition only as a
+  hard guardrail, paired with the action to take.
+- Put the trigger in the pointer: "touching the schema, read
+  packages/db/README.md", not "see packages/db for details".
 
 ### 9. Write for the reader
 
@@ -180,6 +191,7 @@ needs one.
 - [ ] Reference pages document observed behavior and include one complete example.
 - [ ] Procedural documents give prerequisites, ordered steps, expected results,
       and a failure path.
+- [ ] README steps and agent rules state what done means.
 - [ ] Commands, paths, and examples were verified.
 - [ ] Agent rules use observable conditions, keep commands, and omit
       tool-enforceable style rules.

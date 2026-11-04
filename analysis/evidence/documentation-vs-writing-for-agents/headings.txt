@@ -1,0 +1,44 @@
+### ours/readme
+readme-r1.md: geoshard Quick start|Commands Configuration Architecture|Contributing License
+readme-r2.md: geoshard Quick start|Commands Configuration How it works|Contributing
+readme-r3.md: geoshard Install|Quick start Commands Configuration|How it works Contributing License
+### ours/agents
+agents-r1.md: dockyard Layout|Commands Rules
+agents-r2.md: dockyard Layout|Commands Rules
+agents-r3.md: AGENTS.md Layout|Commands Rules
+### pocock/readme
+readme-r1.md: geoshard Quick start|Configuration Development License
+readme-r2.md: geoshard Install|Quickstart Commands Configuration|Contributing License
+readme-r3.md: geoshard Installation|Usage Configuration Contributing|License
+### pocock/agents
+agents-r1.md: dockyard The gate|Rules that bite Deploy Where to look next
+agents-r2.md: dockyard Generated files|API contract Dependencies New services|Deployment Before you commit
+agents-r3.md: dockyard Layout|Verification API contract Database|Dependencies Deployment
+### control/readme
+readme-r1.md: geoshard Installation|Quick start Commands Configuration|Development License
+readme-r2.md: geoshard Installation|Usage Configuration Development|Contributing License
+readme-r3.md: geoshard Installation|Quick start Commands Configuration|Development License
+### control/agents
+agents-r1.md: AGENTS.md Repository layout|Commands Hard rules New services|Formatting and hooks Deployment Before you finish
+agents-r2.md: AGENTS.md Project map|Commands Rules Formatting and hooks|Verification Deployment
+agents-r3.md: AGENTS.md Layout|Commands Hard rules New services|Formatting and hooks Deployment Working agreements
+
+# Post-patch rounds, 2026-11-04
+### ours-v2
+agents-r1.md: dockyard Layout|Commands Rules Done means
+agents-r2.md: dockyard Layout|Commands Rules Done
+agents-r3.md: AGENTS.md Layout|Commands Rules Done
+readme-r1.md: geoshard Getting started|How it works Configuration Contributing|License
+readme-r2.md: geoshard From one file to loadable tiles|How it works Contributing License
+readme-r3.md: geoshard Quick start|Configuration How it works Contributing
+### ours-v3
+agents-r1.md: dockyard Layout|Commands Rules
+agents-r2.md: dockyard Layout|Commands Rules
+agents-r3.md: dockyard Layout|Commands Rules
+readme-r1.md: geoshard Quick start|Configuration Architecture Contributing|License
+readme-r2.md: geoshard Getting started|Architecture Configuration Contributing
+readme-r3.md: geoshard Getting started|How it works Reference Contributing
+### ours-v4
+agents-r1.md: dockyard Layout|Commands Rules
+agents-r2.md: dockyard Layout|Commands Rules
+agents-r3.md: dockyard Layout|Stack Commands Rules

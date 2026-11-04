@@ -15,6 +15,7 @@ that a skill works.
 | `spec-review` | `analysis/evidence/spec-review.md` plus fixtures | Pilot plus five repetitions per condition; ceiling effect |
 | `vertical-slice-tdd` | `analysis/evidence/vertical-slice-tdd.md` plus fixture | TDD ceiling; approval gate discriminates |
 | `documentation` | `analysis/evidence/documentation.md` plus `documentation/headings.txt` | Exploratory format probe (n=1 per type) plus post-patch retest (n=3 per changed type); retest has no control |
+| `documentation` vs `writing-for-agents` | `analysis/evidence/documentation-vs-writing-for-agents.md` plus `documentation-vs-writing-for-agents/headings.txt` | Exploratory n=3 comparison of README and AGENTS.md output; document shape only |
 | All ten descriptions | `analysis/evidence/trigger-tests.md` | Proxy 105/105; live 8/10 generic, 4/4 repo-specific |
 | Seven other skills | none for behavior | Unverified behavior |
 
@@ -52,6 +53,12 @@ behavior can be scored from disk.
   leaked a planning step into an inline-comment deliverable. After the patch,
   five changed branches produced the intended shape in 3/3 runs each; the retest
   has no control, so superiority over no skill is still unshown.
+- Against `writing-for-agents`, our README duplicated every command (quick start
+  plus a command table) and our agent instructions had no completion criterion.
+  After patching, README repeats fell from 8 to 2 and criteria rose from 0 to 16;
+  agent-instruction negations fell from 6 to 2, and every file now states what
+  done means. Files are about 20% longer. This is document-shape evidence; no
+  downstream compliance test has been run.
 
 ## Why there is no standing suite
 
