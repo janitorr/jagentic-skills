@@ -7,7 +7,7 @@ new skills that combine the strongest ideas from each.
 
 ```
 vendor/          # upstream bundles, cloned (not tracked - see sync.sh)
-analysis/        # category inventory, cross-bundle comparison, synthesis notes
+analysis/        # inventory, comparison, synthesis, coverage, and eval evidence
 docs/            # stage graph, verdicts, and delivery mapping
 skills/          # synthesized skills, the source of truth
 .opencode/skills # installed copies OpenCode discovers (generated)
@@ -59,11 +59,11 @@ Supporting skills, callable at any point:
 
 | Skill | Owns |
 |---|---|
-| `visual-explainer` | Diagrams and focused artifacts instead of prose walls |
+| `visual-explainer` | Diagrams and self-contained one-pagers instead of prose walls |
 | `deep-module-design` | Interfaces, seams, simplification, and migration |
 | `skill-forge` | Authoring and revising skills against a baseline failure |
-| `git-workflow` | Commits, branches, worktrees, conflicts, finishing, releases |
-| `documentation` | ADRs, READMEs, reference pages, changelogs, agent instructions, onboarding guides, runbooks, and how-to docs |
+| `git-workflow` | Commit slicing and shape, conflicts, rejected pushes, releases and tags; invariants plus defaults |
+| `documentation` | ADRs, READMEs, reference pages, changelogs and release notes, agent instructions, onboarding guides, runbooks, and how-to docs |
 
 Reviewers never fix what they find. The owning stage may rework findings
 agent-to-agent; human approval and merge sign-off remain fixed gates. A design
@@ -75,8 +75,8 @@ Implementation commits once per green slice.
 Stage skills are environment-agnostic. An agent file supplies the tracker
 operations, approval marker, review destination, and workspace policy; the same
 skill can run locally or inside a GitHub workflow. Supporting skills are invoked
-directly by a human or an agent mid-task and need no agent file. The stage graph, verdict semantics, and
-delivery mapping live in `docs/workflow.md`.
+directly by a human or an agent mid-task and need no agent file. The stage graph,
+verdict semantics, and delivery mapping live in `docs/workflow.md`.
 
 Each stage skill ends with a verdict — `pass`, `needs_revision`, or `blocked` —
 and a one-line reason. It does not name the next stage or a tracker operation;
