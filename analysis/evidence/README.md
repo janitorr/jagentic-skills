@@ -28,7 +28,7 @@ in the records below are superseded; verdict, gate, and finding results stand.
 | `issue-to-openspec` | `analysis/evidence/issue-to-openspec.md` plus fixture | Pilot, 3 reps per condition; pointer fires, design-quality ceiling; slicing and marker rules retested 3/3; blocked verdict 3/3, gate 1/3 then 3/3; real pipelines 3/3; pass 3/3 |
 | `code-review` | `analysis/evidence/code-review.md` plus fixture | 3 reps per condition; clean → pass 3/3, seeded defect → needs_revision 3/3 |
 | `issue-interview` | `analysis/evidence/issue-interview.md` plus fixtures | Pilot plus two retests; final gate 2/2, confidence 12/12 responses, 6 questions per run; template n=1 |
-| `git-workflow` | `analysis/evidence/git-workflow.md` plus fixtures | Pilot; commit scope negative; conflict, rejected push, and release showed no baseline failure; default commit shape differs |
+| `git-workflow` | `analysis/evidence/git-workflow.md` plus fixtures | Pilot; trimmed to 80 lines of invariants and defaults; no capability advantage over the control; commit shape is the observed difference |
 | `visual-explainer` | `analysis/evidence/visual-explainer.md` plus fixture | Pilot, positive; diagram for a call path, prose for a one-liner; one-pager compared with `show-me` |
 | Two other skills | none for behavior | Unverified behavior |
 
@@ -117,6 +117,10 @@ reproduction steps.
   (`release: 1.3.0` against `Release 1.3.0`). Both hand-computed the version;
   the skill now prefers repo release tooling or a semver CLI and records the
   bump decision in a footer, changeset, or label.
+- **Procedures capable agents already follow are no-ops.** After five git
+  pilots, the skill kept only the invariants and the defaults a repo without a
+  convention needs. The step-by-step staging, branch, finish, and worktree
+  procedures were removed.
 - **Change lists route to documentation.** Removing "changelog" from
   `git-workflow` and adding "release notes" to `documentation` split eight
   prompts 24/24 in the proxy; the live changelog prompt loaded `documentation`.
@@ -188,10 +192,9 @@ other two, `deep-module-design` and `skill-forge`, are behavior-shaping document
 with no observed behavior behind them. That is accepted temporary debt, not a
 completed verification. `issue-interview` is a pilot plus two retests: the final
 gate and confidence line held 2/2, but the control was not rerun against the
-final wording. `git-workflow` is a negative pilot on commit scope; conflict,
-push, and release showed no baseline failure in a small fixture, and the default
-commit shape is the only observed difference. `visual-explainer` is a
-one-run-per-condition pilot.
+final wording. `git-workflow` is an 80-line invariants-and-defaults document; its
+conflict, push, and release results belong to the longer version, and the trimmed
+version is untested. `visual-explainer` is a one-run-per-condition pilot.
 
 Trigger work is complete. The proxy and live selector passes are recorded,
 including the re-run after the `documentation` edit and the RFC retest. The

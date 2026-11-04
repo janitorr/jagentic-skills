@@ -1,10 +1,11 @@
 # git-workflow: commits, conflict, push, and release
 
-Status: **pilot**. Commit scope is negative: the control passed and the skill did
-not split a mixed slice under pressure. Merge conflict, rejected push, and
-release showed no baseline failure; both conditions handled them correctly. The
-only observed difference is the default commit shape, which the skill now adds
-when the repo has no pattern.
+Status: **pilot; trimmed to invariants and defaults**. Commit scope is negative:
+the control passed and the skill did not split a mixed slice under pressure.
+Merge conflict, rejected push, and release showed no baseline failure; both
+conditions handled them correctly. The only observed difference was the default
+commit shape. The step-by-step procedures were then removed, leaving invariants
+and defaults; the trimmed version is untested.
 
 ## Question
 
@@ -143,6 +144,25 @@ mechanics were replaced with a pointer to the harness and agent file. The safety
 rules remain: ask before adding isolation, clean up only what you created, and
 never force-remove on your own initiative.
 
+## Trim
+
+The procedures mostly duplicated what the control already did. The body went
+from 174 to 80 lines:
+
+- **Removed:** workspace detection, baseline/branch/finish/delete/report
+  procedures, and the worktree mechanics.
+- **Kept as invariants:** one logical change per commit (including pushback on
+  "commit everything"), checks before commit, conflicts keep both intents, a
+  rejected push is integrated, tags are immutable, and cleanup only touches
+  workspaces you created.
+- **Kept as defaults:** branch `<area>/<short-slug>`, commit
+  `<area>: <imperative lowercase summary>` plus a why body, release
+  classification and tooling, annotated `vX.Y.Z`, and Keep a Changelog
+  categories.
+
+The conflict, push, and release results above were produced by the longer
+version. The trimmed version has not been rerun.
+
 ## Conclusion
 
 The control handled all three tasks: it resolved the conflict with both changes,
@@ -168,13 +188,13 @@ as a capability the control lacks. Commit-scope splitting remains unproven.
 - The release fixture had no release tool, so both conditions hand-computed the
   version; a tool-assisted release is untested.
 - The stated-convention commit variant gave the control the rule it needed.
+- The trimmed version is untested; the results above belong to the longer
+  version.
 
 ## Next
 
-- Test a breaking change (`MAJOR`), a `0.y.z` release, and a hotfix cut from a
-  tag.
-- Test a repo with changesets or semantic-release, where the tool computes the
-  version and writes the tag.
-- Test the default commit shape against a repo whose history is misleading,
-  rather than merely absent.
-- Do not rerun the conflict, push, or basic release fixtures; they ceilinged.
+- Retest the trimmed version once: a mixed tree under "commit everything", a
+  conflict, a rejected push, and a release with a semver CLI.
+- Test a weaker model to see whether the invariants help where a strong control
+  does not need them.
+- Do not retest the removed procedures or the basic fixtures; they ceilinged.
