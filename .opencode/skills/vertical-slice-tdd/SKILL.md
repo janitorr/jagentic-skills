@@ -32,7 +32,11 @@ requested_action: proceed to code-review | update the artifacts | stop for appro
 ```
 
 Design drift is `blocked` with `owner: spec-writer`; do not continue
-implementation. The agent file maps the action to tracker or PR operations.
+implementation. A missing approval marker is `blocked` with `owner: human` and
+`stop for approval`. On `ready`, use `owner: workflow` with
+`proceed to code-review`; use `developer` only when a developer must act before
+the next stage can run. The agent file maps the action to tracker or PR
+operations.
 
 ## Preconditions
 

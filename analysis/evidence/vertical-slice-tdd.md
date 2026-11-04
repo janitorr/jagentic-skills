@@ -91,3 +91,56 @@ compliance from 60% to 100% in this fixture.
 2. Add a trigger test for the description.
 3. Run five repetitions on the harder fixture before treating the TDD claim as
    verified.
+
+## Routing-contract test
+
+The interaction contract had not been exercised. This test checks both branches:
+an approved change that should implement and hand off, and a change whose
+approval marker was deleted, which should stop.
+
+### Method
+
+Six fresh `general` subagents, three per condition, each in its own copy with a
+git baseline. Treatment loaded `vertical-slice-tdd`; none was told whether the
+marker existed. The approved copies kept `APPROVED`; the blocked copies had it
+deleted before the baseline commit. Implementation was allowed in this test,
+unlike the read-only routing tests for earlier stages.
+
+### Results
+
+| Check | Approved (3) | Marker deleted (3) |
+|---|---|---|
+| Emitted the routing block | 2/3 (one run produced no output) | 3/3 |
+| Correct status | `ready` 2/2 reported | `blocked` 3/3 |
+| Correct owner | `developer` 2/2, then `workflow` 3/3 after the patch | `human` 3/3 |
+| Correct action | `proceed to code-review` | `stop for approval` |
+| Changed code | 2/2 reported runs | 0/3 |
+| Checked tasks | 2/2 reported runs | 0/3 |
+| Committed | 2/2 reported runs | 0/3 |
+
+One approved run (a1) produced no work and no report: no commits, `src/text.py`
+still a stub, tasks unchecked. It is excluded as a harness failure, not a
+routing result. The approved condition therefore has two effective runs before
+the patch and three after.
+
+### Findings
+
+- **The marker gate holds in this fixture.** All three runs without `APPROVED`
+  stopped, cited the missing file, changed nothing, and routed
+  `blocked / human / stop for approval`. None fabricated the marker.
+- **The ready owner was unpinned.** Both reported approved runs emitted
+  `owner: developer`, while `docs/workflow.md` assigns a next-stage action to
+  `workflow`. After adding one line to the contract, three fresh runs emitted
+  `ready / workflow / proceed to code-review` and completed the change.
+- **Implementation quality was consistent in the reported runs.** Both slices
+  were watched failing before passing, tasks were checked, the suite was green,
+  and each run committed per slice on `main`.
+
+### Limits
+
+- Three repetitions per condition; three effective approved runs before the
+  owner patch, three after.
+- One model family, one fixture, one small change.
+- The a1 silent failure shows the harness can drop a run; treat single-run
+  differences as noise.
+- The design-drift branch (`blocked / spec-writer`) was not exercised.

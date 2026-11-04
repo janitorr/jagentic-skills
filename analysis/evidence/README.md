@@ -14,7 +14,7 @@ that a skill works.
 | Skill | Evidence | Status |
 |---|---|---|
 | `spec-review` | `analysis/evidence/spec-review.md` plus fixtures | Pilot plus five repetitions per condition; routing 3/3 on seeded, 4/9 ready on the repaired clean fixture; clean ceiling withdrawn |
-| `vertical-slice-tdd` | `analysis/evidence/vertical-slice-tdd.md` plus fixture | TDD ceiling; approval gate discriminates |
+| `vertical-slice-tdd` | `analysis/evidence/vertical-slice-tdd.md` plus fixture | TDD ceiling; approval gate discriminates; routing blocked/human 3/3 and ready/workflow 3/3 after the fix |
 | `documentation` | `analysis/evidence/documentation.md` plus `documentation/headings.txt` | Exploratory format probe (n=1 per type) plus post-patch retest (n=3 per changed type); retest has no control |
 | `documentation` vs `writing-for-agents` | `analysis/evidence/documentation-vs-writing-for-agents.md` plus `documentation-vs-writing-for-agents/headings.txt` | Exploratory n=3 comparison of README and AGENTS.md output; document shape only |
 | All ten descriptions | `analysis/evidence/trigger-tests.md` | Proxy 105/105; live 8/10 generic, 4/4 repo-specific |
@@ -103,6 +103,12 @@ with the Acceptance section removed and the scope sections in conflict.
   artifacts. The pointer and the design ceiling did not move. One run emitted
   `owner: human` with `proceed to spec-review`; pinning `ready` to `workflow`
   fixed it at 3/3.
+- `vertical-slice-tdd` stopped 3/3 when the `APPROVED` marker was deleted, with
+  no code changes and no fabricated marker. Its ready result used
+  `owner: developer` 2/2; pinning `ready` to `workflow` moved it to 3/3 with
+  `proceed to code-review`.
+- One approved `vertical-slice-tdd` run produced no work and no report. It is
+  recorded as a harness failure, not a routing result.
 
 ## Why there is no standing suite
 
@@ -150,12 +156,13 @@ the re-run after the `documentation` edit and the RFC retest. The remaining work
 is to check that the project-skill precedence rule wins when a generic and a
 project skill both apply.
 
-Pending routing-contract test: two stages are recorded. `issue-to-openspec`
+Pending routing-contract test: three stages are recorded. `issue-to-openspec`
 emitted the block 3/3 on the blocked fixture; the gate held 1/3, then 3/3 after
 the precondition fix; a ready result now uses `owner: workflow` 3/3.
 `spec-review` emitted the block 12/12 and used all three owner values correctly.
-The other stage skills and the multi-stage loop in `docs/workflow.md` remain
-untested.
+`vertical-slice-tdd` blocked 3/3 with `human`, and ready 3/3 with `workflow`
+after the owner fix. `issue-interview` and `code-review` have no routing record,
+and the multi-stage loop in `docs/workflow.md` remains untested.
 
 Pending cross-skill test: none. The `issue-to-openspec` pointer to
 `deep-module-design` is recorded in `issue-to-openspec.md`: it fires, and its
