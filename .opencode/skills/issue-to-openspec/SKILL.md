@@ -26,22 +26,18 @@ or reshapes a module, interface, or seam.
 
 ## Interaction contract
 
-End with a routing result the workflow can consume:
+End with a verdict the persona can act on:
 
 ```
-routing_status: ready | blocked | needs_revision
-owner: issue-author | spec-writer | workflow | human
-requested_action: post questions on the issue | update the spec artifacts | proceed to spec-review
+verdict: pass | blocked | needs_revision
+reason: <one line naming the missing input or the failing artifact>
 ```
 
-Missing issue context is `blocked` with `owner: issue-author`; the agent file
-posts the questions and marks the issue awaiting information. A blocked result
-names every missing section and every contradictory statement in
-`requested_action`; "provide more context" is not enough. Artifact changes
-after review are `needs_revision` with `owner: spec-writer`. On `ready`, use
-`owner: workflow` with `proceed to spec-review`; use `human` only when a person
-must act before the next stage can run. Never leave a blocking question only in
-chat.
+`pass` means the change is proposed and validates strictly. Missing issue context
+is `blocked`; name every missing section and every contradictory statement in
+the reason, because "provide more context" is not enough. Artifact changes after
+review are `needs_revision`. The persona posts questions or requests changes.
+Never leave a blocking question only in chat.
 
 Never create the approval marker yourself. It records a human gate; the reviewer
 or human sets it after spec review.
@@ -177,11 +173,7 @@ Report:
 - Strict validation result.
 - Any deferred questions or risks.
 
-Then stop. Do not implement, run apply, or archive. Hand off:
-
-```
-Next: spec-review for change <name>
-```
+Then stop. Do not implement, run apply, or archive.
 
 ## Verification
 

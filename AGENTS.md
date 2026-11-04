@@ -76,9 +76,10 @@ a global generic skill.
 
 ## When changing stage routing or loop rules
 
-- Update `docs/workflow.md` for transitions, owners, and GitHub artifacts.
-- Keep `routing_status`, `owner`, and `requested_action` semantic in skills. Do
-  not hardcode labels, `gh` commands, or PR review mechanics there.
+- Update `docs/workflow.md` for transitions, verdicts, and delivery examples.
+- Keep the skill verdict (`pass | needs_revision | blocked`) and its reason
+  semantic. Tracker operations, labels, `gh` commands, review state, and PR
+  mechanics belong to the persona's agent file, not to skills.
 - If a skill's interaction contract changes, run `./scripts/sync-skills.sh` and
   record evidence or debt in `analysis/evidence/README.md`.
 

@@ -27,17 +27,17 @@ mutation probe runs in the isolation location defined by the agent file.
 
 ## Interaction contract
 
-End with a routing result the workflow can consume:
+End with a verdict the persona can act on:
 
 ```
-routing_status: ready | needs_revision
-owner: developer | spec-writer | human
-requested_action: post review comments and request changes | human sign-off | archive
+verdict: pass | needs_revision | blocked
+reason: <one line naming the defect and whether it is code or artifacts>
 ```
 
-Code defects are `owner: developer`; artifact problems are `owner: spec-writer`.
-The agent file maps findings to PR review comments and review state. This skill
-never edits code or artifacts.
+`pass` means ready for human sign-off. `needs_revision` names whether the defect
+is in code or in the artifacts, so the persona can route it. `blocked` means the
+diff or a required source is unavailable. This skill never edits code or
+artifacts.
 
 ## Process
 
@@ -147,16 +147,10 @@ merge review, not to spec review.
 
 Then stop. Do not edit code or apply fixes.
 
-- On **ready for merge sign-off**, hand off to the human for sign-off. After
-  sign-off, the change owner archives it with the `openspec-archive-change` skill.
-- On **needs revision**, name the remediation path: artifact problems return to
-  `spec-review`, code problems return to `vertical-slice-tdd`. Do not start
-  either pass in this turn.
-
-```
-Next: human sign-off, then openspec-archive-change
-      or vertical-slice-tdd for code fixes
-```
+- On **ready for merge sign-off**, stop. A human records sign-off; do not
+  archive in this turn.
+- On **needs revision**, say whether the defect is code or artifacts. Do not
+  start either repair pass in this turn.
 
 ## Verification
 

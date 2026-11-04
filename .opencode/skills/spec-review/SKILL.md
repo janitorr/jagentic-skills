@@ -22,17 +22,19 @@ finding is not.
 
 ## Interaction contract
 
-End with a routing result the workflow can consume:
+End with a verdict the persona can act on:
 
 ```
-routing_status: ready | needs_revision
-owner: spec-writer | issue-author | human
-requested_action: post findings as review comments and request changes | record approval | proceed
+verdict: pass | needs_revision | blocked
+reason: <one line naming the defect and the stage that owns it>
 ```
 
-When the root cause is the issue, `owner: issue-author`; when the spec is wrong,
-`owner: spec-writer`. The agent file maps the action to PR comments, review state,
-and labels. This skill never edits the artifacts.
+`pass` means ready for spec approval. `needs_revision` names the failing artifact
+and the stage that owns it: the issue, the spec artifacts, the design, or the
+tasks. When the root cause is the issue, say so in the reason; when the spec is
+wrong, name the artifact. `blocked` means a required source is unavailable. The
+persona posts findings and requests changes. This skill never edits the
+artifacts.
 
 ## Process
 
@@ -120,14 +122,9 @@ human must answer, and the verdict.
 
 Then stop. Do not edit artifacts, implement, or start remediation.
 
-On **ready for spec approval**, ask the human to review the findings and, if they
-accept them, record approval with the marker the agent file defines (for example,
-a label or a comment). Do not record it yourself. If the agent file defines no
-marker, ask which marker to use; do not invent one. Hand off:
-
-```
-Next: vertical-slice-tdd for change <name>
-```
+On **ready for spec approval**, do not record approval yourself. Say that human
+approval is needed and name the marker the agent file defines; if it defines
+none, say which marker is needed rather than inventing one. Then stop.
 
 On **needs revision**, name the artifact pass that owns each blocking finding
 (return to the issue, return to explore, or update the change artifacts) and

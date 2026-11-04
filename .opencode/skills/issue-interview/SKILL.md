@@ -22,17 +22,17 @@ spec. Not for mechanical changes with unambiguous acceptance criteria.
 
 ## Interaction contract
 
-End with a routing result the workflow can consume:
+End with a verdict the persona can act on:
 
 ```
-routing_status: ready | blocked
-owner: issue-author | workflow | human
-requested_action: publish issues | answer the missing questions
+verdict: pass | blocked
+reason: <one line>
 ```
 
-If the user cannot supply a required section, stop as `blocked` with the missing
-sections and questions. Do not publish a partial issue. The agent file maps
-`requested_action` to tracker operations.
+`pass` means the issue bodies are confirmed and ready to publish. If the user
+cannot supply a required section, stop as `blocked` and name the missing
+sections and questions. Do not publish a partial issue. Publishing is the
+persona's action.
 
 ## Rules
 
@@ -131,13 +131,8 @@ existing issue, use the tracker's amend operation; never create a duplicate.
 
 If the tracker is unavailable, print the finished bodies and stop.
 
-Report the issue identifiers and links. Then hand off:
-
-```
-Next: issue-to-openspec for issues <identifier> [<identifier>...]
-```
-
-Do not create branches, OpenSpec changes, or specs in this turn.
+Report the issue identifiers and links. Then stop. Do not create branches,
+OpenSpec changes, or specs in this turn.
 
 ## Verification
 

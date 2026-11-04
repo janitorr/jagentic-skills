@@ -1,106 +1,137 @@
-# Workflow and GitHub mapping
+# Workflow and delivery
 
-The skills own stages. This document owns the loop routing and the GitHub
-artifacts that carry it. Labels and comment formats are examples; the agent file
-defines the real ones for a repository.
+The skills own stages. The persona owns delivery. This document owns the stage
+graph, loop limits, and human gates. Labels and comment formats are examples; the
+agent file defines the real operations.
 
 ## Boundary
 
 | Layer | Owns |
 |---|---|
-| Skill | Stage process, completion criteria, findings, and a semantic routing result: `routing_status`, `owner`, `requested_action` |
+| Skill | Stage process, completion criteria, findings, and a verdict: `pass`, `needs_revision`, or `blocked`, with a one-line reason |
+| Persona / agent file | Role, task, tools, tracker and review operations, approval marker, workspace and push policy |
 | Workflow | Which stage runs next, loop limits, escalation, and when to wait for a human |
-| Agent file | GitHub mechanics: comments, labels, review state, workspace policy |
 
 A stage skill does not invoke another stage skill and does not assume a specific
-tracker or label CLI. It may invoke OpenSpec and the named supporting skills.
+tracker or label CLI. It may invoke OpenSpec and the named supporting skills. The
+skill reports what happened; the persona decides how to deliver it.
 
-## Routing result
+## Verdict
 
 Every stage ends with:
 
 ```
-routing_status: ready | blocked | needs_revision
-owner: issue-author | spec-writer | developer | workflow | human
-requested_action: <what the environment should do next>
+verdict: pass | needs_revision | blocked
+reason: <one line naming the defect and the stage or input that can resolve it>
 ```
 
-The workflow routes on `routing_status` and `owner`; the agent file maps
-`requested_action` to GitHub operations. `owner` is the blocking owner. Use
-`workflow` when the next action is simply the next stage.
+- `pass`: the stage is complete. The persona advances, or asks for the human
+  gate the stage requires.
+- `needs_revision`: a defect the owning stage can fix. The reason names the
+  failing artifact or code and the stage that owns it.
+- `blocked`: a human or upstream input is required. The reason names what is
+  missing. The stage cannot proceed until it arrives.
 
-## States
+The persona maps the verdict and reason to comments, labels, review state,
+commits, and pull requests. Skills never name those operations.
+
+## Stage graph
 
 ```mermaid
 flowchart TD
-    A[issue-interview] --> B[issue-to-openspec]
-    B -- blocked / issue-author --> C[issue awaiting information]
-    C -- human answers, label removed --> B
-    B -- ready --> D[spec-review]
-    D -- needs revision / spec-writer --> B
-    D -- needs revision / issue-author --> C
-    D -- ready + human approval marker --> E[vertical-slice-tdd]
-    E -- ready --> F[code-review]
-    E -- blocked / spec-writer --> B
-    F -- needs revision / developer --> E
-    F -- needs revision / spec-writer --> B
-    F -- ready --> H[human review]
-    H -- sign-off --> G[archive]
-    H -- design or scope issue / spec-writer --> B
-    H -- code issue / developer --> E
+    A[issue-interview] -->|pass| B[issue-to-openspec]
+    A -->|blocked| C[awaiting human input]
+    C --> A
+    B -->|blocked| C
+    B -->|pass| D[spec-review]
+    D -->|needs_revision| B
+    D -->|pass + human approval marker| E[vertical-slice-tdd]
+    E -->|blocked: marker or drift| D
+    E -->|pass| F[code-review]
+    F -->|needs_revision: code| E
+    F -->|needs_revision: artifacts| B
+    F -->|pass| H[human review]
+    H -->|sign-off| G[archive]
+    H -->|design or scope issue| B
+    H -->|code issue| E
 ```
 
 This is the happy path plus the named exceptions. Human review can still send a
 design issue back to the spec writer; that reopens the spec gate and invalidates
-the prior approval marker. The `needs-information` wait can sit on the
-`issue-to-openspec` or `spec-review` edge. It is not a retry: the stage cannot
+the prior approval marker. The `blocked` wait is not a retry: the stage cannot
 proceed until a human answers.
+
+## Verdicts by stage
+
+| Stage | `pass` means | `needs_revision` means | `blocked` means |
+|---|---|---|---|
+| `issue-interview` | The issue bodies are confirmed and published | — | A required section or answer is missing |
+| `issue-to-openspec` | The change is proposed and validates strictly | Artifacts changed after review and need an update | The issue is missing context |
+| `spec-review` | Ready for spec approval | A defect in the issue, the spec, the design, or the tasks | A required source is unavailable |
+| `vertical-slice-tdd` | Every task is implemented and the suite is green | — | The approval marker is absent or the artifacts drifted |
+| `code-review` | Ready for human sign-off | A code or artifact defect | The diff or a required source is unavailable |
+
+## Persona delivery
+
+The agent file decides how each verdict is delivered. Typical mappings:
+
+| Verdict | Example delivery |
+|---|---|
+| `pass` at `issue-interview` | Publish the issues, then start `issue-to-openspec` |
+| `blocked` at `issue-to-openspec` | Comment the questions on the issue, mark it awaiting information, stop |
+| `needs_revision` at `spec-review` | Post findings as review comments and request changes |
+| `pass` at `spec-review` | Ask the human to record the approval marker |
+| `blocked` at `vertical-slice-tdd` | Ask for the missing marker or artifact fix; do not implement |
+| `needs_revision` at `code-review` | Post review comments and request changes |
+| `pass` at `code-review` | Ask the human for sign-off; archive only after it |
+
+An agent file may use different operations for the same verdict. The skill's job
+is to make the verdict and reason unambiguous, not to choose the tracker
+mechanics.
 
 ## Human-information loop versus rework loop
 
-**Human-information loop.** The spec writer cannot proceed because the issue is
-missing context. This is a blocking state, not an agent retry.
+**Human-information loop.** The stage cannot proceed because input is missing.
+This is a blocking state, not an agent retry.
 
 ```
-spec writer
-  -> post questions on the issue
-  -> add needs-information
+stage
+  -> report blocked with the missing input
+  -> persona posts the questions and marks the work awaiting information
   -> stop
-  -> wait for a human answer
-  -> remove needs-information
-  -> rerun the spec writer
+  -> a human answers
+  -> the same stage reruns
 ```
 
-**Rework loop.** A reviewer found a defect in an artifact the owner can fix.
-This can run agent-to-agent.
+**Rework loop.** A reviewer found a defect in an artifact or code the owning
+stage can fix. This can run agent-to-agent.
 
 ```
-spec-review
-  -> post findings as review comments
-  -> request changes
-  -> rerun issue-to-openspec
-  -> new commits
-  -> rerun spec-review
+reviewer
+  -> report needs_revision naming the defect and owning stage
+  -> persona posts findings and requests changes
+  -> the owning stage reruns
+  -> the reviewer reruns on new commits
 ```
 
 ## GitHub mapping
 
-Normalize the prose in a skill's `requested_action` to one of these semantic
-actions before mapping it to GitHub.
+Normalize the reason to one semantic action before mapping it to a tracker. The
+agent file chooses the actual command or label.
 
-| Semantic action | Skill `requested_action` examples | GitHub operation |
+| Semantic action | Typical verdict | Example operation |
 |---|---|---|
-| `publish_issues` | "publish issues" | `gh issue create` or the configured tracker operation |
-| `request_information` | "answer the missing questions", "post questions on the issue" | `gh issue comment <n> --body-file -` and `gh issue edit <n> --add-label needs-information`; wait |
-| `request_spec_changes` | "post findings as review comments and request changes", "update the spec artifacts" | `gh pr review <n> --request-changes --body-file -`; inline comments for file-level findings; rerun `issue-to-openspec` on new commits |
-| `request_code_changes` | "post review comments and request changes" | `gh pr review <n> --request-changes --body-file -`; inline comments; rerun `vertical-slice-tdd` on new commits |
-| `approve_spec` | "record approval" | Human sets the configured approval marker, for example a `ready-for-dev` label |
-| `sign_off_code` | "human sign-off" | Human approves the PR; then the change owner archives with the OpenSpec archive workflow |
-| `human_review_change` | "design issue", "scope change", "this needs a different approach" | Comment on the PR or issue; return to `issue-to-openspec` and `spec-review`; require a new approval marker |
-| `blocked_design_drift` | "update the artifacts" | Comment on the change or PR with the drift; return to `issue-to-openspec` and `spec-review` |
+| `publish_issues` | `pass` at `issue-interview` | `gh issue create`, or the configured tracker operation |
+| `request_information` | `blocked` with a missing input | Comment the questions; add the waiting label; stop |
+| `request_spec_changes` | `needs_revision` in `spec-review` with an artifact cause | Request changes on the PR that owns the artifacts; rerun `issue-to-openspec` on new commits |
+| `request_code_changes` | `needs_revision` in `code-review` with a code cause | Request changes on the PR; rerun `vertical-slice-tdd` on new commits |
+| `approve_spec` | `pass` at `spec-review` | Human sets the configured approval marker |
+| `sign_off_code` | `pass` at `code-review` | Human approves; then archive with the OpenSpec archive workflow |
+| `human_review_change` | Human raises a design or scope issue | Comment; return to `issue-to-openspec` and `spec-review`; require a new marker |
+| `blocked_design_drift` | `blocked` at `vertical-slice-tdd` with drift | Comment the drift; return to `issue-to-openspec` and `spec-review` |
 
-Review comments belong on the PR that owns the artifact. A status hidden in chat
-is not a routing signal.
+Review comments belong on the PR or issue that owns the artifact. A status
+hidden in chat is not a delivery.
 
 ## Archive
 
@@ -111,14 +142,14 @@ moves the change into the archive directory, and commits the result.
 
 ## Workflow rules
 
-- **Only loop on a named owner.** `needs_revision` without an owner is a human
-  escalation.
+- **Only loop on a named cause.** `needs_revision` must name the failing
+  artifact or code. A verdict without a cause is a human escalation.
 - **Cap rework.** Three reviewer cycles, then stop and ask. Spec and code loops
   can otherwise oscillate.
 - **Require new evidence.** Re-run a reviewer only after the owning stage changed
   an artifact or commit. Do not re-review an unchanged tree.
-- **Do not auto-retry human-information blocks.** `needs-information` waits for a
-  human; it is not a failed agent run.
+- **Do not auto-retry human blocks.** A `blocked` verdict waits for a human; it
+  is not a failed agent run.
 - **Keep human gates fixed.** Auto-rework may fix findings, but implementation
   still needs the approval marker and merge still needs sign-off.
 - **Human review can reopen the spec.** A design or scope finding at the final
@@ -128,72 +159,39 @@ moves the change into the archive directory, and commits the result.
   and no design change is open.
 - **Escalate silent narrowing.** If a fix would weaken a requirement, stop and
   ask instead of looping.
-- **One owner per finding.** Artifact findings go to `spec-writer`; code findings
-  go to `developer`; unclear scope goes to `issue-author` or `human`.
+- **One cause per finding.** Artifact findings name the artifacts; code findings
+  name the code; unclear scope names the missing decision.
 
 ## Example: spec reviewer finds a missing requirement
 
 ```
 spec-review
-  routing_status: needs_revision
-  owner: issue-author
-  requested_action: post questions on the issue and add needs-information
-        |
-        v
-issue comment + needs-information
-        |
-        v
-human answers, label removed
-        |
-        v
-issue-to-openspec reruns, updates the proposal and spec delta
-        |
-        v
-spec-review reruns
+  verdict: needs_revision
+  reason: the spec delta drops the issue's per-user scoping requirement
 ```
+
+The persona posts the finding as a review comment, requests changes, and reruns
+`issue-to-openspec` on new commits. The change does not reach implementation.
 
 ## Example: code reviewer finds a test gap
 
 ```
 code-review
-  routing_status: needs_revision
-  owner: developer
-  requested_action: post review comments and request changes
-        |
-        v
-PR review: changes requested
-        |
-        v
-vertical-slice-tdd reruns on new commits
-        |
-        v
-code-review reruns
+  verdict: needs_revision
+  reason: the whitespace branch has no regression test; suite passes without it
 ```
+
+The persona posts review comments and requests changes. `vertical-slice-tdd`
+reruns on new commits, then `code-review` reruns.
 
 ## Example: human review raises a design issue
 
 ```
 code-review
-  routing_status: ready
-  owner: human
-        |
-        v
-human review: "this model will not scale"
-        |
-        v
-comment on the PR or issue
-        |
-        v
-issue-to-openspec updates design and spec
-        |
-        v
-spec-review reruns
-        |
-        v
-human records a new approval marker
-        |
-        v
-vertical-slice-tdd reruns, then code-review, then human review
+  verdict: pass
+  reason: implementation matches the approved change; ready for sign-off
 ```
 
-Archive waits until the human accepts the result and no design change is open.
+The human reviews and decides the design is wrong. The persona returns to
+`issue-to-openspec` and `spec-review`; the prior approval marker no longer
+applies. Implementation waits for a new marker.

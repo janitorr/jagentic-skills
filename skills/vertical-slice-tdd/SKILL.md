@@ -23,20 +23,17 @@ cadence. The agent file owns the workspace, push, and pull-request policy.
 
 ## Interaction contract
 
-End with a routing result the workflow can consume:
+End with a verdict the persona can act on:
 
 ```
-routing_status: ready | blocked
-owner: developer | spec-writer | workflow | human
-requested_action: proceed to code-review | update the artifacts | stop for approval
+verdict: pass | blocked
+reason: <one line naming the missing precondition>
 ```
 
-Design drift is `blocked` with `owner: spec-writer`; do not continue
-implementation. A missing approval marker is `blocked` with `owner: human` and
-`stop for approval`. On `ready`, use `owner: workflow` with
-`proceed to code-review`; use `developer` only when a developer must act before
-the next stage can run. The agent file maps the action to tracker or PR
-operations.
+`pass` means every task is implemented, the suite is green, and the handoff is
+recorded. `blocked` means a precondition is missing: the approval marker or the
+artifacts. Name which one in the reason. A missing marker is not something this
+skill can resolve; do not continue implementation or create the marker yourself.
 
 ## Preconditions
 
@@ -166,12 +163,8 @@ The handoff report records:
 - Deferred tasks and deviations from the spec.
 - The slice-to-task mapping, when tasks were regrouped.
 
-Post the handoff to the review destination defined by the agent file. Then hand
-off to code review. Do not archive the change.
-
-```
-Next: code-review for change <name> at <fixed-point>
-```
+Post the handoff to the review destination defined by the agent file. Then stop.
+Do not archive the change.
 
 ## Verification
 
