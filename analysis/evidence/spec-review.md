@@ -223,3 +223,11 @@ ceiling claim in this record is withdrawn until it is re-baselined.
 `spec-review` is the second stage with a routing record, after
 `issue-to-openspec`. The other stage skills and the multi-stage loop in
 `docs/workflow.md` are still untested.
+
+## Contract change
+
+The `routing_status` / `owner` / `requested_action` contract used in this record
+was retired on 2026-11-04. Skills now end with
+`verdict: pass | needs_revision | blocked` and a one-line reason; delivery
+belongs to the persona's agent file. Verdict, gate, and finding results in this
+record stand; owner and action columns no longer describe the skill.

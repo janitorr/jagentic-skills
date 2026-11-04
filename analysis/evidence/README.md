@@ -9,18 +9,24 @@ edit; five skills are still unverified for behavior.
 This note is the place to resume. Do not treat the absence of evidence as proof
 that a skill works.
 
+**Contract change (2026-11-04).** Skills now end with
+`verdict: pass | needs_revision | blocked` and a one-line reason. The
+`routing_status` / `owner` / `requested_action` contract was retired because
+delivery belongs to the persona's agent file, not the skill. Owner-based results
+in the records below are superseded; verdict, gate, and finding results stand.
+
 ## What exists
 
 | Skill | Evidence | Status |
 |---|---|---|
-| `spec-review` | `analysis/evidence/spec-review.md` plus fixtures | Pilot plus five repetitions per condition; routing 3/3 on seeded, 4/9 ready on the repaired clean fixture; clean ceiling withdrawn |
-| `vertical-slice-tdd` | `analysis/evidence/vertical-slice-tdd.md` plus fixture | TDD ceiling; approval gate discriminates; routing blocked/human 3/3 and ready/workflow 3/3 after the fix |
+| `spec-review` | `analysis/evidence/spec-review.md` plus fixtures | Pilot plus five repetitions per condition; verdict 3/3 on seeded, 4/9 pass on the repaired clean fixture; clean ceiling withdrawn |
+| `vertical-slice-tdd` | `analysis/evidence/vertical-slice-tdd.md` plus fixture | TDD ceiling; approval gate discriminates; verdict blocked 3/3 and pass 3/3 |
 | `documentation` | `analysis/evidence/documentation.md` plus `documentation/headings.txt` | Exploratory format probe (n=1 per type) plus post-patch retest (n=3 per changed type); retest has no control |
 | `documentation` vs `writing-for-agents` | `analysis/evidence/documentation-vs-writing-for-agents.md` plus `documentation-vs-writing-for-agents/headings.txt` | Exploratory n=3 comparison of README and AGENTS.md output; document shape only |
 | All ten descriptions | `analysis/evidence/trigger-tests.md` | Proxy 105/105; live 8/10 generic, 4/4 repo-specific |
 | `documentation` description | `analysis/evidence/trigger-tests.md#re-run-after-the-documentation-description-edit` | 3 proxy reps, 14 prompts: 40/42, then 41/42 after the RFC fix; live 5/5 after |
-| `issue-to-openspec` | `analysis/evidence/issue-to-openspec.md` plus fixture | Pilot, 3 reps per condition; pointer fires, design-quality ceiling; slicing and marker rules retested 3/3; blocked path routing 3/3, gate 1/3 then 3/3; real pipelines 3/3; ready owner 3/3 after the fix |
-| `code-review` | `analysis/evidence/code-review.md` plus fixture | 3 reps per condition; clean → ready/human 3/3, seeded defect → needs_revision/developer 3/3 |
+| `issue-to-openspec` | `analysis/evidence/issue-to-openspec.md` plus fixture | Pilot, 3 reps per condition; pointer fires, design-quality ceiling; slicing and marker rules retested 3/3; blocked verdict 3/3, gate 1/3 then 3/3; real pipelines 3/3; pass 3/3 |
+| `code-review` | `analysis/evidence/code-review.md` plus fixture | 3 reps per condition; clean → pass 3/3, seeded defect → needs_revision 3/3 |
 | Five other skills | none for behavior | Unverified behavior |
 
 The `spec-review` fixtures are small OpenSpec projects under
@@ -95,11 +101,10 @@ narrows the whitespace regex so the suite passes while the spec is violated.
   user's "proceed" instruction override the missing section. After making the
   rule absolute and requiring the block to enumerate gaps, 3/3 blocked and named
   every gap. The control blocked 0/3.
-- `spec-review` emitted `routing_status`, `owner`, and `requested_action` 12/12
-  across the seeded and clean fixtures. Seeded was
-  `needs_revision` / `spec-writer` 3/3. The clean fixture reached
-  `ready` / `human` 4/9 across repaired cohorts; the other runs blocked on
-  fixture defects or on the untracked UI follow-up.
+- `spec-review` emitted the routing block 12/12 across the seeded and clean
+  fixtures. Seeded was `needs_revision` 3/3. The clean fixture reached `pass`
+  4/9 across repaired cohorts; the other runs blocked on fixture defects or on
+  the untracked UI follow-up.
 - The earlier clean `5/5 ready, 0 false blocking` result was not reproducible.
   The "clean" fixture still carried a seeded duplicate-requirement defect and
   had no app shell, schema, or request contract. It has since been repaired;
@@ -107,18 +112,17 @@ narrows the whitespace regex so the suite passes while the spec is violated.
 - With `openspec-explore` and `openspec-propose` installed, all three
   `issue-to-openspec` runs used the real pipeline and produced strict-valid
   artifacts. The pointer and the design ceiling did not move. One run emitted
-  `owner: human` with `proceed to spec-review`; pinning `ready` to `workflow`
-  fixed it at 3/3.
+  `owner: human` with `proceed to spec-review`; that field was later retired
+  with the verdict contract, so the owner fix is historical.
 - `vertical-slice-tdd` stopped 3/3 when the `APPROVED` marker was deleted, with
-  no code changes and no fabricated marker. Its ready result used
-  `owner: developer` 2/2; pinning `ready` to `workflow` moved it to 3/3 with
-  `proceed to code-review`.
+  no code changes and no fabricated marker. All approved runs implemented, kept
+  the suite green, and committed per slice.
 - One approved `vertical-slice-tdd` run produced no work and no report. It is
   recorded as a harness failure, not a routing result.
-- `code-review` routed a clean diff to `ready / human / human sign-off` 3/3 and
-  a seeded whitespace defect to `needs_revision / developer / request changes`
-  3/3. The clean diff produced only Optional findings; the seeded one was found
-  by every run, including the missing non-space whitespace test.
+- `code-review` returned `pass` 3/3 on a clean diff and `needs_revision` 3/3 on
+  a seeded whitespace defect. The clean diff produced only Optional findings;
+  the seeded one was found by every run, including the missing non-space
+  whitespace test.
 
 ## Why there is no standing suite
 
@@ -167,14 +171,15 @@ the re-run after the `documentation` edit and the RFC retest. The remaining work
 is to check that the project-skill precedence rule wins when a generic and a
 project skill both apply.
 
-Pending routing-contract test: four stages are recorded. `issue-to-openspec`
-emitted the block 3/3 on the blocked fixture; the gate held 1/3, then 3/3 after
-the precondition fix; a ready result now uses `owner: workflow` 3/3.
-`spec-review` emitted the block 12/12 and used all three owner values correctly.
-`vertical-slice-tdd` blocked 3/3 with `human`, and ready 3/3 with `workflow`
-after the owner fix. `code-review` routed clean 3/3 to `human` and a seeded code
-defect 3/3 to `developer`. `issue-interview` has no routing record, and the
-multi-stage loop in `docs/workflow.md` remains untested.
+Pending verdict-contract test: four stages are recorded. `issue-to-openspec`
+reported `blocked` 3/3 on the blocked fixture; the gate held 1/3, then 3/3 after
+the precondition fix; `pass` 3/3 with the real pipeline. `spec-review` reported
+`needs_revision` 3/3 on seeded and `pass` 4/9 on the repaired clean fixture.
+`vertical-slice-tdd` reported `blocked` 3/3 without the marker and `pass` 3/3
+with it. `code-review` reported `pass` 3/3 on a clean diff and `needs_revision`
+3/3 on a seeded defect. `issue-interview` has no record, and the multi-stage loop
+in `docs/workflow.md` remains untested. Owner-based routing tests are retired
+with the contract.
 
 Pending cross-skill test: none. The `issue-to-openspec` pointer to
 `deep-module-design` is recorded in `issue-to-openspec.md`: it fires, and its

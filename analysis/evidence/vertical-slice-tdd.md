@@ -144,3 +144,11 @@ the patch and three after.
 - The a1 silent failure shows the harness can drop a run; treat single-run
   differences as noise.
 - The design-drift branch (`blocked / spec-writer`) was not exercised.
+
+## Contract change
+
+The `routing_status` / `owner` / `requested_action` contract used in this record
+was retired on 2026-11-04. Skills now end with
+`verdict: pass | needs_revision | blocked` and a one-line reason; delivery
+belongs to the persona's agent file. Verdict, gate, and finding results in this
+record stand; owner and action columns no longer describe the skill.

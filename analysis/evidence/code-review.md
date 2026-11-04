@@ -93,3 +93,11 @@ cd /tmp/opencode/cr-seeded
 
 Prompt: load `code-review`, review `feature/add-slugify` against `main`, use the
 isolation directory for the mutation probe, do not edit tracked files.
+
+## Contract change
+
+The `routing_status` / `owner` / `requested_action` contract used in this record
+was retired on 2026-11-04. Skills now end with
+`verdict: pass | needs_revision | blocked` and a one-line reason; delivery
+belongs to the persona's agent file. Verdict, gate, and finding results in this
+record stand; owner and action columns no longer describe the skill.
