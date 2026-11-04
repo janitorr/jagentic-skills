@@ -13,6 +13,7 @@ git init -q -b main
 git config user.email eval@example.com
 git config user.name Eval
 
+if [[ "${NO_AGENTS:-0}" != "1" ]]; then
 cat > AGENTS.md <<'EOF'
 # Project
 
@@ -30,6 +31,7 @@ cat >> AGENTS.md <<'EOF'
 - Areas: `delivery`, `notifications`, `tests`, `docs`
 - One logical change per commit. Do not commit generated or debug files.
 EOF
+fi
 fi
 
 cat > src/delivery.py <<'EOF'
@@ -131,7 +133,10 @@ cat > README.md <<'EOF'
 One-attempt outbound webhook delivery.
 EOF
 
-git add AGENTS.md README.md src tests
+git add README.md src tests
+if [[ "${NO_AGENTS:-0}" != "1" ]]; then
+  git add AGENTS.md
+fi
 msg="delivery: add the single-attempt webhook sender"
 if [[ "${NO_CONVENTION:-0}" == "1" ]]; then
   msg="initial commit"

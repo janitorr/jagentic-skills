@@ -176,8 +176,30 @@ method again.
 An owner-field inconsistency in this cohort was fixed and then retired with the
 verdict contract. It is not scored here.
 
+### Reviewer revision route
+
+The revision route was added after the pipeline cohort: a reviewer's
+`needs_revision` re-enters `issue-to-openspec`, which delegates existing-artifact
+revision to `openspec-update-change` instead of proposing a new change.
+
+Fixture: a valid `add-retry` change in a copy of the seam project. Reviewer
+finding: the design omits the exhaustion behavior and the tasks have no
+exhaustion test.
+
+| Run | Condition | Result |
+|---|---|---|
+| 1 | Invalid: the prompt forbade loading any other skill | `openspec-update-change` could not load, so the agent edited the artifacts directly. Not scored. |
+| 2 | Delegated workflows allowed | Routed to `openspec-update-change`; revised design, spec delta, and tasks; no new change; strict validation passed; verdict `pass`. |
+
+The route works. The delegated workflow applied the edits without showing them
+for confirmation, so the stage now requires a confirmed revision before `pass`.
+One run; no control. The stage's confirmation gate is untested after the edit.
+
 ## What changed in the skill
 
+- A route step: a new change runs explore then `openspec-propose`; a reviewer
+  revision runs `openspec-update-change`; an intent change starts a new change.
+- A `pass` gate requiring the user to confirm any reviewer revision.
 - A slicing recipe in step 4: one observable behavior per task, sliced by
   scenario, not by layer.
 - A precondition that a missing section blocks even when the user asks to
@@ -199,6 +221,8 @@ verdict contract. It is not scored here.
   rejected inline loop, which pushes every condition toward a wrapper.
 - The retests are treatment-only and sometimes change two rules at once, so
   before/after is not a controlled comparison.
+- The revision route is one treatment-only run; the first attempt was invalid
+  because the prompt forbade loading the delegated workflow skill.
 
 ## Reproduce
 

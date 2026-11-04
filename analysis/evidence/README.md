@@ -25,10 +25,10 @@ in the records below are superseded; verdict, gate, and finding results stand.
 | `documentation` vs `writing-for-agents` | `analysis/evidence/documentation-vs-writing-for-agents.md` plus `documentation-vs-writing-for-agents/headings.txt` | Exploratory n=3 comparison of README and AGENTS.md output; document shape only |
 | All ten descriptions | `analysis/evidence/trigger-tests.md` | Proxy 105/105; live 8/10 generic, 4/4 repo-specific; change-list retest 24/24 proxy, live docs 1/1 |
 | `documentation` description | `analysis/evidence/trigger-tests.md#re-run-after-the-documentation-description-edit` | 3 proxy reps, 14 prompts: 40/42, then 41/42 after the RFC fix; live 5/5 after |
-| `issue-to-openspec` | `analysis/evidence/issue-to-openspec.md` plus fixture | Pilot, 3 reps per condition; pointer fires, design-quality ceiling; slicing and marker rules retested 3/3; blocked verdict 3/3, gate 1/3 then 3/3; real pipelines 3/3; pass 3/3 |
+| `issue-to-openspec` | `analysis/evidence/issue-to-openspec.md` plus fixture | Pilot, 3 reps per condition; pointer fires, design-quality ceiling; slicing and marker rules retested 3/3; blocked verdict 3/3, gate 1/3 then 3/3; real pipelines 3/3; pass 3/3; revision route 1/1 after an invalid first run |
 | `code-review` | `analysis/evidence/code-review.md` plus fixture | 3 reps per condition; clean → pass 3/3, seeded defect → needs_revision 3/3 |
 | `issue-interview` | `analysis/evidence/issue-interview.md` plus fixtures | Pilot plus two retests; final gate 2/2, confidence 12/12 responses, 6 questions per run; template n=1 |
-| `git-workflow` | `analysis/evidence/git-workflow.md` plus fixtures | Pilot; trimmed to 80 lines of invariants and defaults; no capability advantage over the control; commit shape is the observed difference |
+| `git-workflow` | `analysis/evidence/git-workflow.md` plus fixtures | Pilot; trimmed to 80 lines of invariants and defaults; trim retest split under pressure with no `AGENTS.md`; conflict/push/release tested on the longer version |
 | `visual-explainer` | `analysis/evidence/visual-explainer.md` plus fixture | Pilot, positive; diagram for a call path, prose for a one-liner; one-pager compared with `show-me` |
 | Two other skills | none for behavior | Unverified behavior |
 
@@ -121,6 +121,13 @@ reproduction steps.
   pilots, the skill kept only the invariants and the defaults a repo without a
   convention needs. The step-by-step staging, branch, finish, and worktree
   procedures were removed.
+- **The trimmed git skill holds the pressure case.** With no `AGENTS.md` and a
+  mixed tree, it split the timeout fix from the reflow, excluded `debug.log`, and
+  used the default commit shape. The longer version had bundled them.
+- **Reviewer revisions route, but confirmation is the weak point.** The stage
+  reached `openspec-update-change` and revised the existing change; the workflow
+  wrote without showing the edits, so the stage now gates `pass` on a confirmed
+  revision.
 - **Change lists route to documentation.** Removing "changelog" from
   `git-workflow` and adding "release notes" to `documentation` split eight
   prompts 24/24 in the proxy; the live changelog prompt loaded `documentation`.
@@ -192,9 +199,11 @@ other two, `deep-module-design` and `skill-forge`, are behavior-shaping document
 with no observed behavior behind them. That is accepted temporary debt, not a
 completed verification. `issue-interview` is a pilot plus two retests: the final
 gate and confidence line held 2/2, but the control was not rerun against the
-final wording. `git-workflow` is an 80-line invariants-and-defaults document; its
-conflict, push, and release results belong to the longer version, and the trimmed
-version is untested. `visual-explainer` is a one-run-per-condition pilot.
+final wording. `git-workflow` is an 80-line invariants-and-defaults document; the
+trim retest covers commit scope, while conflict, push, and release results belong
+to the longer version. `issue-to-openspec` has a one-run revision-route pilot; its
+confirmation gate is untested. `visual-explainer` is a one-run-per-condition
+pilot.
 
 Trigger work is complete. The proxy and live selector passes are recorded,
 including the re-run after the `documentation` edit and the RFC retest. The

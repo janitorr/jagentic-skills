@@ -1,11 +1,11 @@
 # git-workflow: commits, conflict, push, and release
 
-Status: **pilot; trimmed to invariants and defaults**. Commit scope is negative:
-the control passed and the skill did not split a mixed slice under pressure.
-Merge conflict, rejected push, and release showed no baseline failure; both
-conditions handled them correctly. The only observed difference was the default
-commit shape. The step-by-step procedures were then removed, leaving invariants
-and defaults; the trimmed version is untested.
+Status: **pilot; trimmed to invariants and defaults**. Commit scope is negative
+on the longer version: the control passed and the skill did not split a mixed
+slice under pressure. Merge conflict, rejected push, and release showed no
+baseline failure; both conditions handled them correctly. The only observed
+difference was the default commit shape. The step-by-step procedures were
+removed; a trim retest then split the mixed tree correctly with no agent file.
 
 ## Question
 
@@ -144,6 +144,22 @@ mechanics were replaced with a pointer to the harness and agent file. The safety
 rules remain: ask before adding isolation, clean up only what you created, and
 never force-remove on your own initiative.
 
+### Trim retest
+
+Fixture: `setup.sh` with `NO_CONVENTION=1 NO_AGENTS=1`; no `AGENTS.md`, no commit
+convention, the same mixed tree, and the same "commit everything" line.
+
+The trimmed skill:
+
+- made two commits, `delivery: raise webhook timeout to 10 seconds` and
+  `notifications: wrap webhook calls to fit line length`;
+- left `debug.log` untracked;
+- ran the tests before committing;
+- did not push, and did not ask for an agent file.
+
+This fixes the earlier mixed-slice miss. One run; no control on this exact
+fixture, but the earlier no-convention control mixed the slice.
+
 ## Trim
 
 The procedures mostly duplicated what the control already did. The body went
@@ -188,13 +204,12 @@ as a capability the control lacks. Commit-scope splitting remains unproven.
 - The release fixture had no release tool, so both conditions hand-computed the
   version; a tool-assisted release is untested.
 - The stated-convention commit variant gave the control the rule it needed.
-- The trimmed version is untested; the results above belong to the longer
-  version.
+- The trimmed version is retested on commit scope only; conflict, push, and
+  release results above belong to the longer version.
 
 ## Next
 
-- Retest the trimmed version once: a mixed tree under "commit everything", a
-  conflict, a rejected push, and a release with a semver CLI.
+- Retest the trimmed version on a conflict, a rejected push, and a release.
 - Test a weaker model to see whether the invariants help where a strong control
   does not need them.
 - Do not retest the removed procedures or the basic fixtures; they ceilinged.

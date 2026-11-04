@@ -34,12 +34,13 @@ verdict: pass | blocked | needs_revision
 reason: <one line naming the missing input or the failing artifact>
 ```
 
-`pass` means the change is proposed or revised and validates strictly. Missing
-issue context is `blocked`; name every missing section and every contradictory
-statement in the reason, because "provide more context" is not enough. Artifact
-changes after review are `needs_revision`; route them through
-`openspec-update-change`. The persona posts questions or requests changes. Never
-leave a blocking question only in chat.
+`pass` means the change is proposed or revised, any reviewer revision was
+confirmed by the user, and it validates strictly. Missing issue context is
+`blocked`; name every missing section and every contradictory statement in the
+reason, because "provide more context" is not enough. Artifact changes after
+review are `needs_revision`; route them through `openspec-update-change`. The
+persona posts questions or requests changes. Never leave a blocking question
+only in chat.
 
 Never create the approval marker yourself. It records a human gate; the reviewer
 or human sets it after spec review.
@@ -149,6 +150,7 @@ failure recovers" and "exhaustion reports failure" are two slices.
 
 For a new change, invoke `openspec-propose`. For a reviewer revision, invoke
 `openspec-update-change`; it owns the existing artifacts and confirms each edit.
+Do not report `pass` until the user has seen and confirmed the revised artifacts.
 Do not create a missing artifact from this skill; point to the workflow's
 continue path.
 
