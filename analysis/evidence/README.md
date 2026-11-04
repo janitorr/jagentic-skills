@@ -3,7 +3,8 @@
 Status: **opportunistic**. Targeted tests run when a skill or behavior warrants
 it; there is no standing eval suite. Two skills have partial behavioral evidence;
 one skill has an exploratory format probe; all ten descriptions passed a trigger
-pilot; seven skills are still unverified for behavior.
+pilot, and the `documentation` description was re-tested after its edit; seven
+skills are still unverified for behavior.
 
 This note is the place to resume. Do not treat the absence of evidence as proof
 that a skill works.
@@ -17,6 +18,7 @@ that a skill works.
 | `documentation` | `analysis/evidence/documentation.md` plus `documentation/headings.txt` | Exploratory format probe (n=1 per type) plus post-patch retest (n=3 per changed type); retest has no control |
 | `documentation` vs `writing-for-agents` | `analysis/evidence/documentation-vs-writing-for-agents.md` plus `documentation-vs-writing-for-agents/headings.txt` | Exploratory n=3 comparison of README and AGENTS.md output; document shape only |
 | All ten descriptions | `analysis/evidence/trigger-tests.md` | Proxy 105/105; live 8/10 generic, 4/4 repo-specific |
+| `documentation` description | `analysis/evidence/trigger-tests.md#re-run-after-the-documentation-description-edit` | 3 proxy reps, 14 prompts: 40/42, then 41/42 after the RFC fix; live 5/5 after |
 | Seven other skills | none for behavior | Unverified behavior |
 
 The `spec-review` fixtures are small OpenSpec projects under
@@ -59,6 +61,11 @@ behavior can be scored from disk.
   agent-instruction negations fell from 6 to 2, and every file now states what
   done means. Files are about 20% longer. This is document-shape evidence; no
   downstream compliance test has been run.
+- After the `documentation` description edit, tutorial, runbook, migration-guide,
+  and release-notes prompts all routed to the local skill in both the proxy and
+  the live selector. RFC did not, because the body said "ADR or RFC" and the
+  description said only "ADR". Adding the word fixed it: 3/3 proxy and local
+  skill live.
 
 ## Why there is no standing suite
 
@@ -101,9 +108,10 @@ Only `spec-review` and `vertical-slice-tdd` have partial behavioral records;
 behavior-shaping documents with no observed behavior behind them. That is
 accepted temporary debt, not a completed verification.
 
-Pending trigger work: the proxy and live selector passes are recorded. The
-remaining work is to re-run after description edits and to check that the
-project-skill precedence rule wins when a generic and a project skill both apply.
+Pending trigger work: the proxy and live selector passes are recorded, including
+the re-run after the `documentation` edit and the RFC retest. The remaining work
+is to check that the project-skill precedence rule wins when a generic and a
+project skill both apply.
 
 Pending routing-contract test: the five stage skills now emit `routing_status`,
 `owner`, and `requested_action`. `docs/workflow.md` defines the intended

@@ -4,6 +4,9 @@ Pilot, three independent repetitions, 35 prompts, descriptions only. This tests
 whether the current descriptions route a prompt to the right skill; it does not
 test the body or the live runtime selector.
 
+A later re-run covers the `documentation` description edit; see
+[Re-run after the documentation description edit](#re-run-after-the-documentation-description-edit).
+
 ## Method
 
 - Ten current descriptions, no skill bodies.
@@ -116,3 +119,98 @@ load the skill, report the ID, change nothing.
    costly.
 2. Re-run this pilot after any description edit.
 3. Pair it with behavioral evidence before marking a skill verified.
+
+## Re-run after the documentation description edit
+
+The `documentation` description gained `tutorial` and `runbook`, and its body
+gained RFC, migration-guide, and release-notes mappings. This re-run covers the
+documentation triggers and their adjacencies only, not all ten skills.
+
+### Method
+
+- Same proxy method as the pilot: ten descriptions, no bodies, high-recall,
+  one choice per prompt, three fresh contexts.
+- Fourteen prompts: three original documentation prompts, five new or
+  unverified documentation artifacts, four adjacent-skill prompts, two `NONE`
+  prompts.
+- Live pass: five fresh agents given only the prompt text and the repository
+  path. They were told to load applicable skills, report IDs, and change
+  nothing. None edited a file.
+
+### Proxy results
+
+| # | Prompt | Expected | Result |
+|---|---|---|---|
+| 1 | Write an ADR for this decision. | documentation | 3/3 |
+| 2 | Update the README. | documentation | 3/3 |
+| 3 | AGENTS.md is stale and duplicates the README. | documentation | 3/3 |
+| 4 | Write a tutorial for setting up the dev environment. | documentation | 3/3 |
+| 5 | Write a runbook for the export-queue lag alert. | documentation | 3/3 |
+| 6 | Write a migration guide for users moving from v1 to v2. | documentation | 3/3 |
+| 7 | Write release notes for v2.0. | documentation | 3/3 |
+| 8 | Draft an RFC for the new billing service. | documentation | 2/3, 1/3 `issue-to-openspec` |
+| 9 | Create a skill for reviewing migrations. | skill-forge | 3/3 |
+| 10 | Should this be one module or two? | deep-module-design | 3/3 |
+| 11 | Prepare the v2.0 tag and changelog. | git-workflow | 3/3 |
+| 12 | Turn issue #42 into an OpenSpec change. | issue-to-openspec | 3/3 |
+| 13 | Explain this regex. | NONE | 2/3, 1/3 `visual-explainer` |
+| 14 | What time is it? | NONE | 3/3 |
+
+40/42 choices matched. Twelve of fourteen prompts were stable across all three
+reps.
+
+### Live selector results
+
+| Prompt | Loaded | Read |
+|---|---|---|
+| Write a tutorial for setting up the dev environment. | `documentation` | Correct |
+| Write a runbook for the export-queue lag alert. | `documentation` + `observability-and-instrumentation` | Correct; global skill adds alert context |
+| Draft an RFC for the new billing service. | `documentation-and-adrs` + `api-and-interface-design` | Local skill not loaded |
+| Write a migration guide for users moving from v1 to v2. | `documentation` + `deprecation-and-migration` | Correct |
+| Write release notes for v2.0. | `documentation` + `git-workflow-and-versioning` | Correct |
+
+### Retest after the RFC wording fix
+
+The description changed from `ADR` to `ADR or RFC` to match the body table. Same
+fourteen prompts, three proxy reps, one live rep.
+
+| Measure | Before | After |
+|---|---|---|
+| RFC prompt, proxy | 2/3 documentation, 1/3 `issue-to-openspec` | 3/3 documentation, all high confidence |
+| RFC prompt, live | global skills only | `documentation` + `documentation-and-adrs` |
+| All prompts, proxy | 40/42 | 41/42 |
+
+One boundary moved in the retest: release notes went 2/3 documentation and 1/3
+`git-workflow` (both med confidence), having been 3/3 before. Across both rounds
+that prompt is 5/6 to `documentation`. The `git-workflow` description claims
+"changelog, or release", so this is a real adjacent boundary at n=3, not a
+regression from the RFC edit.
+
+### What this changed
+
+- The `tutorial`, `runbook`, `migration guide`, and `release notes` triggers
+  fire, in both the proxy and the live selector. The three unverified mappings
+  named in `documentation.md` now have a run behind them.
+- The migration-guide prompt resolved to `documentation` 3/3 even though
+  `deep-module-design` also claims "planning a deprecation or migration". The
+  release-notes prompt resolved to `documentation` 3/3 even though
+  `git-workflow` claims "changelog, or release".
+- **RFC was the remaining gap.** The body table said "ADR or RFC", but the
+  description said only "ADR". The proxy split 2:1 and the live selector sent
+  the prompt to global skills, so the local skill did not load. After adding
+  `RFC` to the description, the prompt routed to `documentation` in 3/3 proxy
+  reps and in the live selector.
+- "Explain this regex" drew one low-confidence `visual-explainer` choice. That
+  description did not change, so treat it as sampling noise rather than a
+  regression, but it is a false positive in a `NONE` prompt.
+
+### Limitations
+
+- The re-run uses three proxy reps and one live rep per prompt, one model family.
+- Live prompts ran in fresh agents with a repository path, not in an interactive
+  session, so selection may differ in a long conversation.
+- Loading a global adjacent skill alongside the project skill is the intended
+  high-recall behavior; it is not scored as a miss.
+- The RFC retest reused the same fourteen prompts, so only one wording change is
+  isolated; the release-notes split shows n=3 is still noisy at adjacent
+  boundaries.

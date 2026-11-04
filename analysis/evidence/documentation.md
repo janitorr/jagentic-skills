@@ -92,7 +92,7 @@ Heading sequences for the retest are appended to `documentation/headings.txt`.
 
 The retest shows the wording is followed. It does not show the skill is better
 than no skill, because there is no control at n=3. The frontmatter description
-changed, so the trigger test must be re-run before that claim is updated.
+changed after that retest; the trigger re-run is recorded in `trigger-tests.md`.
 
 ## Threats to validity
 
@@ -105,15 +105,34 @@ changed, so the trigger test must be re-run before that claim is updated.
 - One model, one agent configuration, fictional briefs. Real repositories
   supply conventions that may dominate the skill.
 
+## Scope: one skill, not one per document type
+
+Nine artifact branches live in one skill because they share the audience, reader,
+pruning, and verification core; the per-artifact parts are shape recipes of 9 to
+21 lines. Splitting would duplicate the core, add trigger boundaries, and add
+skills with no behavioral evidence.
+
+Split when a branch meets one of these:
+
+- it needs its own verification, such as running commands or dry-running a
+  runbook;
+- it grows past about 30 lines, or the whole file past about 250 lines;
+- loading the skill costs more than the branch saves.
+
+If that happens, cut by reader job, not by artifact list: `documentation`
+(README, changelog, comments, agent files), `decision-records` (ADR/RFC),
+`procedures` (tutorial, how-to, runbook, onboarding).
+
 ## Next
 
-- Run the trigger test after the description edit. The new "tutorial" and
-  "runbook" triggers are untested, and the description changed after the last
-  recorded trigger pass.
+- Trigger test re-run is recorded in
+  `trigger-tests.md#re-run-after-the-documentation-description-edit`. The
+  tutorial, runbook, migration-guide, and release-notes mappings all routed to
+  `documentation` in the proxy and the live selector. RFC initially did not,
+  because the body named it and the description did not; adding `RFC` to the
+  description fixed it at 3/3 proxy and in the live selector.
 - Run a controlled comparison for the procedural branch at five repetitions
   before claiming it beats a strong control.
-- Verify the RFC, migration-guide, tutorial, and release-notes mappings, which
-  were added by analogy and have no run behind them.
 
 ## Reproduce
 
