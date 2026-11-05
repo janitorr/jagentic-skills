@@ -74,7 +74,6 @@ Supporting skills:
 | | Teach from the reader's model; one tangible win; primary sources | mattpocock `teach` |
 | | Each block earns its place; deliberate format arguments | mattpocock `writing-shape` |
 | `deep-module-design` | Module, interface, depth, seam, adapter, leverage, locality; deletion test; design twice | mattpocock `codebase-design` |
-| | Contract first, error semantics, boundary validation, additive change | addyosmani `api-and-interface-design` |
 | | Chesterton's fence; behavior-preserving simplification; one change at a time | addyosmani `code-simplification` |
 | | Expand/contract, strangler, adapter, feature-flag migration, deprecation decision | addyosmani `deprecation-and-migration` |
 | | Glossary and ADR as durable domain context | mattpocock `domain-modeling` |
@@ -105,6 +104,12 @@ Supporting skills:
 - No duplicated OpenSpec commands. The skills reference `openspec-explore`,
   `openspec-propose`, and `openspec-apply-change` rather than reimplementing
   their scaffolding, validation, or checkbox rules.
+- No HTTP API contract skill. `api-and-interface-design` was not absorbed:
+  `deep-module-design` supplies module-level contract reasoning, not status and
+  error semantics, boundary validation, pagination, or idempotency. Two
+  baseline rounds (3 control + 3 `deep-module-design` runs each) found no
+  behavioral failure, so no skill was added. See
+  `analysis/evidence/api-contract-design.md`.
 
 ## Gates
 

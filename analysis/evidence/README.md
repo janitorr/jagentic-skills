@@ -5,7 +5,8 @@ it; there is no standing eval suite. Eight skills have partial behavioral
 evidence; one skill has an exploratory format probe; all ten descriptions passed
 a trigger pilot, and the `documentation` description was re-tested after its
 edit and after its evaluation-report edit; `skill-forge` is still unverified for
-behavior.
+behavior. A proposed `api-contract-design` skill was evaluated and not created;
+see "Evaluated but not created" below.
 
 This note is the place to resume. Do not treat the absence of evidence as proof
 that a skill works.
@@ -33,6 +34,14 @@ in the records below are superseded; verdict, gate, and finding results stand.
 | `visual-explainer` | `analysis/evidence/visual-explainer.md` plus fixture | Pilot, positive; diagram for a call path, prose for a one-liner; one-pager compared with `show-me` |
 | `deep-module-design` | `analysis/evidence/deep-module-design.md` plus fixture | Partial; skill adds alternatives and contract, chosen design parity; deletion test moved to step 1 (3/3); provenance vs `codebase-design` |
 | `skill-forge` | none for behavior | Unverified behavior |
+
+**Evaluated but not created.** `api-contract-design`:
+`analysis/evidence/api-contract-design.md` plus the `billing-api` fixture and
+two run sets. Two baseline rounds (3 control + 3 `deep-module-design` runs each,
+an enumerated brief and a prose brief) produced strong public HTTP contracts;
+`deep-module-design` did not beat them. `skill-forge` says stop when the baseline
+passes, so the HTTP gap is recorded as analysis debt, not a skill. Revisit only
+on a demonstrated failure or a weaker model.
 
 ### External skill evaluations
 
