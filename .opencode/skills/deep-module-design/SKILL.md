@@ -39,6 +39,11 @@ Write one sentence for what the module is responsible for. List its callers and
 the tests that cross the seam. If the responsibility needs "and", it is probably
 two modules.
 
+Before naming the interface, run the deletion test: imagine deleting the module.
+If the complexity vanishes, it was a pass-through; merge it into its caller or
+stop. If the complexity reappears across callers, it earns its keep. Record the
+result in one line.
+
 ### 2. Name the interface
 
 List everything a caller must know: signatures, invariants, ordering, error
@@ -47,6 +52,10 @@ signature is only part of it.
 
 Prefer an interface that is hard to misuse: fewer methods, simpler parameters,
 explicit result types, and no leaked implementation detail.
+
+A production interface carries production capabilities only. Do not add a
+method that only tests call; seed through a test builder, an internal fixture,
+or `InternalsVisibleTo`.
 
 ### 3. Place the seam
 
@@ -58,8 +67,6 @@ real one. Do not introduce a seam unless something actually varies across it.
 
 Apply these tests before writing the implementation:
 
-- **Deletion test.** Imagine deleting the module. If complexity vanishes, it was
-  a pass-through. If complexity reappears across callers, it was earning its keep.
 - **Test surface.** Callers and tests cross the same interface. If a test must
   reach past it, the module is the wrong shape.
 - **Dependency direction.** Accept dependencies; do not create them inside.
