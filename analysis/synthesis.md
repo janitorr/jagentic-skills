@@ -62,6 +62,7 @@ asks instead of assuming a CLI.
 | | One slice at a time, leave green, checkpoint | addyosmani `incremental-implementation` |
 | | Evidence before completion; task checkbox only when complete | superpowers `verification-before-completion`, OpenSpec apply |
 | `code-review` | Spec axis vs standards axis, never merged | mattpocock `code-review` |
+| | Spec-source cross-check; compact security/performance review checks | mattpocock `code-review`, addyosmani checklists (retest) |
 | | Correctness, readability, architecture, security, performance; severity; structural remedies | addyosmani `code-review-and-quality` |
 | | Read-only report; owning stage may rework findings; human gate | decided workflow |
 

@@ -19,7 +19,7 @@ commands or agent files).
 | 8 | Architecture and refactoring | `deep-module-design` | Partial | Module depth, seams, simplification, and migration are covered. HTTP wire contracts — status and error semantics, boundary validation, pagination, versioning, and idempotency — are not in the skill body. Two baseline rounds (3 control + 3 `deep-module-design` runs each) found no behavioral failure, so no HTTP skill was added; see `analysis/evidence/api-contract-design.md`. |
 | 9 | Frontend and UI | — | Missing | No accessibility, design-system, or real-browser verification skill. |
 | 10 | Delivery, git, repo hygiene | `git-workflow` | Partial | Commits, conflicts, pushes, and releases are covered. Worktree mechanics belong to the harness; CI gates and issue triage are not. |
-| 11 | Security, performance, observability | `code-review` axes | Partial | Review checks them; no skill owns threat modeling, profiling, or instrumentation. |
+| 11 | Security, performance, observability | `code-review` axes | Partial | Review has a compact security/performance checklist (`references/quality-checks.md`); no skill owns threat modeling, profiling, or instrumentation. |
 | 12 | Docs, research, teaching, visual explanation | `documentation`, `visual-explainer` | Partial | ADRs, READMEs, reference pages, changelogs, agent instructions, onboarding guides, runbooks, and how-to docs are covered. Research and multi-session teaching are not. |
 | 13 | Meta: skills, context, agent docs | `skill-forge`, `documentation` | Covered | Skill authoring and agent docs have owners. |
 | 14 | Misc utilities | — | Skipped | Too narrow to generalize. |

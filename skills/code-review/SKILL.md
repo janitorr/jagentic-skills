@@ -37,7 +37,8 @@ reason: <one line naming the defect and whether it is code or artifacts>
 `pass` means ready for human sign-off. `needs_revision` names whether the defect
 is in code or in the artifacts, so the persona can route it. `blocked` means the
 diff or a required source is unavailable. This skill never edits code or
-artifacts.
+artifacts. Emit the block exactly as written; a prose "Overall" line does not
+replace it.
 
 ## Process
 
@@ -71,6 +72,9 @@ with `git diff` or stop and ask; `HEAD` alone does not cover them.
 - Standards sources: the target repo's `AGENTS.md`, `CLAUDE.md`,
   `CONTRIBUTING.md`, `CODING_STANDARDS.md`, and documented conventions. Ignore
   vendored copies of another repo's instructions unless the user names them.
+- Cross-check the spec sources. When the OpenSpec delta and a prose spec or
+  issue disagree, or one omits a requirement the other states, record the
+  omission as an artifact finding; do not silently prefer one source.
 - Tests and source at the touched seams.
 
 ### 3. Discover the commands
@@ -85,9 +89,11 @@ Use three headings and keep them separate.
 
 | Axis | Check |
 |---|---|
-| Spec | Requirements missing or partial; behavior not asked for; requirements implemented incorrectly. Quote the artifact line. |
+| Spec | Requirements missing or partial; behavior not asked for; requirements implemented incorrectly. Cross-check the OpenSpec delta against the prose spec or issue; an omission is an artifact finding. Quote the artifact line. |
 | Standards | Documented-rule violations with the rule cited. Apply the smell baseline in `references/smells.md` as labelled judgement calls; a documented repo standard overrides it; skip anything tooling enforces. |
-| Quality | Correctness and edge cases; error paths; test quality; architecture and coupling; security boundaries; N+1, unbounded work, and hot-path cost. Use `deep-module-design` for module, interface, and seam findings. |
+| Quality | Correctness and edge cases; error paths; test quality; architecture and coupling; security boundaries; N+1, unbounded work, and hot-path cost. Apply `references/quality-checks.md` for security and performance checks. Use `deep-module-design` for module, interface, and seam findings. |
+
+For a security or performance finding, name the check that triggered it.
 
 ### 5. Probe the tests
 
@@ -105,8 +111,8 @@ suite is hermetic, run the probe in the isolation location the agent file define
 The focused test must **fail** against the mutation. If it passes, record a
 **Required** finding: the mutation survived. If the suite is not hermetic or the
 environment cannot support an isolated copy, mark the test-quality axis
-**unverified** and name the skip in the verdict. Do not return **ready for merge
-sign-off** without human acceptance of that gap.
+**unverified** and name the skip in the verdict. Do not return `pass` without
+human acceptance of that gap.
 
 ### 6. Run the verification
 
@@ -126,11 +132,12 @@ Label every finding and state its action:
 | **Nit** | Minor or stylistic | Author may ignore |
 | **FYI** | Context only | None |
 
-Each finding states file and line, evidence, impact, and a fix direction. Within
-each axis, order by leverage: correctness and security first, then structural
-issues, then nits. Report each finding under one axis, with a verdict per axis.
-When a visual would make a finding clearer, use `visual-explainer` and post it
-with the report.
+Each finding states file and line, evidence, impact, and a fix direction. For a
+security or performance finding, name the check from `references/quality-checks.md`
+that triggered it. Within each axis, order by leverage: correctness and security
+first, then structural issues, then nits. Report each finding under one axis,
+with a verdict per axis. When a visual would make a finding clearer, use
+`visual-explainer` and post it with the report.
 
 Post the report to the review destination defined by the agent file.
 
@@ -138,18 +145,17 @@ Post the report to the review destination defined by the agent file.
 
 Map severity to the gate:
 
-- Any **Critical** or **Required** finding: **needs revision**.
-- Only **Optional**, **Nit**, or **FYI** findings: **ready for merge sign-off**.
+- Any **Critical** or **Required** finding: `needs_revision`.
+- Only **Optional**, **Nit**, or **FYI** findings: `pass`.
 
 End with a verdict for each axis (**pass** or **changes required**), the worst
-issue within each axis, and the overall gate. The severity labels are scoped to
-merge review, not to spec review.
+issue within each axis, and the overall `verdict`. The severity labels are scoped
+to merge review, not to spec review.
 
 Then stop. Do not edit code or apply fixes.
 
-- On **ready for merge sign-off**, stop. A human records sign-off; do not
-  archive in this turn.
-- On **needs revision**, say whether the defect is code or artifacts. Do not
+- On `pass`, stop. A human records sign-off; do not archive in this turn.
+- On `needs_revision`, say whether the defect is code or artifacts. Do not
   start either repair pass in this turn.
 
 ## Verification
@@ -158,6 +164,10 @@ Then stop. Do not edit code or apply fixes.
       handoff or the agent file's default branch.
 - [ ] The diff is non-empty, and every artifact and issue was read.
 - [ ] Standards came from the target repo, not a vendored copy.
+- [ ] Spec sources were cross-checked; a delta/prose omission is reported as an
+      artifact finding.
+- [ ] Security and performance checks from `references/quality-checks.md` were
+      applied, and each such finding names the check.
 - [ ] Tests, build, and type/lint ran, with commands and outcomes recorded.
 - [ ] The probe either produced a failing test or has a recorded skip reason.
 - [ ] No tracked source file in the review checkout changed.

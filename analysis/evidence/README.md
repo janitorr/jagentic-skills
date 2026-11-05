@@ -28,12 +28,22 @@ in the records below are superseded; verdict, gate, and finding results stand.
 | All ten descriptions | `analysis/evidence/trigger-tests.md` | Proxy 105/105; live 8/10 generic, 4/4 repo-specific; change-list retest 24/24 proxy, live docs 1/1; evaluation-report retest 21/21 proxy, live 2/2 |
 | `documentation` description | `analysis/evidence/trigger-tests.md#re-run-after-the-documentation-description-edit` | 3 proxy reps, 14 prompts: 40/42, then 41/42 after the RFC fix; live 5/5 after; evidence-report retest 21/21 proxy, live 1/1 |
 | `issue-to-openspec` | `analysis/evidence/issue-to-openspec.md` plus fixture | Pilot, 3 reps per condition; pointer fires, design-quality ceiling; slicing and marker rules retested 3/3; blocked verdict 3/3, gate 1/3 then 3/3; real pipelines 3/3; pass 3/3; revision route 1/1 after an invalid first run |
-| `code-review` | `analysis/evidence/code-review.md` plus fixture | 3 reps per condition; clean → pass 3/3, seeded defect → needs_revision 3/3 |
+| `code-review` | `analysis/evidence/code-review.md` plus fixtures | 3 reps per condition; clean → pass 3/3, seeded defect → needs_revision 3/3. 2026-11-06 retest after the spec-cross-check and quality-checks edit: seeded 3/3 `needs_revision` (delta omission 3/3), clean 3/3 `pass`; verdict block 5/6 |
 | `issue-interview` | `analysis/evidence/issue-interview.md` plus fixtures | Pilot plus two retests; final gate 2/2, confidence 12/12 responses, 6 questions per run; template n=1 |
 | `git-workflow` | `analysis/evidence/git-workflow.md` plus fixtures | Pilot; trimmed to 80 lines of invariants and defaults; trim retest split under pressure with no `AGENTS.md`; conflict/push/release tested on the longer version |
 | `visual-explainer` | `analysis/evidence/visual-explainer.md` plus fixture | Pilot, positive; diagram for a call path, prose for a one-liner; one-pager compared with `show-me` |
 | `deep-module-design` | `analysis/evidence/deep-module-design.md` plus fixture | Partial; skill adds alternatives and contract, chosen design parity; deletion test moved to step 1 (3/3); provenance vs `codebase-design` |
 | `skill-forge` | none for behavior | Unverified behavior |
+
+**Comparison.** `code-review` vs Matt Pocock's two-axis review and addyosmani's
+five-axis review, with and without `security-and-hardening` and
+`performance-optimization`: `analysis/evidence/code-review-comparison.md`.
+Four arms, three runs each. Every arm found all nine seeded defects; the extra
+skills added explanation, not detection. Our skill emitted per-axis verdicts and
+the verdict block; Matt's found a spec-source omission; addyosmani's gave the
+strongest security/performance narrative. The fixture is too blatant to rank
+review quality. After the retest edit, our skill caught the delta omission 3/3
+and passed the clean variant 3/3.
 
 **Evaluated but not created.** `api-contract-design`:
 `analysis/evidence/api-contract-design.md` plus the `billing-api` fixture and

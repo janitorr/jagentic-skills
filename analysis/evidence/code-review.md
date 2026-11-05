@@ -94,3 +94,40 @@ cd /tmp/opencode/cr-seeded
 
 Prompt: load `code-review`, review `feature/add-slugify` against `main`, use the
 isolation directory for the mutation probe, do not edit tracked files.
+
+## Retest after the spec-source and quality-check edit, 2026-11-06
+
+The skill gained three changes:
+
+- a required spec-source cross-check (OpenSpec delta versus prose spec/issue);
+- `references/quality-checks.md`, a compact security and performance checklist;
+- consistent `pass` / `needs_revision` wording and an explicit instruction to
+  emit the verdict block.
+
+Fixture: `code-review-comparison/fixtures/user-search`. `main` has a profile
+endpoint; `feature/user-search` adds a search endpoint with nine seeded defects,
+a prose spec, an OpenSpec change, and binding `CODING_STANDARDS.md`. A `clean`
+variant implements the same spec correctly with ten tests.
+
+Method: three seeded and three clean runs, one model, read-only review checkout,
+and an isolation copy for each mutation probe. The final six ran sequentially.
+
+| Check | Seeded (3) | Clean (3) |
+|---|---|---|
+| Verdict | `needs_revision` 3/3 | `pass` 3/3 |
+| Seeded defects reported | 9/9 ×3 | n/a |
+| Delta/prose omission reported | 3/3 | 0/3 (none present) |
+| Security or performance check named | 3/3 | 3/3 |
+| Mutation probe killed | n/a (the seeded suite is blind) | 3/3 |
+| False Critical/Required on clean | n/a | 0/3 |
+| Exact verdict block | 3/3 | 2/3 |
+
+The comparison baseline had ours at 0/3 for the delta omission; after the edit it
+is 3/3. The clean fixture initially had real test gaps. The skill found them
+(default limit, `limit` boundary, PII log fields), they were fixed, and the final
+clean diff passes 3/3 with only Optional/Nit findings.
+
+Limit: one model, one small fixture, three runs. The verdict block still missed
+once on a clean run despite the counter; record it as a formatting variance, not
+a finding-quality defect. This does not validate subtle performance or
+authorization work.
