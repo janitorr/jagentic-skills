@@ -1,6 +1,6 @@
 ---
 name: documentation
-description: Use when writing or revising a README, ADR or RFC, changelog, release notes, reference page, tutorial, runbook, onboarding guide, inline comment, or agent instructions file; when recording why a decision was made or changing a public API; when documentation is stale, duplicated, or missing; or when the user asks how something should be documented.
+description: Use when writing or revising a README, ADR or RFC, changelog, release notes, reference page, tutorial, runbook, onboarding guide, inline comment, agent instructions file, or evaluation/evidence report; when recording why a decision was made or what an experiment showed; when documentation is stale, duplicated, or missing; or when the user asks how something should be documented.
 ---
 
 # Documentation
@@ -58,6 +58,7 @@ code comment, a changelog entry, and an API page never have one.
 | Inline comment | A non-obvious constraint or gotcha lives beside the code | 7 |
 | Agent instructions file | The project needs durable rules and pointers for agents | 8 |
 | Changelog or release notes | Consumers need to know what changed and whether to care | 3, with `git-workflow` owning release timing |
+| Evaluation or evidence report | A run, experiment, or comparison needs a durable verdict and reproduction | 3, with method/results/threats |
 
 Pick one branch and read only the step that owns it. A document that fits no
 branch is usually two documents; split it before inventing a format.
@@ -82,6 +83,12 @@ security. Write each entry as what changed for the consumer, not what the
 developer did. Keep the categories that apply; when the brief names a category
 with no changes, record `None` rather than dropping it silently. Link a compare
 range only when the repository URL is known.
+
+An evaluation or evidence report is a decision record with evidence. Use:
+status, question, method (model and variant, fixture, conditions, repetitions),
+results, findings, verdict, threats to validity, and reproduction. Separate the
+data from the interpretation, and state what the evidence does not establish.
+Link raw metrics or run files instead of pasting them.
 
 ### 4. Write the README
 
