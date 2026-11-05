@@ -1,5 +1,7 @@
 # spec-review: recall, calibration, and verdicts
 
+Model: `deepseek-v4.1-flash` (`opencode-go`, default variant).
+
 Status: **partial**. A pilot, a five-repetition run, and a later verdict test
 with a clean-fixture repair. Review recall still shows a ceiling.
 

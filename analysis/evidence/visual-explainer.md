@@ -1,5 +1,7 @@
 # visual-explainer: flow, one-pager, and show-me
 
+Model: `deepseek-v4.1-flash` (`opencode-go`, default variant).
+
 Status: **pilot, positive on shape**. The skill picks a diagram for a call path,
 prose for a one-liner, and a self-contained one-pager. `show-me` remains the
 completeness benchmark.

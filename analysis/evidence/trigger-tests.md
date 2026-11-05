@@ -1,8 +1,10 @@
 # trigger descriptions: proxy and live selector
 
-Status: **partial**. Proxy and live selector evidence, plus a re-run after the
-`documentation` description edit. One model family; the live pass is one rep per
-prompt.
+Model: `deepseek-v4.1-flash` (`opencode-go`, default variant).
+
+Status: **partial**. Proxy and live selector evidence, plus re-runs after the
+`documentation` description edits, including the evaluation-report trigger. One
+model family; the live pass is one rep per prompt.
 
 Pilot, three independent repetitions, 35 prompts, descriptions only. This tests
 whether the current descriptions route a prompt to the right skill; it does not
@@ -10,6 +12,8 @@ test the body or the live runtime selector.
 
 A later re-run covers the `documentation` description edit; see
 [Re-run after the documentation description edit](#re-run-after-the-documentation-description-edit).
+A final re-run covers the evaluation-report trigger; see
+[Re-run after the evaluation-report edit](#re-run-after-the-evaluation-report-edit).
 
 ## Pilot method
 
@@ -227,6 +231,46 @@ documentation miss.
 
 One model family; proxy plus one live rep per prompt; no `NONE` prompts in this
 set.
+
+## Re-run after the evaluation-report edit
+
+The `documentation` description gained "evaluation/evidence report" and "what an
+experiment showed"; step 3 gained the report shape. The proxy selector saw only
+the descriptions and the full skill catalog. Seven prompts, three repetitions
+each, no tool calls.
+
+| # | Prompt | Expected | Result |
+|---|---|---|---|
+| 1 | Write up the results of this evaluation in `analysis/evidence/`. | `documentation` | 3/3 `documentation`; 2/3 also `skill-forge` |
+| 2 | Record the experiment results, token spend, and verdict as evidence for later. | `documentation` | 3/3 `documentation`; 2/3 also `skill-forge` |
+| 3 | Add a provenance comparison report between the original skill and the synthesized skill. | `documentation` | 3/3 `documentation`; 3/3 `skill-forge`; two runs added extra skills (`source-driven-development`; `openspec-propose`, `spec-driven-development`, `skill-writing`) |
+| 4 | Write a new `SKILL.md` for a code-review skill. | `skill-forge`, not `documentation` | 3/3 `skill-forge`; 0/3 `documentation` |
+| 5 | Review this diff for defects. | `code-review`, not `documentation` | 3/3 `code-review`; 0/3 `documentation` |
+| 6 | Fix the failing test. | `debugging-and-error-recovery` + TDD, not `documentation` | 3/3 both; 0/3 `documentation` |
+| 7 | Write an ADR for this decision. | `documentation` | 3/3 `documentation`; 3/3 also `documentation-and-adrs` |
+
+Totals: **12/12** should-fire prompts loaded `documentation`; **0/9**
+should-not-fire prompts loaded it; **21/21** primary choices matched the expected
+skill.
+
+Live check, one repetition each: prompt 2 loaded `documentation` + `skill-forge`;
+prompt 4 loaded `skill-forge`, `skill-writing`, and `code-review`, with no
+`documentation`.
+
+Findings:
+
+- The prompt that failed before the edit, "record the experiment results, token
+  spend, and verdict as evidence", now routes to `documentation` 3/3. This is the
+  fix.
+- The boundary holds: `documentation` is absent from skill authoring, code
+  review, and failing-test repair 0/3 each.
+- The ADR regression holds 3/3.
+- The provenance prompt over-routes to `skill-forge`, and two runs added extra
+  skills. `documentation` is always present, so the artifact routes, but the
+  description does not suppress adjacent-skill selection.
+- A live check on the changed boundary confirms the proxy result. The new
+  step-3 report recipe still has no behavioral test: the selector result shows
+  the skill is chosen, not that the body produces the intended shape.
 
 ## Appendix: prompt set
 

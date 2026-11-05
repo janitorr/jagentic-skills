@@ -1,5 +1,7 @@
 # issue-to-openspec: pointer, gate, and pipeline
 
+Model: `deepseek-v4.1-flash` (`opencode-go`, default variant).
+
 Status: **partial**. Four cohorts of three runs each. Verifies the
 `deep-module-design` pointer, task slicing, the approval-marker rule, the blocked
 path, and the real OpenSpec pipeline. Design quality still shows a ceiling.

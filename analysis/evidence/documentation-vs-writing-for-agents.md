@@ -1,5 +1,7 @@
 # documentation vs writing-for-agents: README and AGENTS.md
 
+Model: `deepseek-v4.1-flash` (`opencode-go`, default variant).
+
 Status: exploratory comparison, n=3 per cell. Three conditions, two artifacts.
 No downstream behavioral test: this scores the documents, not whether an agent
 later complies with them.

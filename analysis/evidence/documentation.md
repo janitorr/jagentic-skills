@@ -1,5 +1,7 @@
 # documentation: exploratory format probe
 
+Model: `deepseek-v4.1-flash` (`opencode-go`, default variant).
+
 Status: **exploratory**, n=1 per condition for the original probe, plus a
 post-patch conformance retest at three repetitions per changed type. This is not
 a behavioral verification: the retest has no control arm, so it shows that the
@@ -93,6 +95,50 @@ Heading sequences for the retest are appended to `documentation/headings.txt`.
 The retest shows the wording is followed. It does not show the skill is better
 than no skill, because there is no control at n=3. The frontmatter description
 changed after that retest; the trigger re-run is recorded in `trigger-tests.md`.
+
+## Stage 1: AGENTS.md map probe, 2026-11-05
+
+A real-repository test of the project-map practice suggested by the external
+`context-engineering` evaluation. OpenAgentsControl has no root `AGENTS.md`,
+so the artifact had to be created rather than copied.
+
+Method: three control runs (explicitly told not to load a skill) and three
+treatment runs (told to load `documentation`), same brief, same model. The
+brief asked for a one-screen `AGENTS.md` covering identity, where to look
+first, commands, and boundaries, with real paths and commands only. Control
+loaded no skill 3/3; treatment loaded `documentation` 3/3. Artifacts are under
+`documentation/stage1/`.
+
+| Metric (median) | Control | `documentation` | Change |
+|---|---:|---:|---:|
+| Total tokens | 1,517,243 | 2,671,818 | +76% |
+| Billable input+output | 96,315 | 101,639 | +6% |
+| Tool calls | 58 | 57 | −2% |
+| Wall time | 112.1 s | 161.9 s | +44% |
+| Lines | 73 | 84 | +15% |
+| Distinct files read | 20 | 8 | −60% |
+| Key-pointer coverage | 8/10 | 9/10 | +1 |
+| Map score (0-10) | 9.00 | 9.33 | +0.33 |
+
+The map score is a five-dimension evaluator score (0-2 each): key-pointer
+coverage, command accuracy, task-to-path table, repo-specific boundaries, and
+concision. All six maps cited only existing paths and commands; the single
+flagged `make validate-registry` string in `skill-1` is a deliberate warning
+that the target does not exist. Every map used a work-to-path table.
+
+The distinctive treatment behaviors were one `<important if>` block
+(`skill-2`), one stale-doc warning (`skill-1`), and one read-first/edit-second
+table (`skill-3`). The control maps were equally specific: `control-1` and
+`control-3` included verified command lists, canonical-prompt rules, registry
+tooling, Bash compatibility, and PR conventions.
+
+**Finding: do not add a project-map recipe to `documentation` on this
+evidence.** The current step 8 already elicits the practice ("keep project
+identity, map, tech stack, and the command table bare"; "attach a completion
+criterion"; "put the trigger in the pointer"). Quality was at parity and the
+skill cost more. The external win came from **pre-loading** a map, not from
+authoring one, so the missing piece is a workflow that ships and loads
+`AGENTS.md`, not more text in the skill.
 
 ## Threats to validity
 

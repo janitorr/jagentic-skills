@@ -1,5 +1,7 @@
 # git-workflow: commits, conflict, push, and release
 
+Model: `deepseek-v4.1-flash` (`opencode-go`, default variant).
+
 Status: **pilot; trimmed to invariants and defaults**. Commit scope is negative
 on the longer version: the control passed and the skill did not split a mixed
 slice under pressure. Merge conflict, rejected push, and release showed no

@@ -1,5 +1,7 @@
 # code-review: clean and seeded diffs
 
+Model: `deepseek-v4.1-flash` (`opencode-go`, default variant).
+
 Status: **partial**, three runs per condition. Verifies the verdict and whether
 the skill catches a spec violation the test suite misses.
 

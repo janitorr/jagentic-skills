@@ -1,5 +1,7 @@
 # vertical-slice-tdd: TDD, gate, and verdicts
 
+Model: `deepseek-v4.1-flash` (`opencode-go`, default variant).
+
 Status: **partial**. Two five-run experiments and a later blocked/pass verdict
 test. This is not a certification.
 

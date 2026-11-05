@@ -1,5 +1,7 @@
 # issue-interview: gate, confidence, and budget
 
+Model: `deepseek-v4.1-flash` (`opencode-go`, default variant).
+
 Status: **pilot plus two retests**. The gate, per-response confidence, and the
 question budget all discriminated after their wording was tightened. Two runs
 per condition on the final wording; still not a ceiling.
