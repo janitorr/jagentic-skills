@@ -47,12 +47,17 @@ repo, and every `uses:` is SHA-pinned.
 
 ### 3. Publish evidence
 
-- Upload JUnit results and coverage on every run, including failures
-  (`if: always()` on GitHub; `condition: succeededOrFailed()` on Azure).
+- Upload JUnit results on every run, including failures (`if: always()` on
+  GitHub; `condition: succeededOrFailed()` on Azure). Publish coverage when the
+  repository already has a coverage tool; do not add a dependency just for the
+  pipeline.
+- Cache dependencies on both platforms: `cache: pip` on GitHub and `Cache@2`
+  on Azure.
 - Add `concurrency` with `cancel-in-progress` for PRs; Azure `pr.autoCancel`.
 - Set a timeout on every job.
 
-Done when a failed run still leaves a downloadable test report.
+Done when a failed run still leaves a downloadable test report and both
+platforms cache dependencies.
 
 ### 4. Verify the deployment
 

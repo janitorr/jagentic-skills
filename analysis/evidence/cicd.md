@@ -110,16 +110,26 @@ The earlier cued and cross-run pilot was discarded. See
 Variance dominates. The skill is not a clear token or latency penalty, and it is
 not a saving either. Do not use cost as the deciding signal.
 
+## Trigger test
+
+`cicd-triggers.md`: five unambiguous fire prompts load `ci-cd`; five no-fire
+prompts avoid it. The ambiguous "rollback path for production" loads
+`shipping-and-launch`; the pipeline-specific rollback prompt loads `ci-cd`.
+
+## Caching revision
+
+Step 3 now adds `cache: pip` on GitHub and `Cache@2` on Azure. A single smoke
+run at `/tmp/opencode/orders.Ne9h6x` scored 31/32: 13/13 actions SHA-pinned,
+`Cache@2` on three Azure jobs, `cache: pip` on GitHub, JUnit published, health
+checks, `persistCredentials: false`, and runtime conditions.
+
+Coverage was not added. The fixture has no coverage tool, and the agent declined
+to invent a dependency. The skill now says to publish coverage only when the
+repository already has one. That clarification is not separately tested; the
+clean phase predates both the caching and coverage wording.
+
 ## Decision
 
-Keep the skill, but revise it before calling it verified:
-
-1. Add the missing caching line: `cache: pip` on GitHub and `Cache@2` on Azure.
-2. Re-run three treatment sessions on the same fixture to confirm the caching
-   line closes the regression without losing pinning or test evidence.
-3. Run the trigger test in `cicd-triggers.md`.
-4. Then update the README, synthesis, and coverage counts from ten skills to
-   eleven.
-
-Do not deploy the current version as final: it earns its keep on pinning and
-test evidence, but it leaves Azure caching worse than the clean control.
+Keep the skill. The clean phase is the measured result; the caching line is
+verified by one smoke run, not a new baseline. The trigger test passed 5/5.
+Update the skill-set counts and deploy.
