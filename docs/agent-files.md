@@ -1,8 +1,8 @@
 # Agent files: next session
 
 Status: **not defined**. The five stage skills are environment-agnostic; they
-expect a persona or agent file to supply the environment. This is the resume
-point for defining those files.
+expect a persona or agent file to supply the environment. This note is tracked
+as an open task in `docs/open-tasks.md`.
 
 ## What is missing
 

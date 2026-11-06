@@ -3,7 +3,7 @@
 Status: **first pass, static**. The CI/CD test exposed several cue classes that
 can change agent behavior. This file records which earlier evidence files show
 them and what to re-run. It does not claim the results are wrong; it records
-exposure.
+exposure. The actionable list is in `docs/open-tasks.md`.
 
 ## Cue classes
 
