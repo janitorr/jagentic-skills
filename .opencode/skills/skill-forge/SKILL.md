@@ -47,6 +47,13 @@ If any answer is no, write a note or a project rule instead.
 
 ### 2. Run the baseline (RED)
 
+**Blind the run first.** An agent that notices it is being evaluated changes its
+behavior. Keep `eval`, `test`, `benchmark`, `control`, `treatment`, `baseline`,
+and `fixture` out of agent IDs, system prompts, workspace paths, and task text.
+Name the workspace like a real project and phrase the task like a real request.
+Do not leave sibling runs, scoring scripts, or an evidence directory in view.
+`/tmp/eval/run-2` is a tell; `/tmp/work/orders-api` is not.
+
 Run the scenario **without** the skill:
 
 - **Discipline skill** (a rule the agent knows but violates under pressure): use
@@ -55,7 +62,9 @@ Run the scenario **without** the skill:
 - **Reference skill**: use a retrieval scenario and a gap test.
 
 Capture the exact rationalizations and wrong shapes, verbatim. If the baseline
-does not fail, stop; there is nothing to fix.
+does not fail, stop; there is nothing to fix. Do not create `SKILL.md` as a
+draft, and do not create it with an evidence-debt note: a file in the skill
+directory is discovered and loaded. Report the passing baseline instead.
 
 ### 3. Match the form to the failure
 
@@ -85,7 +94,8 @@ instead.
 ### 5. Test the trigger
 
 Delegate a realistic prompt to a fresh agent without naming the skill or pointing
-at its file. The agent must discover and load the skill on its own. Run the test
+at its file, and use the blinding rules from step 2. The agent must discover and
+load the skill on its own. Run the test
 read-only: tell the agent to load the skill and report the ID without performing
 the task or editing files.
 
@@ -99,7 +109,7 @@ set does not. A skill that never fires passes every body test.
 
 Before a full scenario run:
 
-1. Use one fresh-context sample per call.
+1. Use one fresh-context sample per call, blinded per step 2.
 2. Include a no-guidance control. If the control does not fail, stop.
 3. Run five or more repetitions per variant.
 4. Read every flagged match manually; automated counts overstate both failure
