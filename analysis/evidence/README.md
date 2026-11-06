@@ -143,6 +143,20 @@ model at the top.
 A model change is a reason to re-baseline. A result from one model generation
 does not establish behavior on another.
 
+## Evaluation harness agents
+
+Do not commit evaluation agents; they load into ordinary sessions. Recreate them
+per run with `mode: subagent`, the pinned default model, and `subagent` denied.
+
+| Agent | Permissions | Use |
+|---|---|---|
+| `pipeline-author` | `skill: deny` | CI/CD control |
+| `platform-engineer` | allow `skill: ci-cd`, deny the rest | CI/CD treatment |
+| `trigger-selector` | deny `*`, then allow `skill: *` | trigger tests only |
+
+The older `eval-debug-control`, `eval-skill-control`, and `eval-skill-treatment`
+agents were removed. Their evidence files record the setup.
+
 ## Collecting run metrics
 
 The local OpenCode store is the source of truth for model, tokens, tools, and

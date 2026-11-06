@@ -20,8 +20,9 @@ Source: `docs/agent-files.md`.
 
 Source: `analysis/evidence/contamination-audit.md`.
 
-- [ ] **Trigger tests.** Re-run the proxy and live prompts with
-      `trigger-selector` (only the `skill` tool). High.
+- [ ] **Trigger tests.** Re-run the proxy and live prompts with a skill-only
+      selector: deny `*`, then allow `skill: *` (definition in
+      `analysis/evidence/README.md`). High.
 - [ ] **`skill-forge` stop rule.** Neutral agents, no `eval`/`control`/
       `treatment` names or prompts. High.
 - [ ] **`debug-loop`.** Run on a real codebase with a historical caller-patch
@@ -74,6 +75,7 @@ Source: `analysis/evidence/contamination-audit.md`.
 - Treatment: "use this skill," never "treatment."
 - No doc or research hints a real request would not give.
 - Trigger selectors: only the `skill` tool.
+- Recreate the harness agents per run; do not commit them.
 - Pin the model and variant; record the agent ID, system prompt, path, and model
   in the evidence file.
 - Score from disk, not from the agent's self-report.
