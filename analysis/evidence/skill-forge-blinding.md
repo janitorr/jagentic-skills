@@ -21,6 +21,10 @@ least one agent read another run's output. Those runs were discarded. The next
 batch used one random root per run (`/tmp/opencode/orders.XXXXXX`) with an
 explicit no-read rule outside the project.
 
+The trigger test leaked too: the selector inherited the repository as its
+working directory, and one run explored the lab before loading the skill. The
+selector now gets only the `skill` tool, with filesystem and shell denied.
+
 ## Change
 
 `skills/skill-forge/SKILL.md`, step 2:

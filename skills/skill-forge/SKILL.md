@@ -102,7 +102,9 @@ Delegate a realistic prompt to a fresh agent without naming the skill or pointin
 at its file, and use the blinding rules from step 2. The agent must discover and
 load the skill on its own. Run the test
 read-only: tell the agent to load the skill and report the ID without performing
-the task or editing files.
+the task or editing files. Give the selector only the `skill` tool: deny
+filesystem and shell so it cannot wander into the lab or the skill source. The
+catalog is enough to choose.
 
 Repeat for six to ten prompts: half should fire, half belong to adjacent skills.
 Include the full skill catalog, not just this skill, so collisions with global or
