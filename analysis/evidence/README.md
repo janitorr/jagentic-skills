@@ -4,9 +4,12 @@ Status: **opportunistic**. Targeted tests run when a skill or behavior warrants
 it; there is no standing eval suite. Eight skills have partial behavioral
 evidence; one skill has an exploratory format probe; all ten descriptions passed
 a trigger pilot, and the `documentation` description was re-tested after its
-edit and after its evaluation-report edit; `skill-forge` is still unverified for
-behavior. A proposed `api-contract-design` skill was evaluated and not created;
-see "Evaluated but not created" below.
+edit and after its evaluation-report edit; `skill-forge` now has a stop-rule
+test, a counter retest, and a blinding rule. A proposed `api-contract-design`
+skill was evaluated and not created; see "Evaluated but not created" below. A
+`debug-loop` baseline hit a ceiling on two fixtures; see `debug-loop.md`. A
+three-run CI/CD capability baseline found strong pipelines with specific gaps;
+see `cicd.md`.
 
 This note is the place to resume. Do not treat the absence of evidence as proof
 that a skill works.
@@ -33,7 +36,8 @@ in the records below are superseded; verdict, gate, and finding results stand.
 | `git-workflow` | `analysis/evidence/git-workflow.md` plus fixtures | Pilot; trimmed to 80 lines of invariants and defaults; trim retest split under pressure with no `AGENTS.md`; conflict/push/release tested on the longer version |
 | `visual-explainer` | `analysis/evidence/visual-explainer.md` plus fixture | Pilot, positive; diagram for a call path, prose for a one-liner; one-pager compared with `show-me` |
 | `deep-module-design` | `analysis/evidence/deep-module-design.md` plus fixture | Partial; skill adds alternatives and contract, chosen design parity; deletion test moved to step 1 (3/3); provenance vs `codebase-design` |
-| `skill-forge` | none for behavior | Unverified behavior |
+| `skill-forge` | `analysis/evidence/skill-forge-stop-rule.md`, `skill-forge-blinding.md` | Stop rule: clear evidence with an exit 6/6 declined; under pressure 3/3 wrote a skill; after a no-draft counter, treatment 0/3 vs control 3/3. Blinding rule added after a CI/CD cue leak. Body otherwise unverified |
+| `ci-cd` | `analysis/evidence/cicd.md` plus `service` fixture | Candidate: clean phase 31/32 vs control 26-28/32; SHA pinning and test evidence 3/3 vs 0/3; Azure caching regression; trigger test pending |
 
 **Comparison.** `code-review` vs Matt Pocock's two-axis review and addyosmani's
 five-axis review, with and without `security-and-hardening` and
@@ -52,6 +56,18 @@ an enumerated brief and a prose brief) produced strong public HTTP contracts;
 `deep-module-design` did not beat them. `skill-forge` says stop when the baseline
 passes, so the HTTP gap is recorded as analysis debt, not a skill. Revisit only
 on a demonstrated failure or a weaker model.
+
+`debug-loop`: `analysis/evidence/debug-loop.md` plus the `orders` and `pricing`
+fixtures. Six control runs across both fixed the root cause 6/6 and passed a
+hidden second-caller test 6/6, so no skill was written. Both fixtures were too
+easy to discriminate, not a demonstration that the behavior needs no help. See
+"Next" in that file.
+
+`ci-cd` (narrow supporting skill): `analysis/evidence/cicd.md` plus the
+`service` fixture. Clean phase: controls 26, 26, 28 of 32; `ci-cd`-loaded runs
+31, 31, 31. The skill closes SHA pinning (0/3 to 3/3) and test evidence (0/3 to
+3/3). Health checks did not reproduce as a gap; Azure caching regressed and
+needs a skill line before final deployment. Trigger test pending.
 
 ### External skill evaluations
 
@@ -152,6 +168,27 @@ reproduction steps.
 
 - **Review recall has a ceiling.** Seeded `spec-review` and TDD runs matched a
   strong control on recall; the fixtures do not show a skill advantage there.
+- **A traceback that points at the root cause does not need a debugging loop.**
+  Six control runs across a money-rounding fixture and a hardened shared-cache
+  fixture fixed the shared helper 6/6 and passed a hidden second-caller test;
+  none patched the caller. The fixtures, not the behavior, were the ceiling. See
+  [debug-loop.md](debug-loop.md).
+- **A narrow CI/CD skill closes pinning and test evidence; health checks were
+  already default.** Clean controls scored 26-28/32; `ci-cd`-loaded runs scored
+  31/32. The skill moved SHA pinning and test publishing from 0/3 to 3/3. All
+  three controls added health checks on their own, so that gap did not
+  reproduce. Azure caching regressed in treatment and needs a skill line. See
+  [cicd.md](cicd.md).
+- **Evaluation cues change behavior.** Runs named `eval-*` and placed under
+  `/tmp/.../cicd-eval/run-N` were treated as an evaluation. `skill-forge` now
+  blinds agent IDs, prompts, workspace paths, and task text. See
+  [skill-forge-blinding.md](skill-forge-blinding.md).
+- **The stop rule needs a no-draft counter.** With a clear passing baseline and
+  an explicit way out, both arms declined 6/6. Under authority pressure without
+  the exit, both arms wrote the skill 3/3; the treatment added caveats but still
+  wrote the file. After step 2 gained "do not create `SKILL.md` as a draft or
+  with an evidence-debt note," the treatment declined 3/3 while the control still
+  created 3/3. See [skill-forge-stop-rule.md](skill-forge-stop-rule.md).
 - **Gates discriminate.** The approval marker changed behavior: 2/5 control TDD
   runs implemented without it, 0/5 with the skill. After the absolute
   preconditions, `issue-to-openspec` blocked 3/3 and fabricated no marker.
@@ -293,9 +330,10 @@ Resume when one of these happens:
 `spec-review`, `vertical-slice-tdd`, `issue-to-openspec`, `code-review`,
 `issue-interview`, `git-workflow`, and `visual-explainer` have partial behavioral
 records; `documentation` has an exploratory probe plus a no-control retest.
-`deep-module-design` now has a three-per-condition baseline. `skill-forge` is a
-behavior-shaping document with no observed behavior behind it. That is accepted
-temporary debt, not a completed verification. `issue-interview` is a pilot plus two retests: the final
+`deep-module-design` now has a three-per-condition baseline. `skill-forge` has a
+stop-rule pilot, a pressure retest, a 3/3 counter retest, and a blinding rule
+added from an observed cue leak; the rest of its body, including form matching
+and micro-tests, is still unverified. `issue-interview` is a pilot plus two retests: the final
 gate and confidence line held 2/2, but the control was not rerun against the
 final wording. `git-workflow` is an 80-line invariants-and-defaults document; the
 trim retest covers commit scope, while conflict, push, and release results belong
