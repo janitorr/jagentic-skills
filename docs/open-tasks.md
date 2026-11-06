@@ -43,12 +43,12 @@ Source: `analysis/evidence/contamination-audit.md`.
 
 ## CI/CD
 
-- [ ] Score the caching smoke at `/tmp/opencode/orders.Ne9h6x`; update
-      `analysis/evidence/cicd.md`.
-- [ ] If the smoke passes, keep `ci-cd` and commit the caching line, the trigger
-      results, and the eleven-skill docs. If it fails, revise before deploying.
-- [ ] If the smoke is skipped, record the caching line as debt instead of
-      claiming it verified.
+- [x] Score the caching smoke at `/tmp/opencode/orders.Ne9h6x`: 31/32,
+      `Cache@2` 3/3, JUnit 1/1, coverage not added.
+- [x] Keep `ci-cd` and commit the caching line, the trigger results, and the
+      eleven-skill docs.
+- [ ] Confirm the coverage wording does not suppress coverage when the repo
+      already has a coverage tool. The clean phase predates that edit.
 
 ## Known debt
 
@@ -62,6 +62,8 @@ Source: `analysis/evidence/contamination-audit.md`.
       isolated from a task change.
 - [ ] `api-contract-design`: revisit only on a demonstrated HTTP failure or a
       weaker model.
+- [ ] `ci-cd`: the clean phase predates the caching and coverage wording; one
+      smoke covers caching, not the full set.
 
 ## Clean re-run rules
 

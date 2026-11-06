@@ -1,6 +1,6 @@
 # Coverage against the inventory categories
 
-Ten synthesized skills: five pipeline stages plus five supporting skills. This
+Eleven synthesized skills: five pipeline stages plus six supporting skills. This
 file maps the inventory categories to them and names what is still missing.
 
 Status: **Covered** (a skill owns it), **Partial** (some mechanisms are absorbed,
@@ -33,6 +33,7 @@ commands or agent files).
 | `skill-forge` | Skill authoring, baseline testing, wording micro-tests, pruning | writing-skills, writing-for-agents, context-engineering, improve-claude-md |
 | `git-workflow` | Commits, branches, worktrees, conflicts, finishing, versioning | git-workflow-and-versioning, using-git-worktrees, finishing-a-development-branch, git-guardrails |
 | `documentation` | ADRs, READMEs, reference pages, changelogs, agent instructions, onboarding guides, runbooks, how-to docs | documentation-and-adrs, writing-for-agents, improve-claude-md, context-engineering |
+| `ci-cd` | CI/CD pipelines, build-once promotion, environment gates, deployment verification, rollback | ci-cd-and-automation, shipping-and-launch |
 
 `api-and-interface-design` overlaps `deep-module-design` at the module-interface
 level, but its HTTP material is not absorbed. See the row 8 gap and the negative

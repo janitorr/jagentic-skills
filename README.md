@@ -64,6 +64,7 @@ Supporting skills, callable at any point:
 | `skill-forge` | Authoring and revising skills against a baseline failure |
 | `git-workflow` | Commit slicing and shape, conflicts, rejected pushes, releases and tags; invariants plus defaults |
 | `documentation` | ADRs, READMEs, reference pages, changelogs and release notes, agent instructions, onboarding guides, runbooks, and how-to docs |
+| `ci-cd` | CI/CD pipelines: build once, promote, gate, verify, and roll back |
 
 Reviewers never fix what they find. The owning stage may rework findings
 agent-to-agent; human approval and merge sign-off remain fixed gates. A design

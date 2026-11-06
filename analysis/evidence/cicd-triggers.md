@@ -1,31 +1,53 @@
-# ci-cd: trigger test plan
+# ci-cd: trigger test
 
-Status: **pending**. Run after the three treatment runs on the `service` fixture
-finish. This is the description test, not the body test.
+Model: `deepseek-v4.1-flash` (`opencode-go`, default variant).
+
+Status: **5/5 unambiguous fire, 5/5 no-fire**. The ambiguous production-rollback
+prompt loads the global `shipping-and-launch`; a pipeline-specific rollback
+prompt loads `ci-cd`.
 
 ## Method
 
-Fresh agent per prompt, read-only. The agent sees the full skill catalog and is
-told to load the matching skill and report its ID without doing the task. Record
-the loaded ID and whether it matched.
+The first run used the `general` agent, which inherited the repository as its
+working directory. One selector explored the lab before loading the skill, so
+those results were discarded.
+
+The blind run used `trigger-selector`: only the `skill` tool is allowed;
+filesystem, shell, web, and subagent access are denied. Fresh session per
+prompt, read-only, full skill catalog.
 
 ## Should fire
 
-1. Add a GitHub Actions pipeline that runs tests and deploys to staging.
-2. Review this `azure-pipelines.yml`; production deploys without an approval.
-3. Our CI takes 25 minutes and rebuilds the image for production; fix it.
-4. Add test-result publishing and a post-deploy health check to the pipeline.
-5. We need a rollback path for the production deployment.
+| # | Prompt | Loaded | Result |
+|---|---|---|---|
+| 1 | Add a GitHub Actions pipeline that runs tests and deploys to staging. | `ci-cd` | hit |
+| 2 | Review this `azure-pipelines.yml`; production deploys without an approval. | `ci-cd` | hit |
+| 3 | Our CI takes 25 minutes and rebuilds the image for production; fix it. | `ci-cd` | hit |
+| 4 | Add test-result publishing and a post-deploy health check to the pipeline. | `ci-cd` | hit |
+| 5 | Add a manual rollback job to the GitHub Actions pipeline that redeploys a previous image digest. | `ci-cd` | hit |
+
+## Adjacent, not a miss
+
+`We need a rollback path for the production deployment` loaded
+`shipping-and-launch`. That is a defensible adjacent match: the prompt names a
+release strategy, not a pipeline. The pipeline-specific version above loads
+`ci-cd`. No description change is needed; the test prompt was ambiguous.
 
 ## Should not fire
 
-6. Write release notes for 1.4.0. -> `documentation`
-7. Commit this fix as two slices. -> `git-workflow`
-8. Add a failing test for the slugify bug. -> `vertical-slice-tdd`
-9. Design the database schema for orders. -> `deep-module-design`
-10. Update the README. -> `documentation`
+| # | Prompt | Loaded | Result |
+|---|---|---|---|
+| 1 | Write release notes for 1.4.0. | `documentation` | clean |
+| 2 | Commit this fix as two slices. | `git-workflow-and-versioning` | clean |
+| 3 | Add a failing test for the slugify bug. | `test-driven-development` | clean |
+| 4 | Design the database schema for orders. | `api-and-interface-design` | clean |
+| 5 | Update the README. | `documentation` | clean |
 
-## Pass condition
+None loaded `ci-cd`.
 
-The five should-fire prompts load `ci-cd`; the five should-not-fire prompts load
-the adjacent skill or nothing, never `ci-cd`. Read every result manually.
+## Note
+
+The commit-slice prompt loaded the global `git-workflow-and-versioning`, not the
+local `git-workflow`. That is a pre-existing local-versus-global boundary, not a
+`ci-cd` routing failure. Record it separately if the local skill is expected to
+win over the global.

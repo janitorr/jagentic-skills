@@ -1,6 +1,6 @@
 # Synthesis record
 
-Ten skills: five pipeline stages and five supporting skills. Each is original
+Eleven skills: five pipeline stages and six supporting skills. Each is original
 text that combines mechanisms from several bundles; this file records what came
 from where and what was deliberately left out.
 
@@ -86,6 +86,8 @@ Supporting skills:
 | | Detect isolation, prefer native tools, verify ignored, clean baseline | superpowers `using-git-worktrees` |
 | | Verify, present integration options, merge, cleanup, explicit discard | superpowers `finishing-a-development-branch` |
 | | Block destructive git operations rather than relying on reminders | mattpocock `git-guardrails-claude-code` |
+| `ci-cd` | Promotion model: build once, promote the same image, gate production | addyosmani `ci-cd-and-automation`, `shipping-and-launch` |
+| | Least privilege, OIDC, SHA-pinned actions, test evidence, deployment jobs, runtime conditions | official GitHub Actions and Azure Pipelines docs |
 | `documentation` | ADRs, README, inline why, API docs, changelog, agent docs, procedural docs (tutorial, runbook, onboarding, migration), prose review | addyosmani `documentation-and-adrs` |
 | | Agent instructions: bare foundations, conditional rules, keep commands, prune tool territory | humanlayer `improve-claude-md`, mattpocock `writing-for-agents` |
 | | Context pointers and one source of truth | addyosmani `context-engineering` |
@@ -97,7 +99,8 @@ Supporting skills:
   router.
 - No agent-delegation skill. The command or workflow constructs the brief; each
   stage skill states the minimum context a fresh agent needs.
-- `git-workflow` owns local git discipline and release versioning. Push, pull
+- `git-workflow` owns local git discipline and release versioning. `ci-cd` owns
+  pipeline YAML, build-once promotion, and deployment verification. Push, pull
   request, archive, and deploy policy remain with the agent file and OpenSpec.
 - `documentation` owns docs, ADRs, READMEs, reference pages, procedural docs,
   and agent instruction files. `skill-forge` owns `SKILL.md` files; the two do
