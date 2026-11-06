@@ -52,7 +52,12 @@ behavior. Keep `eval`, `test`, `benchmark`, `control`, `treatment`, `baseline`,
 and `fixture` out of agent IDs, system prompts, workspace paths, and task text.
 Name the workspace like a real project and phrase the task like a real request.
 Do not leave sibling runs, scoring scripts, or an evidence directory in view.
-`/tmp/eval/run-2` is a tell; `/tmp/work/orders-api` is not.
+Give each sample its own random root, and tell the agent not to read or list
+anything outside its project; a numbered sibling is one `ls` away.
+`/tmp/eval/run-2` is a tell; `/tmp/work/orders-api` is not. Do not grant
+capabilities a real request would not grant: "you may consult the official docs"
+tells the agent to do research it should decide on itself. If research matters,
+let the skill carry the instruction.
 
 Run the scenario **without** the skill:
 

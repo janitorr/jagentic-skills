@@ -16,6 +16,11 @@ The repeat used an agent named `pipeline-author`, a neutral system prompt, and
 workspace paths under `/tmp/opencode/work/orders-api-N`. The three repeat runs
 completed as normal engineering tasks.
 
+That repeat still leaked: the runs sat in numbered sibling directories, and at
+least one agent read another run's output. Those runs were discarded. The next
+batch used one random root per run (`/tmp/opencode/orders.XXXXXX`) with an
+explicit no-read rule outside the project.
+
 ## Change
 
 `skills/skill-forge/SKILL.md`, step 2:
@@ -25,7 +30,12 @@ completed as normal engineering tasks.
 > `baseline`, and `fixture` out of agent IDs, system prompts, workspace paths,
 > and task text. Name the workspace like a real project and phrase the task like
 > a real request. Do not leave sibling runs, scoring scripts, or an evidence
-> directory in view. `/tmp/eval/run-2` is a tell; `/tmp/work/orders-api` is not.
+> directory in view. Give each sample its own random root, and tell the agent
+> not to read or list anything outside its project; a numbered sibling is one
+> `ls` away. `/tmp/eval/run-2` is a tell; `/tmp/work/orders-api` is not. Do not
+> grant capabilities a real request would not grant: "you may consult the
+> official docs" tells the agent to do research it should decide on itself. If
+> research matters, let the skill carry the instruction.
 
 Steps 5 and 6 point back to step 2 so the rule applies to trigger tests and
 wording micro-tests as well.
