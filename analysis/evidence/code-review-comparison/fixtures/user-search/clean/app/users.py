@@ -27,9 +27,11 @@ def search_users(request, db):
     rows, next_cursor = db.find_users(
         request.user.tenant_id, q, limit=limit, cursor=cursor
     )
+    request_id = str(getattr(request, "request_id", "-"))
+    request_id = request_id.replace("\r", "").replace("\n", "")
     audit_log.info(
         "user_search",
-        extra={"count": len(rows), "request_id": getattr(request, "request_id", "-")},
+        extra={"count": len(rows), "request_id": request_id},
     )
     return {
         "users": [

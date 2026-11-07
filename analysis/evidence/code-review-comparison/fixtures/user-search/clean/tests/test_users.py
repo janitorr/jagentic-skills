@@ -20,8 +20,10 @@ class FakeUser:
 class FakeDB:
     def __init__(self):
         self.calls = []
+        self.user_calls = []
 
     def find_user(self, tenant_id, user_id):
+        self.user_calls.append((tenant_id, user_id))
         return {"id": user_id, "tenant_id": tenant_id, "display_name": "Alice"}
 
     def find_users(self, tenant_id, q, limit=20, cursor=None):
@@ -34,15 +36,23 @@ class FakeDB:
 
 class GetUserTest(unittest.TestCase):
     def test_returns_profile(self):
-        result = get_user(FakeRequest({"id": "u1"}, FakeUser()), FakeDB())
+        db = FakeDB()
+        result = get_user(
+            FakeRequest({"id": "u1"}, FakeUser(tenant_id="tenant-b")), db
+        )
         self.assertEqual(result, {"id": "u1", "display_name": "Alice"})
+        self.assertEqual(db.user_calls, [("tenant-b", "u1")])
 
 
 class SearchUsersTest(unittest.TestCase):
     def test_scopes_tenant_and_paginates(self):
         db = FakeDB()
         result = search_users(
-            FakeRequest({"q": " ali ", "limit": "20", "cursor": "c1"}, FakeUser()), db
+            FakeRequest(
+                {"q": " ali ", "limit": "20", "cursor": "c1"},
+                FakeUser(tenant_id="tenant-b"),
+            ),
+            db,
         )
         self.assertEqual(
             result,
@@ -51,7 +61,7 @@ class SearchUsersTest(unittest.TestCase):
                 "next_cursor": "next-page",
             },
         )
-        self.assertEqual(db.calls, [("tenant-a", "ali", 20, "c1")])
+        self.assertEqual(db.calls, [("tenant-b", "ali", 20, "c1")])
 
     def test_default_limit_is_20(self):
         db = FakeDB()
@@ -85,6 +95,10 @@ class SearchUsersTest(unittest.TestCase):
         result = search_users(FakeRequest({"q": "  "}, FakeUser()), FakeDB())
         self.assertEqual(result, ({"error": "q is required"}, 422))
 
+    def test_missing_query_is_rejected(self):
+        result = search_users(FakeRequest({}, FakeUser()), FakeDB())
+        self.assertEqual(result, ({"error": "q is required"}, 422))
+
     def test_anonymous_is_rejected(self):
         db = FakeDB()
         with self.assertRaises(AuthError):
@@ -95,7 +109,7 @@ class SearchUsersTest(unittest.TestCase):
         with self.assertLogs("audit", level="INFO") as captured:
             search_users(
                 FakeRequest(
-                    {"q": "ali", "request_id": "x\nforged"}, FakeUser()
+                    {"q": "ali"}, FakeUser()
                 ),
                 FakeDB(),
             )
@@ -110,9 +124,19 @@ class SearchUsersTest(unittest.TestCase):
                 "agent@example.com",
                 "ali",
                 "Alice",
-                "forged",
             ):
                 self.assertNotIn(forbidden_value, str(payload))
+
+    def test_request_id_is_sanitized(self):
+        with self.assertLogs("audit", level="INFO") as captured:
+            search_users(
+                FakeRequest({"q": "ali"}, FakeUser(), request_id="x\r\nforged"),
+                FakeDB(),
+            )
+        payload = dict(captured.records[0].__dict__)
+        self.assertEqual(payload.get("request_id"), "xforged")
+        self.assertNotIn("\n", payload.get("request_id"))
+        self.assertNotIn("\r", payload.get("request_id"))
 
 
 if __name__ == "__main__":

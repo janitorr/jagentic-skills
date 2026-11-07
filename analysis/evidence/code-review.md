@@ -7,7 +7,9 @@ the verdict and whether the skill catches a spec violation the test suite misses
 
 Current result: clean `pass` 3/3; seeded `needs_revision` 3/3; the seeded defect
 and the test gap were found 3/3. The neutral-path clean fixture was hardened for
-underscore and boundary hyphens, which the current gate treated as Required.
+underscore and boundary hyphens, which the current gate treated as Required. The
+user-search clean variant also passed 3/3 after request-id, tenant-scope, and
+missing-`q` fixes.
 
 ## Question
 
@@ -188,6 +190,21 @@ fixture matches the stricter gate.
 The clean findings were Optional or FYI (`trim` duplication, a stale proposal
 label, an untested non-space whitespace case); none was promoted to Required.
 
+### Mutation probe
+
+| Check | Clean (3) | Seeded (3) |
+|---|---|---|
+| Probe run in an isolated copy | 3/3 | 3/3 |
+| Covered mutation killed | 3/3 | 3/3 (seed-4) |
+| Seeded blind spot shown by the probe | n/a | 2/3 (seed-2 exact regression, seed-3 mutation) |
+
+All six replies describe an isolated copy and a mutation. Clean-3/4/5 changed
+`\s+` to `\s` (or ` +` to `  +`); the focused test failed as expected. Seed-2
+reapplied the exact `\s+` to ` +` regression on the pre-change commit and all six
+tests passed, showing the blind spot. Seed-3's probe also survived. Seed-4
+mutated the seeded ` +` to a space; the test failed, so it caught a different
+mutation but still named the test gap.
+
 ### Limits
 
 - Three runs, one model, one small fixture.
@@ -195,5 +212,66 @@ label, an untested non-space whitespace case); none was promoted to Required.
   hardened fixture, not the original.
 - The seeded defect is a one-character regex narrowing and is easy to find by
   design.
-- The mutation probe was not separately scored; several replies report it.
-- The user-search clean fixture has not been re-run under the stricter gate.
+- The user-search clean fixture was re-run separately; see below.
+
+## User-search clean re-run, 2026-11-07
+
+Status: **clean 3/3 `pass`** after fixture hardening. The clean variant had not
+been re-run under the stricter gate; the earlier clean 3/3 predates the
+request-id, tenant-scope, and missing-`q` fixes below.
+
+### Method
+
+- The comparison fixture's clean variant: `main` has the profile endpoint,
+  `feature/user-search` adds the search endpoint, and the `clean` overlay
+  replaces `app/users.py` and `tests/test_users.py`.
+- One random root per review (`.../user-search`); no `clean`, `seeded`, `eval`,
+  or condition name in a path or prompt. Git metadata is `Dev
+  <dev@example.com>` with `feat: user profile endpoint` and `feat: add user
+  search endpoint`; `AGENTS.md` says "User service", not "Fixture repository".
+- Project `.opencode/skills` is copied in; global skills are removed. The prompt
+  loads `code-review`, reviews `feature/user-search` against `main`, uses a probe
+  directory outside the project, and forbids tracked edits.
+- Model `deepseek-v4.1-flash` (`opencode-go`, default variant), 900s cap. A 600s
+  cap killed one valid run mid-probe; 900s was enough.
+- One run validated the fixture; the remaining two were added after it passed.
+
+### Fixture hardening
+
+The first two clean validations found three real gaps:
+
+1. **Log injection.** `request_id` was logged with CR/LF unsanitized, and the
+   test placed the injection in `args` instead of on the request. Sanitizing
+   CR/LF and testing the request field fixed it.
+2. **Tenant-scoping test.** The test used the default tenant, so a hardcoded
+   tenant regression would pass. The test now uses `tenant-b` and asserts the
+   `FakeDB` call arguments.
+3. **Missing `q` branch.** Whitespace-only `q` was tested; a missing `q` was not.
+   A `test_missing_query_is_rejected` covers it.
+
+The clean suite is 12 tests and passes. The seeded comparison fixture is
+unchanged.
+
+### Results
+
+| Check | Clean (3) |
+|---|---|
+| Verdict | `pass` 3/3 |
+| False Critical/Required on clean | 0/3 |
+| Probe run | 3/3; no surviving Required mutation |
+| Tracked files modified | 0/3 |
+| Read outside the project | 0/3 |
+
+The clean findings were Optional: a DB seam contract/test gap, unbounded `q` or
+`cursor`, query-plan verification, and a minimum-limit documentation gap. None
+was promoted to Required.
+
+### Limits
+
+- Three runs, one model, one fixture.
+- The clean fixture changed during validation; the 3/3 pass is against the
+  hardened fixture.
+- The probe results are read from the replies and tool calls, not separately
+  scored for this fixture.
+- The seeded comparison fixture was not re-run; the 2026-11-06 seeded 3/3
+  remains.

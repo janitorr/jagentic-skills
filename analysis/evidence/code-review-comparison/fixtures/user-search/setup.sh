@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Build a review fixture: main has the baseline, feature/user-search adds the
-# search endpoint and its spec.
+# Build a review repository: main has the profile endpoint, feature/user-search
+# adds the search endpoint and its spec.
 set -euo pipefail
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -13,10 +13,10 @@ cp -R "$script_dir/main/." "$dest/"
 
 cd "$dest"
 git init -q -b main
-git config user.email eval@example.com
-git config user.name eval
+git config user.email dev@example.com
+git config user.name Dev
 git add -A
-git commit -qm "baseline: user profile endpoint"
+git commit -qm "feat: user profile endpoint"
 git checkout -qb feature/user-search
 
 cp -R "$script_dir/feature/." "$dest/"
@@ -24,6 +24,6 @@ if [ "$mode" = "clean" ]; then
   cp -R "$script_dir/clean/." "$dest/"
 fi
 git add -A
-git commit -qm "add user search endpoint"
+git commit -qm "feat: add user search endpoint"
 
-echo "fixture ready at $dest"
+echo "repository ready at $dest"

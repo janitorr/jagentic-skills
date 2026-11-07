@@ -65,9 +65,8 @@ Source: `analysis/evidence/contamination-audit.md`.
       reps and a control before calling it verified.
 - [ ] `ci-cd`: the trigger test still used the retired selector; re-run with
       the blind live method if the local/global boundary is contested.
-- [ ] `code-review`: the user-search clean fixture has not been re-run under the
-      stricter gate; the slugify clean fixture needed underscore and
-      boundary-hyphen fixes.
+- [x] `code-review`: the user-search clean fixture was re-run under the stricter
+      gate; 3/3 `pass` after request-id, tenant-scope, and missing-`q` fixes.
 - [ ] `issue-interview`: rerun the control against the final wording.
 - [ ] `git-workflow`: conflict, push, and release on the trimmed version.
 - [ ] `documentation`: the n=3 retest still has no control.

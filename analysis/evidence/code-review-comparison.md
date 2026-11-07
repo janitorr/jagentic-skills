@@ -150,6 +150,11 @@ iterations because the skill found real test gaps (default limit, boundary,
 PII fields); after those were fixed, the clean diff passed 3/3. The verdict block
 appeared 5/6; one clean run used an "Overall" table despite the counter.
 
+2026-11-07: the clean variant was re-run under the stricter gate in a neutral
+root. It needed a request-id sanitization, a tenant-scope test that uses a
+non-default tenant, and a missing-`q` test; the hardened clean fixture then
+passed 3/3. See `code-review.md`.
+
 ## Next test
 
 If a real ranking is needed, build a second fixture with subtle defects and a
@@ -167,5 +172,5 @@ Run the same four arms. The current fixture cannot separate them.
 ## Reproduce
 
 - Fixture: `analysis/evidence/code-review-comparison/fixtures/user-search`
-- Build: `./setup.sh /tmp/opencode/cr-compare/seeded`
+- Build: `./setup.sh /tmp/opencode/review-b seeded`
 - Reports: `analysis/evidence/code-review-comparison/runs/`

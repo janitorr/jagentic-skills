@@ -1,4 +1,4 @@
-# Fixture repository
+# User service
 
 Run the test suite with:
 
