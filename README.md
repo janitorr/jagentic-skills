@@ -8,7 +8,7 @@ new skills that combine the strongest ideas from each.
 ```
 vendor/          # upstream bundles, cloned (not tracked - see sync.sh)
 analysis/        # inventory, comparison, synthesis, coverage, and eval evidence
-docs/            # stage graph, verdicts, and delivery mapping
+docs/            # stage graph, verdicts, delivery mapping, and open tasks
 skills/          # synthesized skills, the source of truth
 .opencode/skills # installed copies OpenCode discovers (generated)
 scripts/         # inventory generator and skill sync
@@ -40,7 +40,8 @@ OpenCode discovers; do not edit it directly.
 `scripts/inventory.py` has the authoritative category map. It exits non-zero if
 a vendored skill is unmapped, so the inventory cannot silently go stale.
 
-Evaluation status and the plan for resuming it: `analysis/evidence/README.md`.
+Pending project work: `docs/open-tasks.md`. Evaluation status and evidence
+detail: `analysis/evidence/README.md`.
 
 ## Current synthesis
 

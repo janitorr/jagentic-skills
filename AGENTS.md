@@ -7,7 +7,8 @@ OpenSpec is the fixed artifact system for the synthesized pipeline.
 ## Project map
 
 - `analysis/` - inventory, comparison, synthesis, coverage, and eval evidence.
-- `docs/` - workflow state machine and GitHub mapping.
+- `docs/` - `workflow.md` (stage graph and GitHub mapping),
+  `agent-files.md` (persona spec), and `open-tasks.md` (project resume point).
 - `skills/` - source of truth for the eleven synthesized skills.
 - `.opencode/skills/` - generated mirror OpenCode discovers: project skills plus
   the six `openspec-*` workflow skills.
@@ -87,8 +88,8 @@ a global generic skill.
 
 ## When running an eval
 
-- Read `analysis/evidence/README.md` first. It records what is verified, the
-  current status, and how to resume.
+- Read `docs/open-tasks.md` and `analysis/evidence/README.md` first. The former
+  lists pending project work; the latter records what is verified per skill.
 - One skill at a time, per `skill-forge`. Do not batch untested skills.
 - Do not present an unverified skill as passing; check
   `analysis/evidence/README.md` for the current status.

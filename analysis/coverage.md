@@ -18,7 +18,7 @@ commands or agent files).
 | 7 | Review and quality gates | `spec-review`, `code-review` | Partial | Giving review is covered. Receiving review and a written quality contract are not. |
 | 8 | Architecture and refactoring | `deep-module-design` | Partial | Module depth, seams, simplification, and migration are covered. HTTP wire contracts — status and error semantics, boundary validation, pagination, versioning, and idempotency — are not in the skill body. Two baseline rounds (3 control + 3 `deep-module-design` runs each) found no behavioral failure, so no HTTP skill was added; see `analysis/evidence/api-contract-design.md`. |
 | 9 | Frontend and UI | — | Missing | No accessibility, design-system, or real-browser verification skill. |
-| 10 | Delivery, git, repo hygiene | `git-workflow`, `ci-cd` | Partial | Commits, conflicts, pushes, and releases are covered. CI/CD pipelines have a narrow candidate skill (`ci-cd`), 31/32 against 26-28 control; caching revision and trigger test pending (`cicd.md`). Worktree mechanics belong to the harness; issue triage is not covered. |
+| 10 | Delivery, git, repo hygiene | `git-workflow`, `ci-cd` | Partial | Commits, conflicts, pushes, and releases are covered. CI/CD pipelines have a narrow supporting skill (`ci-cd`), 31/32 against 26-28 control; the Azure caching smoke and trigger test are complete (`cicd.md`). Worktree mechanics belong to the harness; issue triage is not covered. |
 | 11 | Security, performance, observability | `code-review` axes | Partial | Review has a compact security/performance checklist (`references/quality-checks.md`); no skill owns threat modeling, profiling, or instrumentation. |
 | 12 | Docs, research, teaching, visual explanation | `documentation`, `visual-explainer` | Partial | ADRs, READMEs, reference pages, changelogs, agent instructions, onboarding guides, runbooks, and how-to docs are covered. Research and multi-session teaching are not. |
 | 13 | Meta: skills, context, agent docs | `skill-forge`, `documentation` | Covered | Skill authoring and agent docs have owners. |
@@ -47,7 +47,7 @@ evaluation in `analysis/evidence/api-contract-design.md`.
 | `production-readiness` | Security, performance, observability | Review axes exist, but no runnable gate for threat modeling, profiling, or instrumentation. |
 | `browser-verified-ui` | Frontend and UI | Only if UI work is in scope. |
 | `review-reception` | Review | How to verify findings, push back with evidence, and implement one at a time. Could be folded into `code-review` instead. |
-| `ship-and-verify` | Delivery | Release mechanics beyond git: CI gates, staged rollout, rollback, triage. A narrow `ci-cd` skill is under test (31/32 vs 26-28 control); caching revision and trigger test pending. |
+| `ship-and-verify` | Delivery | Release mechanics beyond git: staged rollout, rollback, and triage. A narrow `ci-cd` skill now covers pipelines (31/32 vs 26-28 control). |
 | `agent-delegation` | Multi-agent orchestration | Fresh-context briefs, fan-out, merge, and handoff. Only if those patterns should be shared. |
 | `http-api-contract` | Architecture and refactoring | The artifact gap is real, but two baseline rounds (3 control + 3 `deep-module-design` runs each) found no behavioral failure. Revisit only on a demonstrated failure or a weaker model. |
 | `idea-refine` / `wayfinder` | Intent / planning | Add only when a real multi-option or multi-change initiative appears. |

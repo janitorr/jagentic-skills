@@ -65,6 +65,9 @@ Source: `analysis/evidence/contamination-audit.md`.
       weaker model.
 - [ ] `ci-cd`: the clean phase predates the caching and coverage wording; one
       smoke covers caching, not the full set.
+- [ ] `issue-to-openspec`: the revision-route confirmation gate is a one-run
+      pilot.
+- [ ] The multi-stage loop in `docs/workflow.md` is untested.
 
 ## Clean re-run rules
 

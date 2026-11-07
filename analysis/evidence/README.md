@@ -1,9 +1,10 @@
 # Evidence and evals
 
 Status: **opportunistic**. Targeted tests run when a skill or behavior warrants
-it; there is no standing eval suite. Eight skills have partial behavioral
-evidence; one skill has an exploratory format probe; all ten descriptions passed
-a trigger pilot, and the `documentation` description was re-tested after its
+it; there is no standing eval suite. Nine skills have partial behavioral
+evidence; `documentation` has an exploratory format probe; all eleven
+descriptions passed a trigger test (ten in `trigger-tests.md`, `ci-cd` in
+`cicd-triggers.md`), and the `documentation` description was re-tested after its
 edit and after its evaluation-report edit; `skill-forge` now has a stop-rule
 test, a counter retest, and a blinding rule. A proposed `api-contract-design`
 skill was evaluated and not created; see "Evaluated but not created" below. A
@@ -11,8 +12,9 @@ skill was evaluated and not created; see "Evaluated but not created" below. A
 three-run CI/CD capability baseline found strong pipelines with specific gaps;
 see `cicd.md`.
 
-This note is the place to resume. Do not treat the absence of evidence as proof
-that a skill works.
+This note is the evidence resume point; project-wide pending work lives in
+`docs/open-tasks.md`. Do not treat the absence of evidence as proof that a skill
+works.
 
 **Contract change (2026-11-04).** Skills now end with
 `verdict: pass | needs_revision | blocked` and a one-line reason. The
@@ -347,42 +349,11 @@ Resume when one of these happens:
 
 ## Known debt
 
-`skill-forge` requires baseline, micro-test, and trigger evidence for each skill.
-`spec-review`, `vertical-slice-tdd`, `issue-to-openspec`, `code-review`,
-`issue-interview`, `git-workflow`, and `visual-explainer` have partial behavioral
-records; `documentation` has an exploratory probe plus a no-control retest.
-`deep-module-design` now has a three-per-condition baseline. `skill-forge` has a
-stop-rule pilot, a pressure retest, a 3/3 counter retest, and a blinding rule
-added from an observed cue leak; the rest of its body, including form matching
-and micro-tests, is still unverified. `issue-interview` is a pilot plus two retests: the final
-gate and confidence line held 2/2, but the control was not rerun against the
-final wording. `git-workflow` is an 80-line invariants-and-defaults document; the
-trim retest covers commit scope, while conflict, push, and release results belong
-to the longer version. `issue-to-openspec` has a one-run revision-route pilot; its
-confirmation gate is untested. `visual-explainer` is a one-run-per-condition
-pilot.
+The actionable list and re-run order live in `docs/open-tasks.md`; the table
+above is the per-skill evidence summary, so this section does not repeat it.
 
-Trigger work is complete. The proxy and live selector passes are recorded,
-including the re-run after the `documentation` edit and the RFC retest. The
-earlier "project-skill precedence" item was misframed: same-name collisions are
-resolved by the loader, so that is harness behavior, not a skill. The two generic
-prompts that loaded global skills named no project artifact, and repo-specific
-phrasing loaded the local skill 4/4. The change-list boundary was retested after
-the description split: 24/24 proxy, and the live changelog prompt loaded
-`documentation`. No trigger eval is pending.
-
-Pending verdict-contract test: four stages are recorded and one is a pilot.
-`issue-to-openspec` reported `blocked` 3/3 on the blocked fixture; the gate held
-1/3, then 3/3 after the precondition fix; `pass` 3/3 with the real pipeline.
-`spec-review` reported `needs_revision` 3/3 on seeded and `pass` 4/9 on the
-repaired clean fixture. `vertical-slice-tdd` reported `blocked` 3/3 without the
-marker and `pass` 3/3 with it. `code-review` reported `pass` 3/3 on a clean diff
-and `needs_revision` 3/3 on a seeded defect. `issue-interview` held the gate and reported `pass` 2/2 in the final retest;
-the control published on turn 1 in the pilot. Its `blocked` result came from a
-deferred design decision, not the seeded acceptance gap. The multi-stage loop in
-`docs/workflow.md` remains untested. Owner-based routing tests are retired with
-the contract.
-
-Pending cross-skill test: none. The `issue-to-openspec` pointer to
-`deep-module-design` is recorded in `issue-to-openspec.md`: it fires, and its
-artifact effect is vocabulary, not design quality.
+Trigger routing is complete for the eleven descriptions, including the
+`documentation` and evaluation-report re-tests; the contamination re-runs still
+need the skill-only selector. No cross-skill test is pending: the
+`issue-to-openspec` pointer to `deep-module-design` fires, and its artifact
+effect is vocabulary, not design quality.
