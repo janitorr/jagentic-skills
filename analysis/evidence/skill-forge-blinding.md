@@ -50,3 +50,33 @@ The confound is observed; its effect size is not measured. This is recorded as
 debt, not as a verified behavior change. Close it on the next skill eval by
 running the same authoring task once with `eval`/`control` names and once with
 neutral names, and compare whether the agent writes the skill or stops.
+
+## Trigger-test omissions (2026-11-07)
+
+The clean trigger re-run exposed four omissions in step 5. The run is recorded in
+`trigger-tests.md`; this note covers the rule change.
+
+1. **The selector was still an eval.** The first clean attempt created a
+   `trigger-selector` with only the `skill` tool, a system prompt saying "you
+   select a skill... report the loaded skill ID," and task text "report the
+   loaded skill ID only." That removes filesystem access but leaves a
+   selection-only role and a restricted toolset, which are themselves tells.
+2. **The workspace content leaked.** The disposable project was a copy of the
+   `spec-review` clean fixture; its `package.json` still said
+   `"name": "task-search-fixture"` and an OpenSpec task said "copy the fixture."
+   Scrubbing the path is not enough.
+3. **The first smoke run inherited the repository.** The subagent ran in the lab
+   directory, read lab files, and loaded a global skill. The session store's
+   `directory` field caught it; the prompt did not.
+4. **Global skills masked local routing.** With global skills present, generic
+   prompts loaded `interview-me` and `documentation-and-adrs`; removing them was
+   necessary to test the local descriptions.
+
+Change: step 2 now says to scrub workspace contents and verify the recorded
+working directory; step 5 now separates a blind live run from a
+descriptions-only proxy and forbids a selection-only selector.
+
+Evidence status: the omissions are observed; the rewrite has no separate
+micro-test. This is recorded as debt, not a verified behavior change. Close it by
+running a trigger test from the new step 5 with a second agent and checking that
+it does not build a `trigger-selector`.

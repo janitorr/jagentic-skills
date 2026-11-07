@@ -50,14 +50,18 @@ If any answer is no, write a note or a project rule instead.
 **Blind the run first.** An agent that notices it is being evaluated changes its
 behavior. Keep `eval`, `test`, `benchmark`, `control`, `treatment`, `baseline`,
 and `fixture` out of agent IDs, system prompts, workspace paths, and task text.
-Name the workspace like a real project and phrase the task like a real request.
-Do not leave sibling runs, scoring scripts, or an evidence directory in view.
-Give each sample its own random root, and tell the agent not to read or list
-anything outside its project; a numbered sibling is one `ls` away.
-`/tmp/eval/run-2` is a tell; `/tmp/work/orders-api` is not. Do not grant
-capabilities a real request would not grant: "you may consult the official docs"
-tells the agent to do research it should decide on itself. If research matters,
-let the skill carry the instruction.
+Scrub the workspace contents too: package names, fixture docs, README text, and
+comments can carry the same words. Name the workspace like a real project and
+phrase the task like a real request. Do not leave sibling runs, scoring scripts,
+or an evidence directory in view. Give each sample its own random root, and tell
+the agent not to read or list anything outside its project; a numbered sibling
+is one `ls` away. `/tmp/eval/run-2` is a tell; `/tmp/work/orders-api` is not.
+Verify the run's recorded working directory is the project copy, not the
+repository that holds the lab; a subagent can inherit the parent's directory.
+Do not grant capabilities a real request would not grant: "you may consult the
+official docs" tells the agent to do research it should decide on itself, and a
+restricted toolset or a selection-only role is the same kind of tell. If research
+matters, let the skill carry the instruction.
 
 Run the scenario **without** the skill:
 
@@ -98,19 +102,39 @@ instead.
 
 ### 5. Test the trigger
 
-Delegate a realistic prompt to a fresh agent without naming the skill or pointing
-at its file, and use the blinding rules from step 2. The agent must discover and
-load the skill on its own. Run the test
-read-only: tell the agent to load the skill and report the ID without performing
-the task or editing files. Give the selector only the `skill` tool: deny
-filesystem and shell so it cannot wander into the lab or the skill source. The
-catalog is enough to choose.
+**Do not turn the selector into an evaluation.** A role whose only tool is
+`skill`, whose prompt says "report the loaded skill ID," or whose toolset is
+otherwise thinner than a real request's is still an eval tell. It fixes the
+filesystem leak and creates a framing leak. A trigger test has two honest forms:
+
+| Form | What it proves | How |
+|---|---|---|
+| Blind live run | Real routing behavior | A fresh agent with its normal tools in a disposable project copy, given only the user request. Score the `skill` calls from the session store. |
+| Descriptions-only proxy | A cheap description check, not behavior | A no-tool classifier given the catalog and prompts. Label it a proxy; never cite it as behavioral evidence. |
+
+For the blind live run:
+
+- Copy a realistic project to its own random root. The agent's recorded working
+  directory must be that copy, not the parent repository; a subagent inherits the
+  parent's directory unless you move or run it there. Check the session store
+  before scoring.
+- Scrub the project's contents, not just its path: package names, README text,
+  fixture docs, and comments can say `fixture`, `baseline`, `control`, or
+  `treatment`. Keep ordinary words like "test" in real test files.
+- Remove global and generic skills from the catalog when the claim is about the
+  local skill; otherwise a global skill can win and mask a broken local
+  description. When collisions are the question, keep the full catalog and
+  record the global result separately.
+- Give the agent only the user request. Do not say "load a skill," "report the
+  ID," "change nothing," or name the expected artifact.
+- Score from the session store, not the agent's self-report. Discard a run that
+  read outside its project or loaded no skill for a should-fire prompt.
 
 Repeat for six to ten prompts: half should fire, half belong to adjacent skills.
-Include the full skill catalog, not just this skill, so collisions with global or
-generic skills are visible. Record the loaded skill ID and whether it matched. Fix
-the description until the should-fire set loads this skill and the should-not-fire
-set does not. A skill that never fires passes every body test.
+Use one fresh root per prompt; no sibling runs. Record every loaded skill ID,
+the primary match, and the misses. Fix the description until the should-fire set
+loads this skill and the should-not-fire set does not. A skill that never fires
+passes every body test.
 
 ### 6. Micro-test the wording
 

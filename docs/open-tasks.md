@@ -53,8 +53,8 @@ Source: `analysis/evidence/contamination-audit.md`.
 
 ## Known debt
 
-- [ ] `skill-forge` body: form matching, micro-tests, and trigger wording beyond
-      the stop rule.
+- [ ] `skill-forge` body: form matching and micro-tests; the trigger-test
+      rewrite is observed but not separately tested.
 - [ ] `issue-interview`: rerun the control against the final wording.
 - [ ] `git-workflow`: conflict, push, and release on the trimmed version.
 - [ ] `documentation`: the n=3 retest still has no control.

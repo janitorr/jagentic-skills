@@ -6,7 +6,8 @@ evidence; `documentation` has an exploratory format probe; all eleven
 descriptions passed a trigger test (ten in `trigger-tests.md`, `ci-cd` in
 `cicd-triggers.md`), and the `documentation` description was re-tested after its
 edit and after its evaluation-report edit; `skill-forge` now has a stop-rule
-test, a counter retest, and a blinding rule. A proposed `api-contract-design`
+test, a counter retest, a blinding rule, and a trigger-test rewrite (debt: not
+separately tested). A proposed `api-contract-design`
 skill was evaluated and not created; see "Evaluated but not created" below. A
 `debug-loop` baseline hit a ceiling on two fixtures; see `debug-loop.md`. A
 three-run CI/CD capability baseline found strong pipelines with specific gaps;
@@ -38,7 +39,7 @@ in the records below are superseded; verdict, gate, and finding results stand.
 | `git-workflow` | `analysis/evidence/git-workflow.md` plus fixtures | Pilot; trimmed to 80 lines of invariants and defaults; trim retest split under pressure with no `AGENTS.md`; conflict/push/release tested on the longer version |
 | `visual-explainer` | `analysis/evidence/visual-explainer.md` plus fixture | Pilot, positive; diagram for a call path, prose for a one-liner; one-pager compared with `show-me` |
 | `deep-module-design` | `analysis/evidence/deep-module-design.md` plus fixture | Partial; skill adds alternatives and contract, chosen design parity; deletion test moved to step 1 (3/3); provenance vs `codebase-design` |
-| `skill-forge` | `analysis/evidence/skill-forge-stop-rule.md`, `skill-forge-blinding.md` | Stop rule: clear evidence with an exit 6/6 declined; under pressure 3/3 wrote a skill; after a no-draft counter, treatment 0/3 vs control 3/3. Blinding rule added after a CI/CD cue leak. Body otherwise unverified |
+| `skill-forge` | `analysis/evidence/skill-forge-stop-rule.md`, `skill-forge-blinding.md` | Stop rule: clear evidence with an exit 6/6 declined; under pressure 3/3 wrote a skill; after a no-draft counter, treatment 0/3 vs control 3/3. Blinding rule added after a CI/CD cue leak. Trigger-test blinding rewritten after the selector and workspace-content leaks; no separate micro-test. Body otherwise unverified |
 | `ci-cd` | `analysis/evidence/cicd.md` plus `service` fixture | Clean phase 31/32 vs control 26-28/32; SHA pinning and test evidence 3/3 vs 0/3; trigger 5/5; caching smoke 31/32 (`Cache@2` 3/3, JUnit 1/1, coverage not added) |
 
 **Contamination audit.** The CI/CD test exposed evaluation cues that can change
