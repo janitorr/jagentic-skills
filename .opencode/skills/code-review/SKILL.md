@@ -22,8 +22,8 @@ questions separate:
 - **Quality:** is it correct, tested, well-structured, secure, and fast enough?
 
 **Stance:** read-only, evidence-first, no rubber stamp. Read-only means no
-tracked source file changes; test and build commands may write caches, and the
-mutation probe runs in the isolation location defined by the agent file.
+tracked source file changes; test and build commands may write caches, and any
+fallback mutation probe runs in the isolation location defined by the agent file.
 
 ## Interaction contract
 
@@ -95,24 +95,28 @@ Use three headings and keep them separate.
 
 For a security or performance finding, name the check that triggered it.
 
-### 5. Probe the tests
+### 5. Read the mutation evidence
 
-Reading tests is not enough; check whether they would catch a regression. If the
-suite is hermetic, run the probe in the isolation location the agent file defines
-(a temporary worktree, container, or copy outside the review checkout):
+Reading tests is not enough; check whether they would catch a regression. Prefer
+the repository's mutation-testing evidence over a hand-run probe:
 
-1. Create an isolated copy of the reviewed `HEAD`.
-2. Either invert one branch condition or change one boundary value at a touched
-   seam.
-3. Run the focused test for the behavior that mutation targets.
-4. Remove the isolated copy and confirm no tracked source file in the review
-   checkout changed.
-
-The focused test must **fail** against the mutation. If it passes, record a
-**Required** finding: the mutation survived. If the suite is not hermetic or the
-environment cannot support an isolated copy, mark the test-quality axis
-**unverified** and name the skip in the verdict. Do not return `pass` without
-human acceptance of that gap.
+1. If CI publishes a mutation report (artifact, PR comment, tool output), read
+   it and use the changed-code mutation score and surviving mutants. Cite the
+   report and the policy it is judged against. Do not re-run mutation testing by
+   hand.
+2. If the report is missing or does not cover the changed code, run one scoped
+   fallback probe in the isolation location the agent file defines (a temporary
+   worktree, container, or copy outside the review checkout):
+   - Create an isolated copy of the reviewed `HEAD`.
+   - Invert one branch condition or change one boundary value at a touched seam.
+   - Run the focused test for the behavior that mutation targets.
+   - Remove the isolated copy and confirm no tracked source file in the review
+     checkout changed.
+3. The mutation evidence must show that the changed behavior is covered. A
+   surviving mutant is a **Required** finding. If the suite is not hermetic, no
+   report exists, and an isolated copy is unsupported, mark the test-quality axis
+   **unverified** and name the skip in the verdict. Do not return `pass` without
+   human acceptance of that gap.
 
 ### 6. Run the verification
 
@@ -169,7 +173,8 @@ Then stop. Do not edit code or apply fixes.
 - [ ] Security and performance checks from `references/quality-checks.md` were
       applied, and each such finding names the check.
 - [ ] Tests, build, and type/lint ran, with commands and outcomes recorded.
-- [ ] The probe either produced a failing test or has a recorded skip reason.
+- [ ] Mutation evidence came from the CI report or a scoped fallback probe, and
+      a survivor or a recorded skip is named.
 - [ ] No tracked source file in the review checkout changed.
 - [ ] Every finding cites evidence and carries a severity and action.
 - [ ] The report reached the configured review destination.

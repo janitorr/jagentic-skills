@@ -11,6 +11,9 @@ underscore and boundary hyphens, which the current gate treated as Required. The
 user-search clean variant also passed 3/3 after request-id, tenant-scope, and
 missing-`q` fixes.
 
+The mutation evidence below is the fallback path. Step 5 now reads a CI mutation
+report when one exists and does not re-run mutation testing by hand.
+
 ## Question
 
 `code-review` ends with a `verdict` and a reason. Does it separate a clean diff
@@ -204,6 +207,9 @@ reapplied the exact `\s+` to ` +` regression on the pre-change commit and all si
 tests passed, showing the blind spot. Seed-3's probe also survived. Seed-4
 mutated the seeded ` +` to a space; the test failed, so it caught a different
 mutation but still named the test gap.
+
+This eval predates the step-5 change: it hand-ran the probe as the fallback. With
+a CI mutation report, step 5 now reads the report and does not re-run it.
 
 ### Limits
 

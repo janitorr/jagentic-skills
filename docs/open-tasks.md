@@ -67,6 +67,8 @@ Source: `analysis/evidence/contamination-audit.md`.
       the blind live method if the local/global boundary is contested.
 - [x] `code-review`: the user-search clean fixture was re-run under the stricter
       gate; 3/3 `pass` after request-id, tenant-scope, and missing-`q` fixes.
+- [ ] `code-review`: the CI-mutation-report preference in step 5 has no
+      micro-test; verify on a repo with a mutation report.
 - [ ] `issue-interview`: rerun the control against the final wording.
 - [ ] `git-workflow`: conflict, push, and release on the trimmed version.
 - [ ] `documentation`: the n=3 retest still has no control.
