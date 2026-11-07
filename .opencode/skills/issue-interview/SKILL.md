@@ -41,15 +41,15 @@ until you publish or block.
 
 - **Decisions belong to the human; facts belong to you.** Read the repo, docs,
   and existing issues before asking anything you could verify yourself.
-- **Intent questions: one at a time, with your guess attached.** A wrong guess is
-  faster for the user to correct than a question answered from scratch.
-- **Design questions: one frontier round.** The frontier is every question whose
-  prerequisites are settled. Number each question, attach a recommended answer,
-  and wait for the answers before the next round.
+- **One question per turn, with your guess attached.** Ask the single question
+  whose answer most changes the issue body, attach a recommended answer, and
+  wait. Never send a numbered list of questions, even when the direction is
+  settled or the questions look independent; a wall of questions is a form, not
+  an interview. A wrong guess is faster for the user to correct than a question
+  answered from scratch.
 - **Budget the interview.** Stop when the next answer would not change the body.
-  Hard cap: eight questions before a draft, counting one-at-a-time intent
-  questions and numbered design questions. At eight, draft and park the rest
-  under Open questions.
+  Hard cap: eight questions before a draft, counted one per turn. At eight, draft
+  and park the rest under Open questions.
 - **Only an explicit yes to the body confirms it; publish only after it.**
   "Sounds good", "go ahead", "ship it", "whatever you think", and silence are
   delegation or politeness. Ask for a yes that names the body or its identifier.
@@ -84,9 +84,10 @@ CONFIDENCE: 55% (was 40%; support reports are the trigger) - missing: how replay
 
 ### 3. Interview
 
-When the uncertainty is intent, ask one question at a time. When a direction
-exists and the uncertainty is the design tree, ask the whole frontier in one
-round.
+Ask one question per turn: the one whose answer most changes the body, with your
+guess attached. Wait for the answer before choosing the next question. Do not
+batch questions, even when the direction is settled and the questions look
+independent.
 
 For every answer, listen for "what I should want" language: best-practice talk,
 convention, buzzwords used as goals. Probe once with: "If you did not have to
@@ -95,10 +96,9 @@ justify this to anyone, what would you actually want?"
 Stop when every template section (problem, outcome, in scope, out of scope,
 acceptance, context) carries a direct user answer or a fact you verified, with
 its source noted. No section may rest on an inference. Confidence is the exit
-signal: draft when another answer would not change the body. After one design
-round, or two responses with no confidence change, draft and move the remaining
-questions to Open questions. If a required section is still missing, block and
-name it.
+signal: draft when another answer would not change the body. After two responses
+with no confidence change, draft and move the remaining questions to Open
+questions. If a required section is still missing, block and name it.
 
 ### 4. Split into issues
 
@@ -158,7 +158,8 @@ OpenSpec changes, or specs in this turn.
 
 - [ ] Every response opened with the current confidence, including the publish
       or block response.
-- [ ] The interview stayed within the budget and drafted after one design round.
+- [ ] The interview asked one question per turn and stayed within the budget.
+- [ ] No response contained more than one question.
 - [ ] The hypothesis and confidence were stated before the first question.
 - [ ] Every template section has a direct answer or a verified fact with a
       source; none is inferred.

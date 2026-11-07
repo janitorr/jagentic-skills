@@ -77,6 +77,10 @@ Source: `analysis/evidence/contamination-audit.md`.
       the report was read and cited, the survivor was blocked, and no hand probe
       ran.
 - [ ] `issue-interview`: rerun the control against the final wording.
+- [x] `issue-interview`: reran the one-question scenario with 3 treatment runs
+      plus a control; 0 walls, 3/3 complete issues, control published on turn 1.
+- [ ] `issue-interview`: one run joined two decisions in a turn; add a
+      one-decision counter and re-test if strict single-question shape matters.
 - [ ] `git-workflow`: conflict, push, and release on the trimmed version.
 - [ ] `documentation`: the n=3 retest still has no control.
 - [ ] `visual-explainer`: one run per condition.

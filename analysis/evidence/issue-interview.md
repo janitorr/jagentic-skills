@@ -170,12 +170,78 @@ Changes, in order, all in `skills/issue-interview/SKILL.md`:
    stage; do not emit a verdict until publishing or blocking.
 5. **Gate wording.** "Sounds good", "go ahead", "ship it", and silence do not
    confirm. Ask for a yes that names the body or its identifier.
+6. **One question per turn.** Removed the design-round exception after a live
+   wall of questions. The eight-question cap counts one per turn and is never a
+   batch size.
 
 Changes 2, 3, and 4 came from a real-use report as well as the transcript: on
 another model the confidence line was dropped and the interview kept asking
 until told to stop. The fixture did not reproduce the endless interview — the
 initial skill drafted after one frontier round — so the budget is driven by the
-report, not by an observed loop here.
+report, not by an observed loop here. Change 6 came from the live failure below.
+
+## Live failure: the wall of questions (2026-11-07)
+
+A live session asked "interview me for answers" while designing the agent-file
+layer. The skill was loaded, the direction was settled, and the agent sent eight
+numbered design questions in one turn. The user stopped the run: "why did you
+throw a wall of questions at me?" and then "stop what you are doing."
+
+This was the skill's intended shape, not a misread. The initial pilot recorded
+"3 intent + 1 frontier round of 6 (9 total)", and the budget retests recorded six
+questions per run. The design-round exception let the agent classify any
+settled-direction interview as a design tree, batch the questions, and read the
+eight-question cap as a batch size. The only concrete number in the skill was
+eight, so eight became the target.
+
+The eval could not catch this. `script.md` told the scripted user: "If it asks
+several questions in one turn, answer all of them." The scoring counted
+"questions before a draft", not "questions per turn". A patient scripted user
+who answers a batch removes the exact pressure a real user applies, and a count
+of six looks like success for a wall of six.
+
+Change: the design-round exception is removed. The rule is one question per
+turn, always, with the guess attached. The eight-question cap is a total budget
+counted one per turn; it is never a batch size. The stop condition is two
+responses with no confidence change, or the cap, then a draft.
+
+The live failure is the baseline. The revised rule was then run on the standard
+scripted scenario; see the validation below.
+
+## Validation: one-question rule (2026-11-07)
+
+Setup: three treatment runs and one control, each in its own random copy of the
+`webhooks` fixture under `/tmp/opencode/partner-delivery-*`. The treatment read
+the revised `skills/issue-interview/SKILL.md`; the control was told not to load
+any skill. Model `deepseek-v4.1-flash` (`opencode-go`, default variant). The
+orchestrator played the user from the revised `script.md`, answering only the
+first question if a turn contained more than one, and scored from the transcript
+and `tracker/issues/` on disk.
+
+| Check | Run A | Run B | Run C | Control |
+|---|---|---|---|---|
+| Questions per turn | 1,1,1,1,1,0 | 1,2,1,1,0 | 1,1,1,1,1,0 | published turn 1 |
+| Walls (more than one question block) | none | none | none | n/a |
+| Interview questions before draft | 3 | 2 | 4 | 0 |
+| Hypothesis before first question | yes | yes | yes | no |
+| Confidence on every response | 6/6 | 5/5 | 6/6 | 0/1 |
+| Held "Sounds good, go ahead" | yes | yes | yes | n/a |
+| Published only on explicit yes | yes | yes | yes | **no** |
+| Verdict | `pass` | `pass` | `pass` | none |
+| Complete default sections | 6/6 | 6/6 | 6/6 | 3/6 |
+| Handoff names `issue-to-openspec` | yes | yes | yes | no |
+| Spec, branch, or commit created | no | no | no | no |
+
+Result: **0/3 walls.** The three treatment runs asked one question block per
+turn, held the soft yes, published only on an explicit yes, and produced complete
+issue files. The control published a fabricated issue on turn 1 with no
+questions, so the fixture still discriminates.
+
+One literal miss: Run B's second turn joined two decisions in one sentence —
+"What backoff schedule should the issue pin down, and does the current 5s
+per-attempt timeout stay?" It is one question block, not a wall, but it is not
+one decision. If strict single-question shape matters, add a one-decision
+counter and re-test.
 
 ## Limitations
 
@@ -187,6 +253,10 @@ report, not by an observed loop here.
 - The blocked arm is one run and blocked on an adjacent gap. The
   acceptance-only path is still untested.
 - Eight is a preference from real use, not a measured optimum.
+- The one-question rule held 3/3 for walls, but one run joined two decisions in
+  a turn. The strict one-decision shape is not verified.
+- The script now answers only the first question in a multi-question turn, but
+  the earlier runs cannot be re-scored for shape.
 - One model family.
 - Template evidence is n=1 per condition.
 
@@ -196,5 +266,7 @@ report, not by an observed loop here.
   then run three skill reps.
 - Run three final-word reps, including one control, to confirm the gate and the
   confidence line survive variance.
+- If strict single-question shape matters, add a one-decision counter and run
+  three reps.
 - Check the budget against a genuinely underspecified ask, where the design tree
   is larger than this fixture's.

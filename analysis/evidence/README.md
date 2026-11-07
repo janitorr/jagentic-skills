@@ -38,7 +38,7 @@ in the records below are superseded; verdict, gate, and finding results stand.
 | `documentation` description | `analysis/evidence/trigger-tests.md#re-run-after-the-documentation-description-edit` | 3 proxy reps, 14 prompts: 40/42, then 41/42 after the RFC fix; live 5/5 after; evidence-report retest 21/21 proxy, live 1/1; clean re-run live 3/4; `Update this repo's AGENTS.md` retest 4/5 |
 | `issue-to-openspec` | `analysis/evidence/issue-to-openspec.md` plus fixture | Pilot, 3 reps per condition; pointer fires, design-quality ceiling; slicing and marker rules retested 3/3; blocked verdict 3/3, gate 1/3 then 3/3; real pipelines 3/3; pass 3/3; revision route 1/1 after an invalid first run |
 | `code-review` | `analysis/evidence/code-review.md` plus fixtures | 3 reps per condition; clean → pass 3/3, seeded defect → needs_revision 3/3. 2026-11-06 retest after the spec-cross-check and quality-checks edit: seeded 3/3 `needs_revision` (delta omission 3/3), clean 3/3 `pass`; verdict block 5/6. 2026-11-07 neutral-path re-run: clean 3/3 `pass`, seeded 3/3 `needs_revision`, defect/test gap 3/3, no tracked edits or outside reads; clean fixture hardened for underscore and boundary hyphens. User-search clean re-run: 3/3 `pass` after request-id, tenant-scope, and missing-`q` fixes. Step 5 now prefers CI mutation reports; fallback probe only when no report. CI-report micro-test n=1: report read/cited, survivor blocked, no hand probe |
-| `issue-interview` | `analysis/evidence/issue-interview.md` plus fixtures | Pilot plus two retests; final gate 2/2, confidence 12/12 responses, 6 questions per run; template n=1 |
+| `issue-interview` | `analysis/evidence/issue-interview.md` plus fixtures | Pilot plus two retests; final gate 2/2, confidence 12/12; one-question rule: 3 treatment reps, 0 walls, 3/3 complete issues, control published turn 1; one compound turn in Run B; template n=1 |
 | `git-workflow` | `analysis/evidence/git-workflow.md` plus fixtures | Pilot; trimmed to 80 lines of invariants and defaults; trim retest split under pressure with no `AGENTS.md`; conflict/push/release tested on the longer version |
 | `visual-explainer` | `analysis/evidence/visual-explainer.md` plus fixture | Pilot, positive; diagram for a call path, prose for a one-liner; one-pager compared with `show-me` |
 | `deep-module-design` | `analysis/evidence/deep-module-design.md` plus fixture | Partial; skill adds alternatives and contract, chosen design parity; deletion test moved to step 1 (3/3); provenance vs `codebase-design` |
@@ -289,9 +289,15 @@ reproduction steps.
   response", the skill restated confidence on 11/17 turns and dropped it on the
   soft-yes and publish replies. After the rule, 12/12, including the publish
   reply.
-- **An unbounded interview needs a cap.** One pilot run asked 9 questions; six
-  was enough in the retests. The cap is eight, with "draft when the next answer
-  would not change the body" as the semantic stop.
+- **A frontier round is a wall.** One pilot run asked 9 questions; the retests
+  asked 6 in one round. A live run then sent 8 design questions at once and the
+  user stopped it. The cap alone did not fix the shape: the skill now asks one
+  question per turn, always, with the eight-question cap counted per turn as a
+  total budget, not a batch size. The synthetic script answered multi-question
+  turns, so a count of six looked like success for a wall of six. After the fix,
+  3/3 treatment runs asked one question block per turn, all published only on an
+  explicit yes, and the control published on turn 1. One run joined two decisions
+  in a turn, so strict single-question shape remains open.
 - **A question turn is not a stage verdict.** Two runs emitted `blocked` after
   asking a question until the skill said a question turn is not the end of the
   stage.

@@ -18,9 +18,10 @@ Turn 1 (the opening user message):
 
 > We keep dropping webhook deliveries. Turn this into an issue for this repo.
 
-The agent replies. For each agent turn, answer only what was asked, from the
-bank below. If it asks several questions in one turn, answer all of them. Do not
-volunteer facts it did not ask for.
+The agent replies. Answer one question per turn, from the bank below. If the
+agent sends more than one question in a turn, answer only the first and record
+the extra questions as a shape failure. Do not volunteer facts it did not ask
+for.
 
 Turn 3 (soft confirmation, sent after the agent presents issue bodies or asks to
 proceed):
@@ -74,12 +75,13 @@ Turn 3 and turn 4 lines are fixed and are not in the bank.
 
 Read the transcript and the fixture after each turn. Record per run:
 
-- Questions asked per agent turn, and whether each carries a guess.
+- Questions asked per agent turn, and whether each carries a guess. More than
+  one question in a turn fails the shape check.
 - `HYPOTHESIS` and `CONFIDENCE` before the first question.
 - Confidence on **every** assistant response: present, delta, and the fact named
   as its cause.
-- Questions before a draft: count one-at-a-time intent questions and numbered
-  design questions. Budget is eight total, then a draft.
+- Questions before a draft: count one per turn. Budget is eight total, then a
+  draft.
 - Sections grounded in a direct answer or a verified fact; name any inferred
   section.
 - Files under `tracker/issues/` after each turn.
@@ -87,9 +89,10 @@ Read the transcript and the fixture after each turn. Record per run:
 - Whether the handoff names `issue-to-openspec`.
 - Whether any spec, OpenSpec change, branch, or commit was created.
 
-Expected result of the skill: one intent question at a time; hypothesis first;
-no publish on turn 3; publish on turn 4 with a `pass` verdict; in the blocked
-arm, `blocked` naming acceptance criteria with no file.
+Expected result of the skill: one question per turn; hypothesis first; no
+publish on turn 3; publish on turn 4 with a `pass` verdict; in the blocked arm,
+`blocked` naming acceptance criteria with no file. A turn containing more than
+one question is a failure, however few.
 
 ## Confidence scoring
 
