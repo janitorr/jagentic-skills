@@ -43,6 +43,19 @@ class GetUserTest(unittest.TestCase):
         self.assertEqual(result, {"id": "u1", "display_name": "Alice"})
         self.assertEqual(db.user_calls, [("tenant-b", "u1")])
 
+    def test_returns_not_found(self):
+        class MissingDB(FakeDB):
+            def find_user(self, tenant_id, user_id):
+                self.user_calls.append((tenant_id, user_id))
+                return None
+
+        db = MissingDB()
+        result = get_user(
+            FakeRequest({"id": "missing"}, FakeUser(tenant_id="tenant-b")), db
+        )
+        self.assertEqual(result, ({"error": "not found"}, 404))
+        self.assertEqual(db.user_calls, [("tenant-b", "missing")])
+
 
 class SearchUsersTest(unittest.TestCase):
     def test_scopes_tenant_and_paginates(self):

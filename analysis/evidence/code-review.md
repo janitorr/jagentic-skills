@@ -255,8 +255,9 @@ The first two clean validations found three real gaps:
 3. **Missing `q` branch.** Whitespace-only `q` was tested; a missing `q` was not.
    A `test_missing_query_is_rejected` covers it.
 
-The clean suite is 12 tests and passes. The seeded comparison fixture is
-unchanged.
+The clean suite is 13 tests and passes. The 3/3 clean pass above was against the
+12-test version, before the `get_user` not-found test was added. The seeded
+comparison fixture is unchanged.
 
 ### Results
 
@@ -281,3 +282,25 @@ was promoted to Required.
   scored for this fixture.
 - The seeded comparison fixture was not re-run; the 2026-11-06 seeded 3/3
   remains.
+
+### CI mutation report micro-test
+
+One review of the user-search clean fixture with a synthetic report at
+`reports/mutation/mutation.json`; the report named a surviving `get_user`
+404-branch mutant.
+
+| Check | Result |
+|---|---|
+| Report read | yes |
+| Survivor cited | yes |
+| Verdict | `needs_revision` |
+| Hand mutation probe | none |
+| Tracked changes | none |
+| Outside reads | none |
+
+The review returned `needs_revision` for the missing not-found test, cited the
+report's surviving mutant, and did not run a hand probe. n=1, one model,
+synthetic report, one fixture. The report's survivor was a real gap: a
+`test_returns_not_found` was added, taking the clean suite to 13 tests. The 3/3
+clean pass above was against the 12-test version; the test-only addition does
+not change the code.
