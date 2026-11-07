@@ -22,7 +22,8 @@ Source: `analysis/evidence/contamination-audit.md`.
 
 - [x] **Trigger tests.** Re-ran the proxy and live prompts with a blind live
       pass plus a descriptions-only proxy. Proxy 101/105; live 13/14. The live
-      miss is `Update this repo's AGENTS.md` -> no skill. High.
+      miss is `Update this repo's AGENTS.md` -> no skill, 4/5 on retest; not
+      stable. High.
 - [ ] **`skill-forge` stop rule.** Neutral agents, no `eval`/`control`/
       `treatment` names or prompts. High.
 - [ ] **`debug-loop`.** Run on a real codebase with a historical caller-patch
@@ -55,8 +56,9 @@ Source: `analysis/evidence/contamination-audit.md`.
 
 - [ ] `skill-forge` body: form matching and micro-tests; the trigger-test
       rewrite is observed but not separately tested.
-- [ ] `documentation`: the clean live pass missed `Update this repo's
-      AGENTS.md`; re-run that prompt before changing the description.
+- [ ] `documentation`: `Update this repo's AGENTS.md` retested 4/5. If the 1/5
+      matters, add the literal `AGENTS.md` to the description and retest; do not
+      change on this sample alone.
 - [ ] `ci-cd`: the trigger test still used the retired selector; re-run with
       the blind live method if the local/global boundary is contested.
 - [ ] `issue-interview`: rerun the control against the final wording.

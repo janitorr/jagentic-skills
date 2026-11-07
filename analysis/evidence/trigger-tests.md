@@ -2,10 +2,10 @@
 
 Model: `deepseek-v4.1-flash` (`opencode-go`, default variant).
 
-Status: **clean re-run complete; one live miss**. Proxy **101/105**; live
-**13/14**. The original pilot and the documentation/evaluation-report re-runs
-used a live selector that exposed the evaluation; the clean re-run replaces it
-with a blind live pass plus a descriptions-only proxy. See
+Status: **clean re-run complete; one live miss, not stable**. Proxy **101/105**;
+live **13/14**. The live miss is `Update this repo's AGENTS.md` -> no skill; a
+five-rep retest loaded `documentation` 4/5. The clean re-run replaces the
+selector method; see
 [Clean re-run after the contamination audit](#clean-re-run-after-the-contamination-audit).
 One model family; the live pass is one rep per prompt.
 
@@ -279,9 +279,10 @@ Findings:
 
 Model: `deepseek-v4.1-flash` (`opencode-go`, default variant).
 
-Status: **clean re-run, one live miss**. Proxy **101/105**; live **13/14**. The
-live miss is `Update this repo's AGENTS.md` -> no skill. The proxy's stable miss
-is `Summarize this PR` -> `code-review` 3/3.
+Status: **clean re-run, one live miss, not stable**. Proxy **101/105**; live
+**13/14**. The live miss is `Update this repo's AGENTS.md` -> no skill; a
+five-rep retest loaded `documentation` 4/5. The proxy's stable miss is
+`Summarize this PR` -> `code-review` 3/3.
 
 ### Why the method changed
 
@@ -361,8 +362,29 @@ directly, without loading `documentation`, even though the description names
 "agent instructions file" and the proxy chose it 3/3. The prompt is a small edit
 to a file already in the agent's context; the live agent did not apply the
 high-recall policy the proxy is told to use. This is a behavioral boundary, not
-a description typo. Do not strengthen the wording on one live run; re-run this
-prompt before changing the description.
+a description typo.
+
+#### Retest
+
+Five blind reps of the same prompt, same clean harness, 90s cap:
+
+| Rep | Loaded | Edited AGENTS.md | Stop | Tokens |
+|---|---|---|---|---|
+| 1 | `documentation` | yes | timeout | 151,565 |
+| 2 | `documentation` | yes | natural | 151,694 |
+| 3 | none | yes | natural | 196,977 |
+| 4 | `documentation` | yes | natural | 155,752 |
+| 5 | `documentation` | no | timeout | 112,502 |
+
+**4/5** loaded `documentation`; rep 3 edited the file without loading it. The
+original clean run was the other miss, so across six samples the skill loaded
+**4/6**. The miss is not stable. One timed-out rep (5) loaded the skill but hit
+the cap before editing.
+
+The prompt names the file directly. The skill description says "agent
+instructions file" but not `AGENTS.md`. Adding the literal filename is the
+obvious next test if the 1/5 is unacceptable; do not change the description on
+this sample alone.
 
 ### Harness lessons
 

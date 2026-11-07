@@ -5,8 +5,9 @@ it; there is no standing eval suite. Nine skills have partial behavioral
 evidence; `documentation` has an exploratory format probe; all eleven
 descriptions have a trigger record (ten in `trigger-tests.md`, `ci-cd` in
 `cicd-triggers.md`), and the clean re-run is proxy 101/105 and live 13/14, with
-one live miss; the `documentation` description was re-tested after its edit and
-after its evaluation-report edit; `skill-forge` now has a stop-rule
+one live miss that retested 4/5; the `documentation` description was re-tested
+after its edit and after its evaluation-report edit; `skill-forge` now has a
+stop-rule
 test, a counter retest, a blinding rule, and a trigger-test rewrite (debt: not
 separately tested). A proposed `api-contract-design`
 skill was evaluated and not created; see "Evaluated but not created" below. A
@@ -32,8 +33,8 @@ in the records below are superseded; verdict, gate, and finding results stand.
 | `vertical-slice-tdd` | `analysis/evidence/vertical-slice-tdd.md` plus fixture | TDD ceiling; approval gate discriminates; verdict blocked 3/3 and pass 3/3 |
 | `documentation` | `analysis/evidence/documentation.md` plus `documentation/headings.txt` | Exploratory format probe (n=1 per type) plus post-patch retest (n=3 per changed type); retest has no control |
 | `documentation` vs `writing-for-agents` | `analysis/evidence/documentation-vs-writing-for-agents.md` plus `documentation-vs-writing-for-agents/headings.txt` | Exploratory n=3 comparison of README and AGENTS.md output; document shape only |
-| All eleven descriptions | `analysis/evidence/trigger-tests.md` | Pilot proxy 105/105; clean re-run proxy 101/105, live 13/14; the live miss is `Update this repo's AGENTS.md` -> no skill; change-list retest 24/24 proxy, live docs 1/1; evaluation-report retest 21/21 proxy, live 2/2; `ci-cd` in `cicd-triggers.md` |
-| `documentation` description | `analysis/evidence/trigger-tests.md#re-run-after-the-documentation-description-edit` | 3 proxy reps, 14 prompts: 40/42, then 41/42 after the RFC fix; live 5/5 after; evidence-report retest 21/21 proxy, live 1/1; clean re-run live 3/4, with `Update this repo's AGENTS.md` the miss |
+| All eleven descriptions | `analysis/evidence/trigger-tests.md` | Pilot proxy 105/105; clean re-run proxy 101/105, live 13/14; the live miss is `Update this repo's AGENTS.md` -> no skill, 4/5 on retest; change-list retest 24/24 proxy, live docs 1/1; evaluation-report retest 21/21 proxy, live 2/2; `ci-cd` in `cicd-triggers.md` |
+| `documentation` description | `analysis/evidence/trigger-tests.md#re-run-after-the-documentation-description-edit` | 3 proxy reps, 14 prompts: 40/42, then 41/42 after the RFC fix; live 5/5 after; evidence-report retest 21/21 proxy, live 1/1; clean re-run live 3/4; `Update this repo's AGENTS.md` retest 4/5 |
 | `issue-to-openspec` | `analysis/evidence/issue-to-openspec.md` plus fixture | Pilot, 3 reps per condition; pointer fires, design-quality ceiling; slicing and marker rules retested 3/3; blocked verdict 3/3, gate 1/3 then 3/3; real pipelines 3/3; pass 3/3; revision route 1/1 after an invalid first run |
 | `code-review` | `analysis/evidence/code-review.md` plus fixtures | 3 reps per condition; clean → pass 3/3, seeded defect → needs_revision 3/3. 2026-11-06 retest after the spec-cross-check and quality-checks edit: seeded 3/3 `needs_revision` (delta omission 3/3), clean 3/3 `pass`; verdict block 5/6 |
 | `issue-interview` | `analysis/evidence/issue-interview.md` plus fixtures | Pilot plus two retests; final gate 2/2, confidence 12/12 responses, 6 questions per run; template n=1 |
@@ -256,9 +257,9 @@ reproduction steps.
   call. Proxy 101/105; live 13/14. See
   [trigger-tests.md](trigger-tests.md).
 - **The proxy and live disagree at one boundary.** `Update this repo's AGENTS.md`
-  reached `documentation` 3/3 in the closed-book proxy but loaded no skill live:
-  the agent edited a file already in context without applying high recall. Do not
-  strengthen the description on one live run.
+  reached `documentation` 3/3 in the closed-book proxy but loaded no skill in
+  the live pass. A five-rep retest loaded it 4/5, so the miss is not stable; do
+  not strengthen the description on one sample.
 - **`Summarize this PR` is adjacent to `code-review`.** The proxy chose
   `code-review` 3/3 at low/medium confidence; the `NONE` expectation is
   arguable, not a clear description defect.
@@ -380,8 +381,8 @@ The actionable list and re-run order live in `docs/open-tasks.md`; the table
 above is the per-skill evidence summary, so this section does not repeat it.
 
 Trigger routing has a clean re-run for the eleven descriptions: proxy 101/105,
-live 13/14, with `Update this repo's AGENTS.md` not firing `documentation`. The
-skill-only selector is retired. The `ci-cd` trigger test still used the retired
-selector. No cross-skill test is pending: the `issue-to-openspec` pointer to
-`deep-module-design` fires, and its artifact effect is vocabulary, not design
-quality.
+live 13/14, with `Update this repo's AGENTS.md` not firing `documentation` once
+and retesting 4/5. The skill-only selector is retired. The `ci-cd` trigger test
+still used the retired selector. No cross-skill test is pending: the
+`issue-to-openspec` pointer to `deep-module-design` fires, and its artifact
+effect is vocabulary, not design quality.
