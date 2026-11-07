@@ -20,3 +20,10 @@ class TestSlugify(unittest.TestCase):
 
     def test_removes_punctuation(self):
         self.assertEqual(slugify(" Hello, World! "), "hello-world")
+
+    def test_removes_underscore(self):
+        self.assertEqual(slugify("snake_case"), "snakecase")
+
+    def test_strips_boundary_hyphens(self):
+        self.assertEqual(slugify("Hello !"), "hello")
+        self.assertEqual(slugify("! Hello"), "hello")

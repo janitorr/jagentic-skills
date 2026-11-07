@@ -22,18 +22,18 @@ cd "$dest"
 
 git init -q -b main
 git add .
-git -c user.email=eval@local -c user.name=eval commit -q -m "fixture baseline"
+git -c user.email=dev@example.com -c user.name=Dev commit -q -m "initial commit"
 
 git checkout -q -b feature/add-slugify
 cp "$here/clean/src/text.py" src/text.py
 cp "$here/clean/tests/test_text.py" tests/test_text.py
 cp "$here/clean/tasks.md" openspec/changes/add-slugify/tasks.md
 git add .
-git -c user.email=eval@local -c user.name=eval commit -q -m "feat: implement slugify"
+git -c user.email=dev@example.com -c user.name=Dev commit -q -m "feat: implement slugify"
 
 if [ "$seed" = "1" ]; then
   sed -i 's/re.sub(r"\\s+"/re.sub(r" +"/' src/text.py
-  git -c user.email=eval@local -c user.name=eval commit -q -am "feat: collapse repeated spaces"
+  git -c user.email=dev@example.com -c user.name=Dev commit -q -am "refactor: simplify regex"
 fi
 
 echo "built $dest (seed=$seed)"

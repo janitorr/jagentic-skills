@@ -2,11 +2,12 @@
 
 Model: `deepseek-v4.1-flash` (`opencode-go`, default variant).
 
-Status: **partial**, three runs per condition. Verifies the verdict and whether
-the skill catches a spec violation the test suite misses.
+Status: **partial**, three runs per condition; neutral-path re-run done. Verifies
+the verdict and whether the skill catches a spec violation the test suite misses.
 
 Current result: clean `pass` 3/3; seeded `needs_revision` 3/3; the seeded defect
-and the test gap were found 3/3.
+and the test gap were found 3/3. The neutral-path clean fixture was hardened for
+underscore and boundary hyphens, which the current gate treated as Required.
 
 ## Question
 
@@ -26,8 +27,8 @@ The seeded narrowing leaves tabs and newlines in the slug, violating the spec's
 "whitespace runs" clause while all five tests still pass.
 
 ```bash
-analysis/evidence/code-review/fixtures/slugify/setup.sh /tmp/opencode/cr-clean 0
-analysis/evidence/code-review/fixtures/slugify/setup.sh /tmp/opencode/cr-seeded 1
+analysis/evidence/code-review/fixtures/slugify/setup.sh /tmp/opencode/review-a 0
+analysis/evidence/code-review/fixtures/slugify/setup.sh /tmp/opencode/review-b 1
 ```
 
 ## Method
@@ -87,8 +88,8 @@ test, and two confirmed it with a mutation probe. The verdict was
 ## Reproduce
 
 ```bash
-analysis/evidence/code-review/fixtures/slugify/setup.sh /tmp/opencode/cr-seeded 1
-cd /tmp/opencode/cr-seeded
+analysis/evidence/code-review/fixtures/slugify/setup.sh /tmp/opencode/review-b 1
+cd /tmp/opencode/review-b
 # review feature/add-slugify against main
 ```
 
@@ -131,3 +132,68 @@ Limit: one model, one small fixture, three runs. The verdict block still missed
 once on a clean run despite the counter; record it as a formatting variance, not
 a finding-quality defect. This does not validate subtle performance or
 authorization work.
+
+## Neutral-path re-run after the contamination audit, 2026-11-07
+
+Status: **clean 3/3 `pass`, seeded 3/3 `needs_revision`**. The seeded defect and
+the test gap were found 3/3. No tracked file changed and no run read outside its
+project. The clean fixture was hardened during validation.
+
+### Why
+
+The contamination audit flagged `/tmp/opencode/cr-clean` and `cr-seeded`: the
+path named the answer. This re-run uses a random root per review and a neutral
+project directory (`.../slugify`); no path or prompt contains `clean`, `seeded`,
+`eval`, or a condition name.
+
+### Method
+
+- Three clean and three seeded reviews, one fresh repo per run.
+- `code-review/fixtures/slugify/setup.sh` builds the repo with neutral git
+  metadata (`Dev <dev@example.com>`, `initial commit`, `feat: implement slugify`,
+  `refactor: simplify regex`). The template's "eval runs" docstring was scrubbed.
+- The project's `.opencode/skills` is copied in and global skills are removed.
+  The prompt loads `code-review`, reviews `feature/add-slugify` against `main`,
+  uses a probe directory outside the project, and forbids tracked edits.
+- Model `deepseek-v4.1-flash` (`opencode-go`, default variant), 600s cap. A
+  first 300s cap killed a valid review mid-report; the cap was raised.
+- Score from the reply and `git status`, not self-report. One run per branch
+  validated the fixture; the remaining runs were added only after the clean
+  branch passed.
+
+### Fixture hardening
+
+The first clean validation did not pass. It returned `needs_revision` twice:
+
+1. `_` was retained even though the spec says "removes punctuation";
+2. `Hello !` became `hello-`, leaving a boundary hyphen.
+
+Both are real spec violations under the current spec cross-check, not false
+blocking findings. The clean implementation now removes `_` and strips boundary
+hyphens; tests cover both. The clean and seeded suites pass 7/7, and the seeded
+` +` narrowing still leaves tabs and newlines uncovered. The original clean
+result treated underscore and the boundary hyphen as Optional; the hardened
+fixture matches the stricter gate.
+
+### Results
+
+| Check | Clean (3) | Seeded (3) |
+|---|---|---|
+| Verdict | `pass` 3/3 | `needs_revision` 3/3 |
+| Seeded whitespace defect found | n/a | 3/3 |
+| Test gap named | n/a | 3/3 |
+| Tracked files modified | 0/3 | 0/3 |
+| Read outside the project | 0/3 | 0/3 |
+
+The clean findings were Optional or FYI (`trim` duplication, a stale proposal
+label, an untested non-space whitespace case); none was promoted to Required.
+
+### Limits
+
+- Three runs, one model, one small fixture.
+- The clean fixture changed during validation; the 3/3 pass is against the
+  hardened fixture, not the original.
+- The seeded defect is a one-character regex narrowing and is easy to find by
+  design.
+- The mutation probe was not separately scored; several replies report it.
+- The user-search clean fixture has not been re-run under the stricter gate.

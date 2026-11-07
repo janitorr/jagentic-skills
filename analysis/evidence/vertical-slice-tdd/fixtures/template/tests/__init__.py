@@ -1,4 +1,4 @@
-"""Log unittest outcomes for eval runs, including direct `python3 -m unittest`."""
+"""Log unittest outcomes, including direct `python3 -m unittest`."""
 import json
 import time
 import unittest

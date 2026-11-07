@@ -6,5 +6,5 @@ def trim(text: str) -> str:
 
 
 def slugify(text: str) -> str:
-    cleaned = re.sub(r"[^\w\s]", "", text.strip().lower())
-    return re.sub(r"\s+", "-", cleaned)
+    cleaned = re.sub(r"[^\w\s]|_", "", text.strip().lower())
+    return re.sub(r"\s+", "-", cleaned).strip("-")

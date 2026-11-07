@@ -28,8 +28,9 @@ Source: `analysis/evidence/contamination-audit.md`.
       `treatment` names or prompts. High.
 - [ ] **`debug-loop`.** Run on a real codebase with a historical caller-patch
       bug; do not add another synthetic fixture. High.
-- [ ] **`code-review`.** Neutral paths (`cr-a`, `cr-b`), never `seeded` in a
-      path. High.
+- [x] **`code-review`.** Neutral paths (random roots, never `seeded` in a
+      path). Re-ran 3 clean + 3 seeded: clean `pass` 3/3, seeded
+      `needs_revision` 3/3, defect/test gap 3/3; clean fixture hardened. High.
 - [ ] **Gate and verdict evals.** `spec-review`, `vertical-slice-tdd`,
       `issue-to-openspec`, `issue-interview`: re-run the gate/verdict subset and
       leave the control to its normal judgment instead of "do not load any
@@ -64,6 +65,9 @@ Source: `analysis/evidence/contamination-audit.md`.
       reps and a control before calling it verified.
 - [ ] `ci-cd`: the trigger test still used the retired selector; re-run with
       the blind live method if the local/global boundary is contested.
+- [ ] `code-review`: the user-search clean fixture has not been re-run under the
+      stricter gate; the slugify clean fixture needed underscore and
+      boundary-hyphen fixes.
 - [ ] `issue-interview`: rerun the control against the final wording.
 - [ ] `git-workflow`: conflict, push, and release on the trimmed version.
 - [ ] `documentation`: the n=3 retest still has no control.

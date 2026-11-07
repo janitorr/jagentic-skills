@@ -31,7 +31,7 @@ against a bare agent, not against the agent's normal toolkit.
 | `trigger-tests.md` | live selectors had repo access; one run found the lab today | High | Done: blind live pass plus a descriptions-only proxy; see `trigger-tests.md` |
 | `skill-forge-stop-rule.md` | `eval-skill-control` and `eval-skill-treatment`; system prompts said "evaluation" | High | Yes, neutral agents |
 | `debug-loop.md` | `eval-debug-control`; `/tmp/opencode/debug-loop/...`; evaluation system prompt | High | Yes, on a real codebase; synthetic fixtures are already too easy |
-| `code-review.md` | `/tmp/opencode/cr-clean` and `cr-seeded`; the path names the answer | High | Yes, neutral paths |
+| `code-review.md` | `/tmp/opencode/cr-clean` and `cr-seeded`; the path names the answer | High | Done: neutral random roots; clean 3/3 `pass`, seeded 3/3 `needs_revision`; clean fixture hardened |
 | `issue-interview.md` | control told "do not load any skill"; canned script; `/tmp/opencode/issue-interview/` | High | Yes, gate and publish subset |
 | `spec-review.md` | control prompt: "Do not load, read, or follow any..."; condition labels | High | Yes, verdict subset |
 | `vertical-slice-tdd.md` | five control vs five treatment; control "loaded no skills" | High | Yes, gate and verdict subset |
@@ -53,7 +53,8 @@ against a bare agent, not against the agent's normal toolkit.
    a blind live pass plus a descriptions-only proxy. Proxy 101/105; live 13/14.
 2. **`skill-forge-stop-rule`.** The meta-skill's stop rule was shaped by a test
    whose agents were named `eval-*` and told they were controls.
-3. **`code-review`.** The `cr-seeded` path is a direct answer leak.
+3. **`code-review`.** Done: neutral-path re-run; clean 3/3 `pass`, seeded 3/3
+   `needs_revision`; the clean fixture was hardened.
 4. **The gate and verdict evals:** `spec-review`, `vertical-slice-tdd`,
    `issue-to-openspec`, `issue-interview`. Their conclusions drive the workflow.
 5. **The design-quality evals:** `deep-module-design`, `api-contract-design`.
