@@ -59,6 +59,9 @@ Source: `analysis/evidence/contamination-audit.md`.
 - [ ] `documentation`: `Update this repo's AGENTS.md` retested 4/5. If the 1/5
       matters, add the literal `AGENTS.md` to the description and retest; do not
       change on this sample alone.
+- [ ] `documentation` visuals: n=1 probe; architecture overview produced a file
+      tree + Mermaid sequence, a feature section stayed prose. Re-test with 3-5
+      reps and a control before calling it verified.
 - [ ] `ci-cd`: the trigger test still used the retired selector; re-run with
       the blind live method if the local/global boundary is contested.
 - [ ] `issue-interview`: rerun the control against the final wording.

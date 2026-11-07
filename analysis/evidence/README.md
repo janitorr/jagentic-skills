@@ -2,7 +2,8 @@
 
 Status: **opportunistic**. Targeted tests run when a skill or behavior warrants
 it; there is no standing eval suite. Nine skills have partial behavioral
-evidence; `documentation` has an exploratory format probe; all eleven
+evidence; `documentation` has an exploratory format probe and a human-facing
+visual probe; all eleven
 descriptions have a trigger record (ten in `trigger-tests.md`, `ci-cd` in
 `cicd-triggers.md`), and the clean re-run is proxy 101/105 and live 13/14, with
 one live miss that retested 4/5; the `documentation` description was re-tested
@@ -31,7 +32,7 @@ in the records below are superseded; verdict, gate, and finding results stand.
 |---|---|---|
 | `spec-review` | `analysis/evidence/spec-review.md` plus fixtures | Pilot plus five repetitions per condition; verdict 3/3 on seeded, 4/9 pass on the repaired clean fixture; clean ceiling withdrawn |
 | `vertical-slice-tdd` | `analysis/evidence/vertical-slice-tdd.md` plus fixture | TDD ceiling; approval gate discriminates; verdict blocked 3/3 and pass 3/3 |
-| `documentation` | `analysis/evidence/documentation.md` plus `documentation/headings.txt` | Exploratory format probe (n=1 per type) plus post-patch retest (n=3 per changed type); retest has no control |
+| `documentation` | `analysis/evidence/documentation.md` plus `documentation/headings.txt` | Exploratory format probe (n=1 per type) plus post-patch retest (n=3 per changed type); retest has no control. Human-facing visual probe n=1: architecture overview produced a file tree + Mermaid sequence; feature section stayed prose; `AGENTS.md` text-first (skill not loaded) |
 | `documentation` vs `writing-for-agents` | `analysis/evidence/documentation-vs-writing-for-agents.md` plus `documentation-vs-writing-for-agents/headings.txt` | Exploratory n=3 comparison of README and AGENTS.md output; document shape only |
 | All eleven descriptions | `analysis/evidence/trigger-tests.md` | Pilot proxy 105/105; clean re-run proxy 101/105, live 13/14; the live miss is `Update this repo's AGENTS.md` -> no skill, 4/5 on retest; change-list retest 24/24 proxy, live docs 1/1; evaluation-report retest 21/21 proxy, live 2/2; `ci-cd` in `cicd-triggers.md` |
 | `documentation` description | `analysis/evidence/trigger-tests.md#re-run-after-the-documentation-description-edit` | 3 proxy reps, 14 prompts: 40/42, then 41/42 after the RFC fix; live 5/5 after; evidence-report retest 21/21 proxy, live 1/1; clean re-run live 3/4; `Update this repo's AGENTS.md` retest 4/5 |
@@ -338,6 +339,11 @@ reproduction steps.
   added.
 - **Documentation shape follows explicit recipes.** The format probe changed
   shape only where the skill gave a recipe; the retest has no control.
+- **Human-facing docs need a positive visual recipe.** The first README probe
+  had an architecture section but no visual. After the skill said the
+  architecture overview gets a file tree and a sequence diagram by default, the
+  run loaded `visual-explainer` and produced both; a feature section stayed
+  prose. n=1, no control; see [documentation.md](documentation.md).
 - **Skills report a verdict, not delivery fields.** `pass`, `needs_revision`,
   and `blocked` plus a reason; the persona owns tracker operations. Owner-based
   results are historical.

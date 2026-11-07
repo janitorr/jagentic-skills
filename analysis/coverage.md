@@ -20,7 +20,7 @@ commands or agent files).
 | 9 | Frontend and UI | — | Missing | No accessibility, design-system, or real-browser verification skill. |
 | 10 | Delivery, git, repo hygiene | `git-workflow`, `ci-cd` | Partial | Commits, conflicts, pushes, and releases are covered. CI/CD pipelines have a narrow supporting skill (`ci-cd`), 31/32 against 26-28 control; the Azure caching smoke and trigger test are complete (`cicd.md`). Worktree mechanics belong to the harness; issue triage is not covered. |
 | 11 | Security, performance, observability | `code-review` axes | Partial | Review has a compact security/performance checklist (`references/quality-checks.md`); no skill owns threat modeling, profiling, or instrumentation. |
-| 12 | Docs, research, teaching, visual explanation | `documentation`, `visual-explainer` | Partial | ADRs, READMEs, reference pages, changelogs, agent instructions, onboarding guides, runbooks, and how-to docs are covered. Research and multi-session teaching are not. |
+| 12 | Docs, research, teaching, visual explanation | `documentation`, `visual-explainer` | Partial | ADRs, READMEs, reference pages, changelogs, agent instructions, onboarding guides, runbooks, and how-to docs are covered. Human-facing docs delegate diagrams and one-pagers to `visual-explainer`; agent instructions stay text-first. Research and multi-session teaching are not. |
 | 13 | Meta: skills, context, agent docs | `skill-forge`, `documentation` | Covered | Skill authoring and agent docs have owners. |
 | 14 | Misc utilities | — | Skipped | Too narrow to generalize. |
 

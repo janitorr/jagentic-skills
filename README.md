@@ -64,7 +64,7 @@ Supporting skills, callable at any point:
 | `deep-module-design` | Interfaces, seams, simplification, and migration |
 | `skill-forge` | Authoring and revising skills against a baseline failure |
 | `git-workflow` | Commit slicing and shape, conflicts, rejected pushes, releases and tags; invariants plus defaults |
-| `documentation` | ADRs, READMEs, reference pages, changelogs and release notes, agent instructions, onboarding guides, runbooks, and how-to docs |
+| `documentation` | ADRs, READMEs, reference pages, changelogs and release notes, agent instructions, onboarding guides, runbooks, and how-to docs; human-facing visuals via `visual-explainer` |
 | `ci-cd` | CI/CD pipelines: build once, promote, gate, verify, and roll back |
 
 Reviewers never fix what they find. The owning stage may rework findings

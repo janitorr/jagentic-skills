@@ -88,7 +88,7 @@ Supporting skills:
 | | Block destructive git operations rather than relying on reminders | mattpocock `git-guardrails-claude-code` |
 | `ci-cd` | Promotion model: build once, promote the same image, gate production | addyosmani `ci-cd-and-automation`, `shipping-and-launch` |
 | | Least privilege, OIDC, SHA-pinned actions, test evidence, deployment jobs, runtime conditions | official GitHub Actions and Azure Pipelines docs |
-| `documentation` | ADRs, README, inline why, API docs, changelog, agent docs, procedural docs (tutorial, runbook, onboarding, migration), prose review | addyosmani `documentation-and-adrs` |
+| `documentation` | ADRs, README, inline why, API docs, changelog, agent docs, procedural docs (tutorial, runbook, onboarding, migration), prose review; human-facing visuals via `visual-explainer` | addyosmani `documentation-and-adrs` |
 | | Agent instructions: bare foundations, conditional rules, keep commands, prune tool territory | humanlayer `improve-claude-md`, mattpocock `writing-for-agents` |
 | | Context pointers and one source of truth | addyosmani `context-engineering` |
 | | Verify framework claims against primary sources | addyosmani `source-driven-development` |
@@ -104,7 +104,8 @@ Supporting skills:
   request, archive, and deploy policy remain with the agent file and OpenSpec.
 - `documentation` owns docs, ADRs, READMEs, reference pages, procedural docs,
   and agent instruction files. `skill-forge` owns `SKILL.md` files; the two do
-  not overlap.
+  not overlap. `visual-explainer` owns the diagram or one-pager; `documentation`
+  points human-facing docs to it and keeps agent instructions text-first.
 - No duplicated OpenSpec commands. The skills reference `openspec-explore`,
   `openspec-propose`, and `openspec-apply-change` rather than reimplementing
   their scaffolding, validation, or checkbox rules.

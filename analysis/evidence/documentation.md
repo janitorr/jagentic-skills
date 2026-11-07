@@ -257,3 +257,40 @@ prepends "do not read any files or guidance").
   deploy/export-worker --replicas=0` then back to 8, find poison jobs with
   `redis-cli lrange export_queue 0 50`, and escalate to #team-data-platform.
   There is no existing runbook.
+
+## Human-facing visual guidance probe
+
+Status: **exploratory shape probe, n=1 per prompt**. This is not a behavioral
+verification: there is no control and one sample per prompt. It checks that the
+new human-versus-agent visual guidance changes the output shape.
+
+### Method
+
+One disposable copy of the `spec-review` clean fixture per prompt, global skills
+removed, `deepseek-v4.1-flash` (`opencode-go`, default variant), 150s cap,
+`documentation` loaded from the project mirror. The agent wrote `README.md` or
+edited `AGENTS.md`; shape was scored from the write/edit content in the session
+event stream, not from the reply.
+
+### Results
+
+| Prompt | Skills loaded | Output | Visual |
+|---|---|---|---|
+| Write the README architecture overview for this project. | `documentation`, `visual-explainer` | 5,338-char `README.md` | file tree (`├── src/...`) and a Mermaid `sequenceDiagram`; one sentence beside each |
+| Write the README section describing the search feature. | `documentation` | 1,436-char `README.md` | prose; no visual, as expected for a feature section |
+| Update this repo's AGENTS.md | none | 1,565-char `AGENTS.md` | text plus the command table; no diagram |
+
+The first guidance was conditional ("when the shape is the point"). It produced
+no visual for the feature-section prompt and was not run on the
+architecture-overview prompt. The positive recipe — the architecture overview
+gets a file tree and a sequence diagram by default — produced both visuals. The
+feature section staying prose is the intended scope, not a miss. The `AGENTS.md`
+run did not load `documentation`, so it does not test the new text-first rule;
+the output was text-first anyway.
+
+### Limits
+
+- n=1 per prompt, no control, one model, one project.
+- The `AGENTS.md` text-first rule is not tested with the skill loaded.
+- The README test asked for an architecture overview; it does not show that a
+  generic document request will add visuals.

@@ -22,6 +22,12 @@ Write for two audiences. Humans need to understand, decide, and operate. Agents
 need constraints, pointers, and the same durable context. One document can serve
 both when each section has a clear job.
 
+Human-facing documents may carry a visual when the shape is the point: a file
+tree for project structure, a sequence diagram for complex call logic. Use
+`visual-explainer` for the visual and keep one sentence beside it. Agent-facing
+files are read as tokens: keep `AGENTS.md` and other agent instructions
+text-first; a visual there costs context without changing behavior.
+
 For skill files, use `skill-forge` instead. This skill covers docs, ADRs, READMEs,
 reference pages, changelogs, and project instruction files.
 
@@ -97,7 +103,11 @@ overview, and contributing. The path is numbered inside one section; each step
 carries its command and a completion criterion, so a command appears once and
 the reader knows when it worked. Add a reference table only for material no step
 reaches. Every command must be copy-pasteable and current. Link to ADRs for the
-reasoning; do not restate it.
+reasoning; do not restate it. Give the architecture overview two visuals by
+default: a file tree of the top-level project structure, and a sequence diagram
+of the main request path when it crosses more than one module. Use
+`visual-explainer` for both and keep one sentence beside each. Skip a visual only
+when the project is a single file or the section is a one-liner.
 
 ### 5. Write the reference page
 
@@ -127,6 +137,10 @@ when a step fails. End with the next step or the escalation path.
 - **Onboarding guide:** access prerequisites, a map of repositories or services,
   the first task, required reading, and who to ask. Order it by what unblocks
   the reader, not by team org chart.
+
+When the order or branches are easier to see than to read, add one
+`visual-explainer` sequence diagram before the steps; keep the steps themselves
+text.
 
 ### 7. Write inline documentation
 
@@ -159,6 +173,9 @@ already has that structure.
   hard guardrail, paired with the action to take.
 - Put the trigger in the pointer: "touching the schema, read
   packages/db/README.md", not "see packages/db for details".
+- Keep agent instructions text-first. Do not add file trees, sequence diagrams,
+  screenshots, or visual one-pagers; agents read tokens, not pixels. A table is
+  fine when it compresses a matrix of rules.
 
 ### 9. Write for the reader
 
@@ -166,6 +183,10 @@ Lead with the decision or the answer. Use concrete names, values, paths, and
 commands. Preserve qualifiers, units, and uncertainty. Replace stock
 introductions and promotional adjectives with information. When the original
 wording is the point, quote it; otherwise paraphrase.
+
+Use a visual when the reader must see a shape—project structure as a file tree,
+complex call logic as a sequence diagram—and a sentence when a sentence is
+clearer. A visual is not decoration.
 
 Cite primary sources for technical claims. Verify every command and example
 before publishing it.
@@ -201,6 +222,8 @@ owns changelog content and format; `git-workflow` owns when a release needs one.
 - [ ] Commands, paths, and examples were verified.
 - [ ] Agent rules use observable conditions, keep commands, and omit
       tool-enforceable style rules.
+- [ ] Human-facing documents use a file tree or sequence diagram only where the
+      shape is the point; agent instructions stay text-first.
 - [ ] Each meaning has one authoritative source; duplicates were replaced with
       pointers.
 - [ ] Stale pages, dead links, and commented-out code were removed.
