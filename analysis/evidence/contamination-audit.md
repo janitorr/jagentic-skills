@@ -1,11 +1,12 @@
 # Contamination audit: earlier skill evals
 
-Status: **first pass, static; trigger re-run done**. The CI/CD test exposed
-several cue classes that can change agent behavior. This file records which
-earlier evidence files show them and what to re-run. It does not claim the
-results are wrong; it records exposure. The actionable list is in
-`docs/open-tasks.md`. The trigger re-run is complete; the remaining items are
-static.
+Status: **first pass, static; trigger and code-review re-runs done; skill-forge
+stop rule deferred**. The CI/CD test exposed several cue classes that can change
+agent behavior. This file records which earlier evidence files show them and what
+to re-run. It does not claim the results are wrong; it records exposure. The
+actionable list is in `docs/open-tasks.md`. The trigger and code-review re-runs
+are complete; the `skill-forge` stop-rule re-run is deferred; the remaining items
+are static.
 
 ## Cue classes
 
@@ -29,7 +30,7 @@ against a bare agent, not against the agent's normal toolkit.
 | Evidence | Cue observed | Risk | Re-run? |
 |---|---|---|---|
 | `trigger-tests.md` | live selectors had repo access; one run found the lab today | High | Done: blind live pass plus a descriptions-only proxy; see `trigger-tests.md` |
-| `skill-forge-stop-rule.md` | `eval-skill-control` and `eval-skill-treatment`; system prompts said "evaluation" | High | Yes, neutral agents |
+| `skill-forge-stop-rule.md` | `eval-skill-control` and `eval-skill-treatment`; system prompts said "evaluation" | High | Deferred: existing 0/3 vs 3/3 differential; meta-skill only |
 | `debug-loop.md` | `eval-debug-control`; `/tmp/opencode/debug-loop/...`; evaluation system prompt | High | Yes, on a real codebase; synthetic fixtures are already too easy |
 | `code-review.md` | `/tmp/opencode/cr-clean` and `cr-seeded`; the path names the answer | High | Done: neutral random roots; clean 3/3 `pass`, seeded 3/3 `needs_revision`; clean fixture hardened |
 | `issue-interview.md` | control told "do not load any skill"; canned script; `/tmp/opencode/issue-interview/` | High | Yes, gate and publish subset |
@@ -51,8 +52,8 @@ against a bare agent, not against the agent's normal toolkit.
 
 1. **Trigger tests.** Routing is used by every skill. The clean re-run is done:
    a blind live pass plus a descriptions-only proxy. Proxy 101/105; live 13/14.
-2. **`skill-forge-stop-rule`.** The meta-skill's stop rule was shaped by a test
-   whose agents were named `eval-*` and told they were controls.
+2. **`skill-forge-stop-rule`.** Deferred: the existing 0/3 vs 3/3 differential
+   is strong, the rule is unchanged since the counter, and the test is meta-only.
 3. **`code-review`.** Done: neutral-path re-run; clean 3/3 `pass`, seeded 3/3
    `needs_revision`; the clean fixture was hardened.
 4. **The gate and verdict evals:** `spec-review`, `vertical-slice-tdd`,

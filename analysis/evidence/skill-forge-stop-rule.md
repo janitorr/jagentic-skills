@@ -102,3 +102,11 @@ including form matching and micro-tests, remains unverified.
   model change.
 - Harden the `debug-loop` fixture per `debug-loop.md`; the current one does not
   discriminate.
+
+## Contamination status
+
+The test used `eval-skill-control` and `eval-skill-treatment`, and prompts that
+said "evaluation"; the audit flagged the cue. A clean re-run is deferred: the
+0/3 vs 3/3 differential is strong, the rule is unchanged since the counter, and
+the test is meta-only and expensive. Revisit if the stop rule is edited or a
+real failure is reported.

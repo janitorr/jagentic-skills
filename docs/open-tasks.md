@@ -24,13 +24,11 @@ Source: `analysis/evidence/contamination-audit.md`.
       pass plus a descriptions-only proxy. Proxy 101/105; live 13/14. The live
       miss is `Update this repo's AGENTS.md` -> no skill, 4/5 on retest; not
       stable. High.
-- [ ] **`skill-forge` stop rule.** Neutral agents, no `eval`/`control`/
-      `treatment` names or prompts. High.
-- [ ] **`debug-loop`.** Run on a real codebase with a historical caller-patch
-      bug; do not add another synthetic fixture. High.
 - [x] **`code-review`.** Neutral paths (random roots, never `seeded` in a
       path). Re-ran 3 clean + 3 seeded: clean `pass` 3/3, seeded
       `needs_revision` 3/3, defect/test gap 3/3; clean fixture hardened. High.
+- [ ] **`debug-loop`.** Run on a real codebase with a historical caller-patch
+      bug; do not add another synthetic fixture. High.
 - [ ] **Gate and verdict evals.** `spec-review`, `vertical-slice-tdd`,
       `issue-to-openspec`, `issue-interview`: re-run the gate/verdict subset and
       leave the control to its normal judgment instead of "do not load any
@@ -43,6 +41,14 @@ Source: `analysis/evidence/contamination-audit.md`.
       `codebase-design-vs-deep-module-design`, `code-review-comparison`: only if
       contested. Medium/low.
 - [ ] **`context-engineering-external`.** Metrics only; lowest priority.
+
+## Deferred
+
+- **`skill-forge` stop rule.** Not re-run after the contamination audit. The
+  existing differential is 0/3 treatment vs 3/3 control; `skill-forge` is a
+  meta-skill, the rule is unchanged since the counter, and the full test needs a
+  baseline artifact plus six pressure runs. Revisit if the rule is edited or a
+  real failure is reported.
 
 ## CI/CD
 
