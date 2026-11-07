@@ -2,9 +2,12 @@
 
 Model: `deepseek-v4.1-flash` (`opencode-go`, default variant).
 
-Status: **5/5 unambiguous fire, 5/5 no-fire**. The ambiguous production-rollback
-prompt loads the global `shipping-and-launch`; a pipeline-specific rollback
-prompt loads `ci-cd`.
+Status: **5/5 unambiguous fire, 5/5 no-fire; historical method**. The ambiguous
+production-rollback prompt loads the global `shipping-and-launch`; a
+pipeline-specific rollback prompt loads `ci-cd`. This run used the
+`trigger-selector` that `skill-forge` now retires, so the result is a
+description-routing record, not a blind behavioral pass. See
+`trigger-tests.md` for the current method.
 
 ## Method
 

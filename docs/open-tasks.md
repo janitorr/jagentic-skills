@@ -20,9 +20,9 @@ Source: `docs/agent-files.md`.
 
 Source: `analysis/evidence/contamination-audit.md`.
 
-- [ ] **Trigger tests.** Re-run the proxy and live prompts with a skill-only
-      selector: deny `*`, then allow `skill: *` (definition in
-      `analysis/evidence/README.md`). High.
+- [x] **Trigger tests.** Re-ran the proxy and live prompts with a blind live
+      pass plus a descriptions-only proxy. Proxy 101/105; live 13/14. The live
+      miss is `Update this repo's AGENTS.md` -> no skill. High.
 - [ ] **`skill-forge` stop rule.** Neutral agents, no `eval`/`control`/
       `treatment` names or prompts. High.
 - [ ] **`debug-loop`.** Run on a real codebase with a historical caller-patch
@@ -55,6 +55,10 @@ Source: `analysis/evidence/contamination-audit.md`.
 
 - [ ] `skill-forge` body: form matching and micro-tests; the trigger-test
       rewrite is observed but not separately tested.
+- [ ] `documentation`: the clean live pass missed `Update this repo's
+      AGENTS.md`; re-run that prompt before changing the description.
+- [ ] `ci-cd`: the trigger test still used the retired selector; re-run with
+      the blind live method if the local/global boundary is contested.
 - [ ] `issue-interview`: rerun the control against the final wording.
 - [ ] `git-workflow`: conflict, push, and release on the trimmed version.
 - [ ] `documentation`: the n=3 retest still has no control.
@@ -77,7 +81,9 @@ Source: `analysis/evidence/contamination-audit.md`.
   skill. Do not say "do not load any skill."
 - Treatment: "use this skill," never "treatment."
 - No doc or research hints a real request would not give.
-- Trigger selectors: only the `skill` tool.
+- Trigger tests: a blind live pass with normal tools in a disposable project;
+  a descriptions-only no-tool proxy is not behavioral evidence. Do not build a
+  selection-only selector.
 - Recreate the harness agents per run; do not commit them.
 - Pin the model and variant; record the agent ID, system prompt, path, and model
   in the evidence file.

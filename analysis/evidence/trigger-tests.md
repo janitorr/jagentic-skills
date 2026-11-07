@@ -2,9 +2,12 @@
 
 Model: `deepseek-v4.1-flash` (`opencode-go`, default variant).
 
-Status: **partial**. Proxy and live selector evidence, plus re-runs after the
-`documentation` description edits, including the evaluation-report trigger. One
-model family; the live pass is one rep per prompt.
+Status: **clean re-run complete; one live miss**. Proxy **101/105**; live
+**13/14**. The original pilot and the documentation/evaluation-report re-runs
+used a live selector that exposed the evaluation; the clean re-run replaces it
+with a blind live pass plus a descriptions-only proxy. See
+[Clean re-run after the contamination audit](#clean-re-run-after-the-contamination-audit).
+One model family; the live pass is one rep per prompt.
 
 Pilot, three independent repetitions, 35 prompts, descriptions only. This tests
 whether the current descriptions route a prompt to the right skill; it does not
@@ -272,7 +275,126 @@ Findings:
   step-3 report recipe still has no behavioral test: the selector result shows
   the skill is chosen, not that the body produces the intended shape.
 
+## Clean re-run after the contamination audit
+
+Model: `deepseek-v4.1-flash` (`opencode-go`, default variant).
+
+Status: **clean re-run, one live miss**. Proxy **101/105**; live **13/14**. The
+live miss is `Update this repo's AGENTS.md` -> no skill. The proxy's stable miss
+is `Summarize this PR` -> `code-review` 3/3.
+
+### Why the method changed
+
+The contamination audit flagged trigger selectors with filesystem access. A first
+attempt kept a selector with only the `skill` tool and a "report the loaded skill
+ID" prompt; that still exposed the evaluation and was discarded. This re-run
+separates two honest forms:
+
+- **Proxy:** eleven descriptions, no bodies, no tools. A closed-book classifier
+  returns one choice per prompt. It is explicitly a proxy, not behavior.
+- **Live:** a real agent with its normal tools in a disposable project copy,
+  given only the user request. Score the first `skill` call from the session
+  store. No "load a skill" and no "report the ID."
+
+### Method
+
+- Global skills were moved out of `~/.config/opencode/skills` for the run. Only
+  the project mirror (the eleven synthesized skills plus the six `openspec-*`
+  entries) was visible. The project `AGENTS.md` kept the local-skill preference.
+- Proxy: 35 prompts, three fresh no-tool contexts, high-recall, one choice per
+  prompt. 105 classifications.
+- Live: 14 prompts, one fresh project per prompt. The project is a copy of
+  `spec-review/fixtures/clean`; `package.json` was renamed to `task-search`, and
+  `fixture`/`baseline` and a fixture-specific path were removed from the project
+  contents. Each run got its own random root under `/tmp/opencode`; the harness
+  and scoring files lived in `/tmp/opencode-harness`, outside the run's
+  ancestor. The root was deleted after the response was saved, so no sibling
+  runs were visible.
+- Each live run used `opencode run --standalone --auto`, `cd` into the project so
+  `PWD` was the project, a 90s cap, and a retry on transport errors. The agent
+  received only the user request.
+- Score from the session store and the event stream, not self-report. A run that
+  read outside its project was discarded.
+- One live rep per prompt; one model family.
+
+### Proxy results
+
+33 of the 35 prompts matched the expected choice in all three reps. The two
+exceptions:
+
+| # | Prompt | Expected | Rep 1 | Rep 2 | Rep 3 |
+|---|---|---|---|---|---|
+| 34 | Explain this regex. | NONE | `visual-explainer` (low) | NONE | NONE |
+| 35 | Summarize this PR. | NONE | `code-review` (low) | `code-review` (medium) | `code-review` (medium) |
+
+**101/105.** `Explain this regex` is one low-confidence draw and is noise at
+n=3. `Summarize this PR` is stable: `code-review` claims "review ... pull
+request" and "before human sign-off", so a summarize-the-PR request is adjacent
+under high recall. The expectation `NONE` is arguable; do not change the
+description on this result alone.
+
+### Live results
+
+| # | Prompt | Expected | Loaded | Result | Stop |
+|---|---|---|---|---|---|
+| 1 | Interview me about what I actually want | `issue-interview` | `issue-interview` | hit | timeout |
+| 2 | Write an ADR for PostgreSQL vs SQLite | `documentation` | `documentation` | hit | natural |
+| 3 | Turn issue #42 into an OpenSpec change. | `issue-to-openspec` | `issue-to-openspec` | hit | timeout |
+| 4 | Review my PR. | `code-review` | `code-review` | hit | timeout |
+| 5 | Show me how the auth flow works. | `visual-explainer` | `visual-explainer` | hit | natural |
+| 6 | Should this be one module or two? | `deep-module-design` | `deep-module-design` | hit | natural |
+| 7 | This skill never fires when I need it. | `skill-forge` | `skill-forge` | hit | natural |
+| 8 | What commit message should I use? | `git-workflow` | `git-workflow` | hit | natural |
+| 9 | Write an ADR for this decision. | `documentation` | `documentation` | hit | natural |
+| 10 | What time is it? | NONE | none | hit | natural |
+| 11 | Interview me and turn the answers into a GitHub issue in this repo | `issue-interview` | `issue-interview` | hit | timeout |
+| 12 | Write an ADR in this repo's docs | `documentation` | `documentation` | hit | natural |
+| 13 | Update this repo's AGENTS.md | `documentation` | none | **miss** | natural |
+| 14 | Review this repo's OpenSpec change proposal | `spec-review` | `spec-review` | hit | timeout |
+
+**13/14.** Five runs hit the 90s cap after the skill call was recorded; the cap
+is a harness cutoff, not a prompt cue. A 60s cap had earlier missed prompt 12,
+which loaded `documentation` with the longer cap.
+
+`Update this repo's AGENTS.md` is the one live miss. The agent edited the file
+directly, without loading `documentation`, even though the description names
+"agent instructions file" and the proxy chose it 3/3. The prompt is a small edit
+to a file already in the agent's context; the live agent did not apply the
+high-recall policy the proxy is told to use. This is a behavioral boundary, not
+a description typo. Do not strengthen the wording on one live run; re-run this
+prompt before changing the description.
+
+### Harness lessons
+
+- **Subagents inherit the parent directory.** A subagent cannot be given its own
+  cwd, so the live pass runs as a separate `cd`-ed `opencode run` process. A
+  Python `Popen(cwd=...)` does not update `PWD`; the first attempt told every
+  agent its working directory was the repository. Set `PWD` or `cd` in the
+  shell.
+- **Keep the harness outside the run tree.** The first full live attempt left
+  `proxy-prompt.txt`, `score.py`, and `run-live-all.sh` under `/tmp/opencode`.
+  One agent found them and read the scoring script. Move the harness to a
+  sibling directory, delete each run root after saving its response, and check
+  every response for outside reads.
+- **Scrub project metadata, not just the path.** The first copy still had
+  `"name": "task-search-fixture"` and a fixture-specific path in the OpenSpec
+  tasks. Rename the package and remove `fixture`/`baseline` from project content.
+
+### Limits
+
+- One live rep per prompt, one model family.
+- The live project is a single fixture-derived project, not the repository the
+  prompts nominally reference.
+- Global skills were removed for the local-routing claim. The normal environment
+  has them, and they can shadow a local skill.
+- The proxy is closed-book and explicitly a proxy; it does not establish
+  behavior.
+
 ## Appendix: prompt set
+
+The `Reps` column is the original pilot result, not the clean re-run. In the
+clean re-run, prompt 34 was `NONE` 2/3 and prompt 35 was `code-review` 3/3; see
+the section above.
 
 | # | Prompt | Expected | Reps |
 |---|---|---|---|

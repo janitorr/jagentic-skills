@@ -1,9 +1,11 @@
 # Contamination audit: earlier skill evals
 
-Status: **first pass, static**. The CI/CD test exposed several cue classes that
-can change agent behavior. This file records which earlier evidence files show
-them and what to re-run. It does not claim the results are wrong; it records
-exposure. The actionable list is in `docs/open-tasks.md`.
+Status: **first pass, static; trigger re-run done**. The CI/CD test exposed
+several cue classes that can change agent behavior. This file records which
+earlier evidence files show them and what to re-run. It does not claim the
+results are wrong; it records exposure. The actionable list is in
+`docs/open-tasks.md`. The trigger re-run is complete; the remaining items are
+static.
 
 ## Cue classes
 
@@ -15,7 +17,8 @@ exposure. The actionable list is in `docs/open-tasks.md`.
 5. The lab, evidence, or skill source visible to the agent.
 6. Capability grants or research hints a real request would not give
    ("you may consult the official docs").
-7. Trigger selectors with filesystem access.
+7. Trigger selectors with filesystem access, or a selection-only role with a
+   restricted toolset and a "report the loaded ID" prompt.
 
 Capability asymmetry is separate from contamination: a control told "do not load
 any skill" is not the agent's default behavior. It measures the target skill
@@ -25,7 +28,7 @@ against a bare agent, not against the agent's normal toolkit.
 
 | Evidence | Cue observed | Risk | Re-run? |
 |---|---|---|---|
-| `trigger-tests.md` | live selectors had repo access; one run found the lab today | High | Yes, with `trigger-selector` (skill tool only) |
+| `trigger-tests.md` | live selectors had repo access; one run found the lab today | High | Done: blind live pass plus a descriptions-only proxy; see `trigger-tests.md` |
 | `skill-forge-stop-rule.md` | `eval-skill-control` and `eval-skill-treatment`; system prompts said "evaluation" | High | Yes, neutral agents |
 | `debug-loop.md` | `eval-debug-control`; `/tmp/opencode/debug-loop/...`; evaluation system prompt | High | Yes, on a real codebase; synthetic fixtures are already too easy |
 | `code-review.md` | `/tmp/opencode/cr-clean` and `cr-seeded`; the path names the answer | High | Yes, neutral paths |
@@ -46,8 +49,8 @@ against a bare agent, not against the agent's normal toolkit.
 
 ## Priority
 
-1. **Trigger tests.** Routing is used by every skill. Re-run the 105 proxy and
-   live prompts with `trigger-selector`, which has only the `skill` tool.
+1. **Trigger tests.** Routing is used by every skill. The clean re-run is done:
+   a blind live pass plus a descriptions-only proxy. Proxy 101/105; live 13/14.
 2. **`skill-forge-stop-rule`.** The meta-skill's stop rule was shaped by a test
    whose agents were named `eval-*` and told they were controls.
 3. **`code-review`.** The `cr-seeded` path is a direct answer leak.
@@ -67,7 +70,9 @@ against a bare agent, not against the agent's normal toolkit.
   agent's default, not a bare agent.
 - Treatment: "use this skill," never "treatment."
 - No doc or research hints unless the skill itself provides them.
-- Trigger selectors: only the `skill` tool.
+- Trigger tests: a blind live pass with normal tools in a disposable project;
+  a descriptions-only no-tool proxy is not behavioral evidence. Do not build a
+  selection-only selector.
 - Pin the model and variant; record the agent ID, system prompt, path, and model
   in the evidence file.
 - Score from disk, not from the agent's self-report.

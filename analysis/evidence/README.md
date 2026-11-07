@@ -3,9 +3,10 @@
 Status: **opportunistic**. Targeted tests run when a skill or behavior warrants
 it; there is no standing eval suite. Nine skills have partial behavioral
 evidence; `documentation` has an exploratory format probe; all eleven
-descriptions passed a trigger test (ten in `trigger-tests.md`, `ci-cd` in
-`cicd-triggers.md`), and the `documentation` description was re-tested after its
-edit and after its evaluation-report edit; `skill-forge` now has a stop-rule
+descriptions have a trigger record (ten in `trigger-tests.md`, `ci-cd` in
+`cicd-triggers.md`), and the clean re-run is proxy 101/105 and live 13/14, with
+one live miss; the `documentation` description was re-tested after its edit and
+after its evaluation-report edit; `skill-forge` now has a stop-rule
 test, a counter retest, a blinding rule, and a trigger-test rewrite (debt: not
 separately tested). A proposed `api-contract-design`
 skill was evaluated and not created; see "Evaluated but not created" below. A
@@ -31,8 +32,8 @@ in the records below are superseded; verdict, gate, and finding results stand.
 | `vertical-slice-tdd` | `analysis/evidence/vertical-slice-tdd.md` plus fixture | TDD ceiling; approval gate discriminates; verdict blocked 3/3 and pass 3/3 |
 | `documentation` | `analysis/evidence/documentation.md` plus `documentation/headings.txt` | Exploratory format probe (n=1 per type) plus post-patch retest (n=3 per changed type); retest has no control |
 | `documentation` vs `writing-for-agents` | `analysis/evidence/documentation-vs-writing-for-agents.md` plus `documentation-vs-writing-for-agents/headings.txt` | Exploratory n=3 comparison of README and AGENTS.md output; document shape only |
-| All ten descriptions | `analysis/evidence/trigger-tests.md` | Proxy 105/105; live 8/10 generic, 4/4 repo-specific; change-list retest 24/24 proxy, live docs 1/1; evaluation-report retest 21/21 proxy, live 2/2 |
-| `documentation` description | `analysis/evidence/trigger-tests.md#re-run-after-the-documentation-description-edit` | 3 proxy reps, 14 prompts: 40/42, then 41/42 after the RFC fix; live 5/5 after; evidence-report retest 21/21 proxy, live 1/1 |
+| All eleven descriptions | `analysis/evidence/trigger-tests.md` | Pilot proxy 105/105; clean re-run proxy 101/105, live 13/14; the live miss is `Update this repo's AGENTS.md` -> no skill; change-list retest 24/24 proxy, live docs 1/1; evaluation-report retest 21/21 proxy, live 2/2; `ci-cd` in `cicd-triggers.md` |
+| `documentation` description | `analysis/evidence/trigger-tests.md#re-run-after-the-documentation-description-edit` | 3 proxy reps, 14 prompts: 40/42, then 41/42 after the RFC fix; live 5/5 after; evidence-report retest 21/21 proxy, live 1/1; clean re-run live 3/4, with `Update this repo's AGENTS.md` the miss |
 | `issue-to-openspec` | `analysis/evidence/issue-to-openspec.md` plus fixture | Pilot, 3 reps per condition; pointer fires, design-quality ceiling; slicing and marker rules retested 3/3; blocked verdict 3/3, gate 1/3 then 3/3; real pipelines 3/3; pass 3/3; revision route 1/1 after an invalid first run |
 | `code-review` | `analysis/evidence/code-review.md` plus fixtures | 3 reps per condition; clean → pass 3/3, seeded defect → needs_revision 3/3. 2026-11-06 retest after the spec-cross-check and quality-checks edit: seeded 3/3 `needs_revision` (delta omission 3/3), clean 3/3 `pass`; verdict block 5/6 |
 | `issue-interview` | `analysis/evidence/issue-interview.md` plus fixtures | Pilot plus two retests; final gate 2/2, confidence 12/12 responses, 6 questions per run; template n=1 |
@@ -40,7 +41,7 @@ in the records below are superseded; verdict, gate, and finding results stand.
 | `visual-explainer` | `analysis/evidence/visual-explainer.md` plus fixture | Pilot, positive; diagram for a call path, prose for a one-liner; one-pager compared with `show-me` |
 | `deep-module-design` | `analysis/evidence/deep-module-design.md` plus fixture | Partial; skill adds alternatives and contract, chosen design parity; deletion test moved to step 1 (3/3); provenance vs `codebase-design` |
 | `skill-forge` | `analysis/evidence/skill-forge-stop-rule.md`, `skill-forge-blinding.md` | Stop rule: clear evidence with an exit 6/6 declined; under pressure 3/3 wrote a skill; after a no-draft counter, treatment 0/3 vs control 3/3. Blinding rule added after a CI/CD cue leak. Trigger-test blinding rewritten after the selector and workspace-content leaks; no separate micro-test. Body otherwise unverified |
-| `ci-cd` | `analysis/evidence/cicd.md` plus `service` fixture | Clean phase 31/32 vs control 26-28/32; SHA pinning and test evidence 3/3 vs 0/3; trigger 5/5; caching smoke 31/32 (`Cache@2` 3/3, JUnit 1/1, coverage not added) |
+| `ci-cd` | `analysis/evidence/cicd.md` plus `service` fixture | Clean phase 31/32 vs control 26-28/32; SHA pinning and test evidence 3/3 vs 0/3; trigger 5/5 on the retired selector, not in the clean re-run; caching smoke 31/32 (`Cache@2` 3/3, JUnit 1/1, coverage not added) |
 
 **Contamination audit.** The CI/CD test exposed evaluation cues that can change
 behavior. `analysis/evidence/contamination-audit.md` maps them across the
@@ -149,16 +150,23 @@ does not establish behavior on another.
 ## Evaluation harness agents
 
 Do not commit evaluation agents; they load into ordinary sessions. Recreate them
-per run with `mode: subagent`, the pinned default model, and `subagent` denied.
+per run with the pinned default model and `subagent` denied. The CI/CD agents use
+`mode: subagent`; the proxy agent runs as a primary agent in the disposable
+project.
 
 | Agent | Permissions | Use |
 |---|---|---|
 | `pipeline-author` | `skill: deny` | CI/CD control |
 | `platform-engineer` | allow `skill: ci-cd`, deny the rest | CI/CD treatment |
-| `trigger-selector` | deny `*`, then allow `skill: *` | trigger tests only |
+| `catalog-reader` | deny all tools | descriptions-only trigger proxy |
 
 The older `eval-debug-control`, `eval-skill-control`, and `eval-skill-treatment`
 agents were removed. Their evidence files record the setup.
+
+The live trigger pass is not a harness agent: it is a separate `cd`-ed
+`opencode run` process in a disposable project, with the harness outside the run
+tree. A subagent cannot be given its own working directory. See
+`trigger-tests.md`.
 
 ## Collecting run metrics
 
@@ -241,6 +249,24 @@ reproduction steps.
   fired for "write up a report" but not for "record results/evidence"; adding
   "evaluation/evidence report" and "what an experiment showed" fixed the miss
   3/3 without pulling the skill into code review, TDD, or skill authoring.
+- **A skill-only selector is still an evaluation.** Giving a selector only the
+  `skill` tool and telling it to report the loaded ID removes the filesystem
+  leak but leaves a selection-only role and a restricted toolset. The clean live
+  pass uses a real agent in a disposable project and scores the actual `skill`
+  call. Proxy 101/105; live 13/14. See
+  [trigger-tests.md](trigger-tests.md).
+- **The proxy and live disagree at one boundary.** `Update this repo's AGENTS.md`
+  reached `documentation` 3/3 in the closed-book proxy but loaded no skill live:
+  the agent edited a file already in context without applying high recall. Do not
+  strengthen the description on one live run.
+- **`Summarize this PR` is adjacent to `code-review`.** The proxy chose
+  `code-review` 3/3 at low/medium confidence; the `NONE` expectation is
+  arguable, not a clear description defect.
+- **Harness placement is part of the method.** The first live attempt set
+  `cwd` without `PWD`, so every agent was told its working directory was the
+  repository; a later attempt left the scoring files under `/tmp/opencode` and
+  one agent read them. The clean run sets `PWD` per project, keeps the harness
+  outside the run tree, deletes each run root, and scrubs project metadata.
 - **Move a key test to the gate; do not add another bullet.** The synthesis had
   nearly the source's deletion-test sentence but buried it in step 4. Moving it
   to step 1 and requiring a one-line result raised it from 1/3 to 3/3. Two
@@ -353,8 +379,9 @@ Resume when one of these happens:
 The actionable list and re-run order live in `docs/open-tasks.md`; the table
 above is the per-skill evidence summary, so this section does not repeat it.
 
-Trigger routing is complete for the eleven descriptions, including the
-`documentation` and evaluation-report re-tests; the contamination re-runs still
-need the skill-only selector. No cross-skill test is pending: the
-`issue-to-openspec` pointer to `deep-module-design` fires, and its artifact
-effect is vocabulary, not design quality.
+Trigger routing has a clean re-run for the eleven descriptions: proxy 101/105,
+live 13/14, with `Update this repo's AGENTS.md` not firing `documentation`. The
+skill-only selector is retired. The `ci-cd` trigger test still used the retired
+selector. No cross-skill test is pending: the `issue-to-openspec` pointer to
+`deep-module-design` fires, and its artifact effect is vocabulary, not design
+quality.
