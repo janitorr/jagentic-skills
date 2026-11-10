@@ -37,13 +37,17 @@ reason: <one line naming the missing input or the failing artifact>
 ```
 
 `pass` means the change is proposed or revised, any reviewer revision was
-confirmed by the user, and it validates strictly. Missing issue context is
-`blocked`; name every missing section and every contradictory statement in the
-reason, because "provide more context" is not enough. Artifact changes after
-review are `needs_revision`; route them through `openspec-update-change`. Ask
-blocking questions on the issue itself, one question per comment, through the
-tracker operation the agent file defines; never leave a blocking question only
-in chat.
+confirmed by the user in a later turn, and it validates strictly. `blocked`
+means a required input is missing: an issue section, an answer to a
+contradiction, an operation the agent file does not define, or the confirmation
+of a revision; name every missing input in the reason, because "provide more
+context" is not enough. A reviewer's `needs_revision` is a route signal: take
+the revision route through `openspec-update-change`; a revision the user
+confirms ends as `pass` on a later turn. Return `needs_revision` only when the
+findings themselves are unusable, such as two findings that contradict each
+other. Ask blocking questions on the issue itself, one question per comment,
+through the tracker operation the agent file defines; never leave a blocking
+question only in chat.
 
 Never create the spec-approval marker yourself. It records a human gate; the
 reviewer or human sets it after spec review.
@@ -163,9 +167,11 @@ failure recovers" and "exhaustion reports failure" are two slices.
 
 For a new change, invoke `openspec-propose`. For a reviewer revision, invoke
 `openspec-update-change`; it owns the existing artifacts and confirms each edit.
-Do not report `pass` until the user has seen and confirmed the revised artifacts.
-Do not create a missing artifact from this skill; point to the workflow's
-continue path.
+End the revision turn with `blocked` and `reason: awaiting confirmation of the
+revised artifacts`; the request to apply the findings authorizes the edit, not
+the result. A later user message that accepts the revised artifacts authorizes
+`pass`. Do not create a missing artifact from this skill; point to the
+workflow's continue path.
 
 Both workflows own scaffolding, artifact order, status, validation, and the
 `--store` rule; do not restate them here. This skill supplies the issue trace and
@@ -224,7 +230,9 @@ Then stop. Do not implement, run apply, or archive.
       `openspec-update-change`; the decision record exists and the user explicitly
       asked to proceed.
 - [ ] A reviewer request revised existing artifacts through
-      `openspec-update-change`; an intent change started a new change instead.
+      `openspec-update-change`; an intent change started a new change instead;
+      the revision turn ended `blocked` and `pass` waited for a later user
+      confirmation.
 - [ ] Required artifacts exist, validate strictly, and trace to the issues.
 - [ ] The `specs` artifact is either present with testable deltas or deliberately
       skipped with a rationale.

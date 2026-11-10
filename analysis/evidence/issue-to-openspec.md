@@ -8,7 +8,8 @@ path, and the real OpenSpec pipeline. Design quality still shows a ceiling.
 
 Current result: pointer 3/3; tasks sliced by behavior 3/3; approval marker
 created by the spec writer 0/3; blocked 3/3; `pass` through the real pipeline
-3/3; blocked questions one per comment 3/3 (2026-11-10 smoke). The contract is
+3/3; blocked questions one per comment 3/3 (2026-11-10 smoke); revision route
+3/3 with a later-turn confirmation after a 0/3 pre-counter run. The contract is
 `verdict` + `reason`; owner fields below are historical.
 
 **Link refactor (2026-11-04).** The skill no longer restates the OpenSpec project
@@ -198,6 +199,36 @@ The route works. The delegated workflow applied the edits without showing them
 for confirmation, so the stage now requires a confirmed revision before `pass`.
 One run; no control. The stage's confirmation gate is untested after the edit.
 
+### Revision confirmation (2026-11-10)
+
+Fixture: a valid `add-retry` change in a copy of `seam`, committed as a git
+baseline. Reviewer finding: the design omits the exhaustion outcome and the
+tasks have no exhaustion test. Three fresh `general` subagents,
+`deepseek-v4.1-flash`, each in its own copy, were asked to fold the findings
+into the existing change with `issue-to-openspec`.
+
+| Check | Result |
+|---|---|
+| Routed to `openspec-update-change` | 3/3 |
+| Created a new change | 0/3 |
+| Revised the design's exhaustion outcome | 3/3 |
+| Added an exhaustion test task | 3/3 |
+| Strict validation passes | 3/3 |
+| Edited `src/` or `tests/`, committed, or created `APPROVED` | 0/3 |
+| First turn ended `blocked: awaiting confirmation` | 3/3 |
+| `pass` only after a later confirmation | 3/3 |
+
+Before the counter, all three runs applied the revision and returned `pass` in
+the same turn: 0/3. The request to fold findings was treated as confirmation of
+the result. The revision turn now ends `blocked` with
+`reason: awaiting confirmation of the revised artifacts`; a later user message
+that accepts the artifacts ends `pass`. Three treatment runs after the counter
+passed both turns.
+
+Limits: treatment-only, no control; one fixture, one model family, one reader.
+Two runs also loaded `deep-module-design` for the exhaustion contract; the third
+recorded its seam decision without loading it.
+
 ## What changed in the skill
 
 - A route step: a new change runs explore then `openspec-propose`; a reviewer
@@ -214,6 +245,8 @@ One run; no control. The stage's confirmation gate is untested after the edit.
 - A blocked question is its own comment: quote the missing or conflicting text,
   ask one decision, state what it unblocks, and include a `visual-explainer`
   visual when the question is structural.
+- A revision turn ends `blocked` awaiting confirmation; only a later user
+  message that accepts the revised artifacts authorizes `pass`.
 
 ## Limits
 

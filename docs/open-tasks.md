@@ -95,8 +95,8 @@ verified evidence.
       operation in its `AGENTS.md`.
 - [x] **Smoke:** 3/3 blocked, one question per section, no review destination,
       no artifacts. See `analysis/evidence/issue-to-openspec.md`.
-- [ ] **Full:** add a control and re-run the blocked path; recheck the revision
-      route after the precondition rewording.
+- [ ] **Full:** add a control to the blocked path. The revision route is 3/3
+      after the confirmation counter; both runs are treatment-only.
 
 ### `vertical-slice-tdd`
 
@@ -166,8 +166,8 @@ The other five skills and every description are unchanged; no retest.
       weaker model.
 - [ ] `ci-cd`: the clean phase predates the caching and coverage wording; one
       smoke covers caching, not the full set.
-- [ ] `issue-to-openspec`: the revision-route confirmation gate is a one-run
-      pilot.
+- [x] `issue-to-openspec`: the revision-route confirmation gate ran 0/3 before
+      the counter and 3/3 after; treatment-only.
 - [ ] The multi-stage loop in `docs/workflow.md` is untested.
 
 ## Clean re-run rules
