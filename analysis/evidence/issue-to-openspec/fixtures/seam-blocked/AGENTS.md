@@ -7,6 +7,7 @@
 ## Environment
 
 - Tracker: local files; `issue.md` is the originating issue.
+- Questions: append to `questions.md` at the project root; do not edit `issue.md`.
 - Approval marker: the file `APPROVED` in the change directory.
 - Review destination: stdout.
 - Workspace: current directory; base branch `main`; do not push or open a pull request.

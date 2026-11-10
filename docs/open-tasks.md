@@ -91,14 +91,12 @@ verified evidence.
 
 ### `issue-to-openspec`
 
-- [ ] **Fixture:** add a tracker or questions file to
-      `analysis/evidence/issue-to-openspec/fixtures/seam-blocked` and define the
-      question operation in its `AGENTS.md`.
-- [ ] **Smoke:** the blocked fixture. Check the specific questions are posted on
-      the issue, not only in chat; no review destination is used; and the stage
-      stops as `blocked`.
-- [ ] **Full:** score where the questions landed and re-run the blocked path.
-      Recheck the revision route after the precondition rewording.
+- [x] **Fixture:** `seam-blocked` now has `questions.md` and a `Questions:`
+      operation in its `AGENTS.md`.
+- [x] **Smoke:** 3/3 blocked, one question per section, no review destination,
+      no artifacts. See `analysis/evidence/issue-to-openspec.md`.
+- [ ] **Full:** add a control and re-run the blocked path; recheck the revision
+      route after the precondition rewording.
 
 ### `vertical-slice-tdd`
 

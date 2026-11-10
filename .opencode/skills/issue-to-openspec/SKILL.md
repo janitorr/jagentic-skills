@@ -7,7 +7,9 @@ description: Use when turning an issue into an OpenSpec change, including its de
 
 ## Environment
 
-The agent file defines the tracker, approval marker, review destination, and
+The agent file defines the tracker (where issues live and how to read, comment
+on, or amend them), the spec-approval marker (the recorded human approval after
+spec review, such as a label, comment, file, or pull request state), and the
 workspace policy. Read it before starting. If an operation you need is not
 defined, ask; do not assume a specific CLI or service.
 
@@ -38,12 +40,13 @@ reason: <one line naming the missing input or the failing artifact>
 confirmed by the user, and it validates strictly. Missing issue context is
 `blocked`; name every missing section and every contradictory statement in the
 reason, because "provide more context" is not enough. Artifact changes after
-review are `needs_revision`; route them through `openspec-update-change`. The
-persona posts questions or requests changes. Never leave a blocking question
-only in chat.
+review are `needs_revision`; route them through `openspec-update-change`. Ask
+blocking questions on the issue itself, one question per comment, through the
+tracker operation the agent file defines; never leave a blocking question only
+in chat.
 
-Never create the approval marker yourself. It records a human gate; the reviewer
-or human sets it after spec review.
+Never create the spec-approval marker yourself. It records a human gate; the
+reviewer or human sets it after spec review.
 
 ## Preconditions
 
@@ -51,10 +54,11 @@ or human sets it after spec review.
   for a revision. If none is supplied, ask. Read each issue and its
   comments through the tracker. If the tracker is unavailable, ask the user to
   paste the issue bodies. Verify every template section: problem, outcome, in
-  scope, out of scope, acceptance, and context. Missing sections mean amend the
-  issue through the tracker or return to `issue-interview`; do not guess. A
-  missing section is blocking even when the user asks to proceed, and another
-  section never substitutes for it: Outcome is not Acceptance.
+  scope, out of scope, acceptance, and context. If a section is missing or two
+  statements conflict, post the questions as described below and stop as
+  `blocked`; do not guess. A missing section is blocking even when the user asks
+  to proceed, and another section never substitutes for it: Outcome is not
+  Acceptance.
 - An OpenSpec root. Use the project check in `openspec-explore`,
   `openspec-propose`, and `openspec-update-change`; if there is no root, follow
   their branch for an explicit OpenSpec request. Do not re-derive the check here.
@@ -63,6 +67,15 @@ or human sets it after spec review.
 - A base and workspace policy from the agent file. Record the base commit. If
   the agent file does not define a base or isolation, ask. Do not disturb
   existing work.
+
+### Blocked questions
+
+Post each question as its own comment. Each comment names or quotes the missing
+or conflicting text, asks exactly one decision, and states what it unblocks, so
+a human can answer it without reading the others. When the question turns on
+structure — scope boundaries, a seam, a sequence, or a state — load
+`visual-explainer` and include its smallest visual in that comment; otherwise
+ask in prose. Amend the issue through the tracker once the answers arrive.
 
 ## Process
 
@@ -118,9 +131,9 @@ report the order, and stop; re-run this skill for each subsequent change.
 
 ### 3. Exit explore only when the decision record is complete
 
-Record the exploration where the agent file's review destination says: an issue
-comment, a scratch decision file, or a design note. The record lists settled
-decisions, open questions, risks, and deferred items.
+Record the exploration where the agent file says: an issue comment, a scratch
+decision file, or a design note. The record lists settled decisions, open
+questions, risks, and deferred items.
 
 - [ ] Scope and non-goals are explicit.
 - [ ] Externally observable behavior and acceptance criteria are settled.
@@ -203,6 +216,9 @@ Then stop. Do not implement, run apply, or archive.
 
 - [ ] Every issue and its comments were read, and every template section is
       present.
+- [ ] Missing sections or contradictions were posted as one question per
+      comment; structural questions carried a `visual-explainer` visual; the
+      stage stopped as `blocked`; no blocking question stayed in chat.
 - [ ] The OpenSpec root exists, or the report explains why it does not.
 - [ ] Explore ran before propose for a new change, or the revision went through
       `openspec-update-change`; the decision record exists and the user explicitly

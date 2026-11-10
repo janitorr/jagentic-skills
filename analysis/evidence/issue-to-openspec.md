@@ -8,7 +8,8 @@ path, and the real OpenSpec pipeline. Design quality still shows a ceiling.
 
 Current result: pointer 3/3; tasks sliced by behavior 3/3; approval marker
 created by the spec writer 0/3; blocked 3/3; `pass` through the real pipeline
-3/3. The contract is `verdict` + `reason`; owner fields below are historical.
+3/3; blocked questions one per comment 3/3 (2026-11-10 smoke). The contract is
+`verdict` + `reason`; owner fields below are historical.
 
 **Link refactor (2026-11-04).** The skill no longer restates the OpenSpec project
 check, the `--store` rule, the spec-read commands, or the artifact status. It
@@ -210,6 +211,9 @@ One run; no control. The stage's confirmation gate is untested after the edit.
 - An explicit prohibition on creating the approval marker.
 - The contract moved from `routing_status` / `owner` / `requested_action` to
   `verdict` + `reason`; delivery belongs to the persona.
+- A blocked question is its own comment: quote the missing or conflicting text,
+  ask one decision, state what it unblocks, and include a `visual-explainer`
+  visual when the question is structural.
 
 ## Limits
 
@@ -242,3 +246,63 @@ done
 Point the control at the same copies with "use your own judgment and load no
 skill files"; point the skill condition at `issue-to-openspec`. Score the change
 artifacts under `openspec/changes/` and the verdict block.
+
+## Real-use report: review destination and tracker questions (2026-11-10)
+
+Follow-up to issue #2. The skill does not review anything, so its environment
+section no longer names a review destination; exploration is recorded where the
+agent file says. When an issue is missing a section or contains contradictory
+statements, the skill now posts the specific questions on the issue itself
+through the tracker operation the agent file defines and stops as `blocked`.
+
+This is a real-use report, not a scored run. The blocked-path evidence above
+predates the wording change. See `docs/open-tasks.md`.
+
+## Blocked-question shape (2026-11-10)
+
+Real-use report: when an issue had several blocking questions and not enough
+detail for a spec, the stage posted one comment containing every question. A
+human answering it had to reply to a wall of text. The skill said what to ask,
+not how to shape it.
+
+Change: each blocking question is its own comment; each comment quotes the
+missing or conflicting text, asks one decision, and states what it unblocks.
+When the question turns on structure — a scope boundary, a seam, a sequence, or
+a state — the stage loads `visual-explainer` and includes its smallest visual.
+
+Fixture: `seam-blocked` now has `questions.md` and an `AGENTS.md` operation:
+`Questions: append to questions.md at the project root; do not edit issue.md`.
+The fixture still plants one missing Acceptance section and one scope conflict
+over the attempt budget.
+
+Method: three fresh `general` subagents, one copy and git baseline each, model
+`deepseek-v4.1-flash` (`opencode-go`, default). Each prompt said to work in the
+copy, read `AGENTS.md` and `issue.md`, turn Issue 17 into an OpenSpec change
+with `issue-to-openspec`, and treated the request as explicit authorization to
+proceed. It forbade implementation, commits, and reads outside the project.
+
+| Check | Result |
+|---|---|
+| Stopped as `blocked` | 3/3 |
+| Created change artifacts | 0/3 |
+| Posted questions to `questions.md` | 3/3 |
+| One question per comment (`##` section) | 3/3 (3, 3, 3) |
+| Quoted the missing or conflicting text | 3/3 |
+| Stated what each question unblocks | 3/3 |
+| Named the missing Acceptance section | 3/3 |
+| Raised the scope contradiction | 3/3 |
+| Included a visual on the structural question | 3/3 |
+| Consulted `visual-explainer` | 3/3 (2 via the skill tool, 1 read the file directly) |
+| Edited `issue.md` or created `APPROVED` | 0/3 |
+| Used a review destination | 0/3 |
+
+Strict validation does not apply: no change was created.
+
+Limits: treatment-only smoke, no control; the wall-of-text failure is a user
+report, not a captured baseline. One fixture, one model family, one reader. The
+tracker is a local file, not GitHub, so "one comment" is scored as one section.
+The subagent sessions record the lab repo as their directory, because the skill
+lives there; all project reads and edits stayed in the copy. Two runs invoked
+`visual-explainer`; the third read its `SKILL.md` directly and still produced a
+visual. Re-run with a control and a real tracker before treating the shape as
+verified.
