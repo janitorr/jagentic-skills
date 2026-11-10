@@ -50,6 +50,7 @@ evaluation in `analysis/evidence/api-contract-design.md`.
 | `ship-and-verify` | Delivery | Release mechanics beyond git: staged rollout, rollback, and triage. A narrow `ci-cd` skill now covers pipelines (31/32 vs 26-28 control). |
 | `agent-delegation` | Multi-agent orchestration | Fresh-context briefs, fan-out, merge, and handoff. Only if those patterns should be shared. |
 | `http-api-contract` | Architecture and refactoring | The artifact gap is real, but two baseline rounds (3 control + 3 `deep-module-design` runs each) found no behavioral failure. Revisit only on a demonstrated failure or a weaker model. |
+| `quality-constraints` | Review / quality gates | Written quality contract is missing. addyosmani `constraint-driven-development` is a candidate (`CONSTRAINTS.md`, floor, dimensions with commands, ratchets, exceptions, diff guard); it overlaps `ci-cd`, `code-review`, `vertical-slice-tdd`, and `documentation`. Deferred. |
 | `idea-refine` / `wayfinder` | Intent / planning | Add only when a real multi-option or multi-change initiative appears. |
 
 Not recommended as new skills: routing, misc utilities, and a separate

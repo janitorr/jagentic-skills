@@ -44,6 +44,13 @@ Source: `analysis/evidence/contamination-audit.md`.
 
 ## Deferred
 
+- **`quality-constraints` skill.** addyosmani's `constraint-driven-development`
+  fills the written quality-contract gap in `analysis/coverage.md` row 7:
+  `CONSTRAINTS.md`, a floor, dimensions with a command each, ratchets, exceptions,
+  and a diff guard against weakened checks. Revisit after the stage retests. It
+  overlaps `ci-cd`, `code-review`, `vertical-slice-tdd`, and `documentation`;
+  synthesize a lean, environment-agnostic version rather than copying the
+  319-line source.
 - **`skill-forge` stop rule.** Not re-run after the contamination audit. The
   existing differential is 0/3 treatment vs 3/3 control; `skill-forge` is a
   meta-skill, the rule is unchanged since the counter, and the full test needs a
@@ -58,6 +65,72 @@ Source: `analysis/evidence/contamination-audit.md`.
       eleven-skill docs.
 - [ ] Confirm the coverage wording does not suppress coverage when the repo
       already has a coverage tool. The clean phase predates that edit.
+
+## Retest after the 2026-11-10 skill edits
+
+Four skills changed behavior; two changed only terminology. The descriptions did
+not change, so no trigger retest is required. Full evals were not re-run. Do one
+skill at a time per `skill-forge`; record a smoke pass as smoke-only, not as
+verified evidence.
+
+### `issue-interview`
+
+- [x] **Fixture:** `analysis/evidence/issue-interview/fixtures/ingest` and
+      `script-ingest.md` used for the 2026-11-10 smoke; three pilot gaps
+      (steady-state pruning, initialization, runner) were added to the bank.
+- [x] **Smoke:** publish arm 3/3 after the goal gate; controls published on turn
+      1 4/4. See `analysis/evidence/issue-interview.md`.
+- [x] **Blocked:** 3/3 after the delegation rule; the pre-rule run decided the
+      backlog and was the baseline failure.
+- [x] **Full:** 3 publish + 3 blocked treatment; 3 publish + 1 blocked control.
+      This is a smoke/micro-test, not a controlled 3x3; the final draft-check
+      wording is n=1.
+- [x] **Business-level cleanup:** outcome/who/constraints wording smoke 1/1
+      publish and 1/1 blocked; the control published on turn 1. n=1, not a full
+      matrix.
+
+### `issue-to-openspec`
+
+- [ ] **Fixture:** add a tracker or questions file to
+      `analysis/evidence/issue-to-openspec/fixtures/seam-blocked` and define the
+      question operation in its `AGENTS.md`.
+- [ ] **Smoke:** the blocked fixture. Check the specific questions are posted on
+      the issue, not only in chat; no review destination is used; and the stage
+      stops as `blocked`.
+- [ ] **Full:** score where the questions landed and re-run the blocked path.
+      Recheck the revision route after the precondition rewording.
+
+### `vertical-slice-tdd`
+
+- [ ] **Smoke:** an approved-change run. Check the run never invokes or attempts
+      spec review and treats only the spec-approval marker as the gate.
+- [ ] **Full:** add a "no spec-review attempt" check to
+      `analysis/evidence/vertical-slice-tdd.md` and re-run the blocked/pass pair.
+
+### `documentation`
+
+- [ ] **Smoke:** a disposable repo with two or three existing ADRs plus
+      "preserve historical ADRs". Check no current-status block is added, the
+      original decisions stay intact, and current guidance links forward or
+      supersedes.
+- [ ] **Full:** add a multi-ADR fixture or brief and a historical-frame criterion
+      to `analysis/evidence/documentation.md`; run n=3 with a control.
+
+### `spec-review`
+
+- [ ] No behavior retest. The Environment now defines tracker, spec-approval
+      marker, and review destination; the process is unchanged. Read through for
+      terminology only.
+
+### `code-review`
+
+- [ ] No behavior retest. The unused approval marker was removed from
+      Environment; tracker and review destination are now defined. Read through
+      for terminology only.
+
+### Unchanged
+
+The other five skills and every description are unchanged; no retest.
 
 ## Known debt
 
@@ -76,6 +149,11 @@ Source: `analysis/evidence/contamination-audit.md`.
 - [x] `code-review`: the CI-mutation-report preference was micro-tested n=1;
       the report was read and cited, the survivor was blocked, and no hand probe
       ran.
+- [ ] The 2026-11-10 skill edits: per-skill retest list in "Retest after the
+      2026-11-10 skill edits" above. No full eval has run.
+- [ ] `issue-interview`: the 2026-11-10 ingest smoke is not a controlled 3x3;
+      the final goal and draft-check wording has n=3 and n=1. Re-run a
+      controlled matrix if strict wording matters.
 - [ ] `issue-interview`: rerun the control against the final wording.
 - [x] `issue-interview`: reran the one-question scenario with 3 treatment runs
       plus a control; 0 walls, 3/3 complete issues, control published on turn 1.

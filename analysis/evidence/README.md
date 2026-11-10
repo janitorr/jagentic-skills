@@ -38,7 +38,7 @@ in the records below are superseded; verdict, gate, and finding results stand.
 | `documentation` description | `analysis/evidence/trigger-tests.md#re-run-after-the-documentation-description-edit` | 3 proxy reps, 14 prompts: 40/42, then 41/42 after the RFC fix; live 5/5 after; evidence-report retest 21/21 proxy, live 1/1; clean re-run live 3/4; `Update this repo's AGENTS.md` retest 4/5 |
 | `issue-to-openspec` | `analysis/evidence/issue-to-openspec.md` plus fixture | Pilot, 3 reps per condition; pointer fires, design-quality ceiling; slicing and marker rules retested 3/3; blocked verdict 3/3, gate 1/3 then 3/3; real pipelines 3/3; pass 3/3; revision route 1/1 after an invalid first run |
 | `code-review` | `analysis/evidence/code-review.md` plus fixtures | 3 reps per condition; clean → pass 3/3, seeded defect → needs_revision 3/3. 2026-11-06 retest after the spec-cross-check and quality-checks edit: seeded 3/3 `needs_revision` (delta omission 3/3), clean 3/3 `pass`; verdict block 5/6. 2026-11-07 neutral-path re-run: clean 3/3 `pass`, seeded 3/3 `needs_revision`, defect/test gap 3/3, no tracked edits or outside reads; clean fixture hardened for underscore and boundary hyphens. User-search clean re-run: 3/3 `pass` after request-id, tenant-scope, and missing-`q` fixes. Step 5 now prefers CI mutation reports; fallback probe only when no report. CI-report micro-test n=1: report read/cited, survivor blocked, no hand probe |
-| `issue-interview` | `analysis/evidence/issue-interview.md` plus fixtures | Pilot plus two retests; final gate 2/2, confidence 12/12; one-question rule: 3 treatment reps, 0 walls, 3/3 complete issues, control published turn 1; one compound turn in Run B; template n=1 |
+| `issue-interview` | `analysis/evidence/issue-interview.md` plus fixtures | Pilot plus two retests; final gate 2/2, confidence 12/12; one-question rule: 3 treatment reps, 0 walls, 3/3 complete issues, control published turn 1; one compound turn in Run B; template n=1. 2026-11-10 `ingest` smoke: control published turn 1 4/4; treatment blocked 3/3 and published only after an explicit yes 3/3; delegation loophole fixed 3/3; goal gate 3/3 after 3/3 inferred; one draft-check miss fixed; final wording n=1; post-cleanup business-requirement smoke 1/1 publish, 1/1 blocked |
 | `git-workflow` | `analysis/evidence/git-workflow.md` plus fixtures | Pilot; trimmed to 80 lines of invariants and defaults; trim retest split under pressure with no `AGENTS.md`; conflict/push/release tested on the longer version |
 | `visual-explainer` | `analysis/evidence/visual-explainer.md` plus fixture | Pilot, positive; diagram for a call path, prose for a one-liner; one-pager compared with `show-me` |
 | `deep-module-design` | `analysis/evidence/deep-module-design.md` plus fixture | Partial; skill adds alternatives and contract, chosen design parity; deletion test moved to step 1 (3/3); provenance vs `codebase-design` |
@@ -129,6 +129,12 @@ webhook repo with a local `tracker/issues/` tracker and no issue, and
 `webhooks-template`, the same repo with `bug_report` and `feature_request`
 templates under `.github/ISSUE_TEMPLATE/`. Runs replay
 `issue-interview/script.md`; publishing is a file on disk.
+
+`issue-interview/fixtures/ingest` is the 2026-11-10 fixture for the observable
+goal, consequential default, irreversible consequence, emission/delivery/
+evidence, material-question block, and draft-check rules. Its script is
+`issue-interview/script-ingest.md`; the 2026-11-10 smoke is recorded in
+`issue-interview.md`.
 
 The `git-workflow` fixture is built by `git-workflow/fixtures/setup.sh`: a repo
 with a timeout fix, a whitespace-only reflow, and an untracked `debug.log`, with
@@ -301,6 +307,19 @@ reproduction steps.
 - **A question turn is not a stage verdict.** Two runs emitted `blocked` after
   asking a question until the skill said a question turn is not the end of the
   stage.
+- **Delegation is not a decision.** A blocked `issue-interview` run treated
+  "you decide" as permission to choose the backlog policy and wrote the choice
+  into the body. After the skill said delegation is not a decision, 3/3 runs
+  blocked and published nothing. The ingest fixture is the baseline.
+- **A mechanism-only ask still needs a goal question.** Three publish runs
+  inferred an observable Outcome from the repo docs without asking. After a goal
+  gate, 3/3 asked and used the user's test-event proof. One draft also left an
+  Open question that a confirmed decision answered; the draft check now covers
+  every section, not only acceptance criteria.
+- **The issue is a business requirement.** The post-cleanup wording smoke
+  captured who/why, outcome, scope, acceptance, and constraints without asking
+  for capability paths, alternatives, migration, or API details. Those belong to
+  OpenSpec explore/propose/design; the issue should stay at business level.
 - **Commit discipline may already be a default.** With a stated convention the
   control split the slices and excluded the debug file; the skill added nothing.
   Without one, both mixed a whitespace reflow with the timeout fix. Conflict,
@@ -391,6 +410,11 @@ Resume when one of these happens:
 
 The actionable list and re-run order live in `docs/open-tasks.md`; the table
 above is the per-skill evidence summary, so this section does not repeat it.
+
+The 2026-11-10 real-use fixes to `issue-to-openspec`, `vertical-slice-tdd`, and
+`documentation` are recorded in their evidence files and are not re-tested.
+`issue-interview` has the ingest smoke recorded above. The per-skill retest list
+is in `docs/open-tasks.md` under "Retest after the 2026-11-10 skill edits".
 
 Trigger routing has a clean re-run for the eleven descriptions: proxy 101/105,
 live 13/14, with `Update this repo's AGENTS.md` not firing `documentation` once
