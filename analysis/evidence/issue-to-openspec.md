@@ -9,8 +9,9 @@ path, and the real OpenSpec pipeline. Design quality still shows a ceiling.
 Current result: pointer 3/3; tasks sliced by behavior 3/3; approval marker
 created by the spec writer 0/3; blocked 3/3; `pass` through the real pipeline
 3/3; blocked questions one per comment 3/3 (2026-11-10 smoke); revision route
-3/3 with a later-turn confirmation after a 0/3 pre-counter run. The contract is
-`verdict` + `reason`; owner fields below are historical.
+3/3 with a later-turn confirmation after a 0/3 pre-counter run; propose after a
+complete decision record 3/3 after a 2/3 baseline (2026-11-10 smoke). The
+contract is `verdict` + `reason`; owner fields below are historical.
 
 **Link refactor (2026-11-04).** The skill no longer restates the OpenSpec project
 check, the `--store` rule, the spec-read commands, or the artifact status. It
@@ -229,6 +230,33 @@ Limits: treatment-only, no control; one fixture, one model family, one reader.
 Two runs also loaded `deep-module-design` for the exhaustion contract; the third
 recorded its seam decision without loading it.
 
+### Propose after complete exploration (2026-11-10)
+
+Real-use report: after a complete exploration, the stage sometimes stopped to
+ask for a second "propose it" instead of creating the change. The rule said
+exploration alone does not authorize artifacts.
+
+Fixture: `seam` with its complete Issue 17. Prompt: read `AGENTS.md` and
+`issue.md`, explore Issue 17 with `issue-to-openspec`, and take it as far as
+the issue allows; no "proceed" phrasing.
+
+| Check | Baseline (n=3) | After (n=3) |
+|---|---|---|
+| Proposed without a second ask | 2/3 | **3/3** |
+| Stopped for "propose it" | 1/3 | 0/3 |
+| Created a strictly valid change | 2/3 | 3/3 |
+| Edited `src/`/`tests/`, committed, or created `APPROVED` | 0/3 | 0/3 |
+
+The baseline is variance, not a clean failure: two runs treated the opening
+request as authorization and proposed; one followed the rule literally and
+stopped with the complete decision record. After the change, a complete record
+proceeds to propose; only an explicit "stop after exploration" ends at the
+record.
+
+Limits: treatment-only after the baseline, one fixture, one model family, one
+reader. A change request and an exploration-only request now take the same path
+unless the user says to stop.
+
 ## What changed in the skill
 
 - A route step: a new change runs explore then `openspec-propose`; a reviewer
@@ -247,6 +275,8 @@ recorded its seam decision without loading it.
   visual when the question is structural.
 - A revision turn ends `blocked` awaiting confirmation; only a later user
   message that accepts the revised artifacts authorizes `pass`.
+- A complete decision record proceeds to propose without a second "propose it";
+  only an explicit request to stop ends at the record.
 
 ## Limits
 

@@ -126,7 +126,8 @@ refinement of settled decisions goes straight to `openspec-update-change`.
 <what explore must resolve>
 
 ## Boundaries
-No implementation. No code edits. Artifacts only if the user explicitly asks.
+No implementation. No code edits. Stop after the decision record; the stage owns
+the proposal.
 ```
 
 If several issues touch the same capability, explore them together. If one issue
@@ -149,8 +150,9 @@ questions, risks, and deferred items.
 If the user wants to stop earlier, write the partial record to the same place and
 stop without proposing. Do not let an incomplete exploration become an artifact.
 
-Before proposing, ask for an explicit request to proceed, such as "propose it".
-Exploration alone does not authorize artifact creation.
+When every item above is settled, proceed to propose; do not ask for a second
+"propose it". The request that started the stage authorizes planning. If a new
+material question appears while proposing, pause and return to explore.
 
 ### 4. Propose or revise
 
@@ -227,8 +229,8 @@ Then stop. Do not implement, run apply, or archive.
       stage stopped as `blocked`; no blocking question stayed in chat.
 - [ ] The OpenSpec root exists, or the report explains why it does not.
 - [ ] Explore ran before propose for a new change, or the revision went through
-      `openspec-update-change`; the decision record exists and the user explicitly
-      asked to proceed.
+      `openspec-update-change`; the decision record was complete and the stage
+      proposed without a second request.
 - [ ] A reviewer request revised existing artifacts through
       `openspec-update-change`; an intent change started a new change instead;
       the revision turn ended `blocked` and `pass` waited for a later user
