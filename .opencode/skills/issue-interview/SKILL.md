@@ -7,9 +7,10 @@ description: Use when an ask is vague or missing who, why, success criteria, or 
 
 ## Environment
 
-The agent file defines the tracker, approval marker, review destination, and
-workspace policy. Read it before starting. If an operation you need is not
-defined, ask; do not assume a specific CLI or service.
+The agent file defines the tracker: the system where issues live and where this
+stage reads, creates, or amends them (for example GitHub Issues, Jira, or a
+local file). Read it before starting. If an operation you need is not defined,
+ask; do not assume a specific CLI or service.
 
 ## Overview
 
@@ -41,18 +42,34 @@ until you publish or block.
 
 - **Decisions belong to the human; facts belong to you.** Read the repo, docs,
   and existing issues before asking anything you could verify yourself.
+- **Ask for the observable goal, not the mechanism.** Before drafting, ask what
+  observable result proves the work succeeded, even when the repository suggests
+  one. If the answer is a mechanism, ask again. Record it as the Outcome.
+- **Resolve consequential defaults.** A default that changes real data,
+  messages, or an existing backlog is a decision. Ask for it; if the user
+  delegates it, stop as `blocked` and name the decision. Do not choose it for
+  them.
+- **State irreversible consequences before asking for confirmation.** For a
+  discard, deletion, or irreversible action, say what is lost, whether it can be
+  undone, and who owns recovery.
+- **Do not overpromise in acceptance.** Separate what the change attempts, what
+  it delivers, and what it only records. A best-effort action is not proof of
+  delivery or settlement.
 - **One question per turn, with your guess attached.** Ask the single question
   whose answer most changes the issue body, attach a recommended answer, and
   wait. Never send a numbered list of questions, even when the direction is
   settled or the questions look independent; a wall of questions is a form, not
   an interview. A wrong guess is faster for the user to correct than a question
   answered from scratch.
-- **Budget the interview.** Stop when the next answer would not change the body.
-  Hard cap: eight questions before a draft, counted one per turn. At eight, draft
-  and park the rest under Open questions.
+- **Budget the interview.** Stop when the next answer would not change the
+  body. Hard cap: eight questions before a draft, counted one per turn. At
+  eight, draft and park the rest under Open questions. The cap never authorizes
+  publishing a material safety or scope decision unresolved; stop as `blocked`
+  instead.
 - **Only an explicit yes to the body confirms it; publish only after it.**
   "Sounds good", "go ahead", "ship it", "whatever you think", and silence are
-  delegation or politeness. Ask for a yes that names the body or its identifier.
+  politeness, not confirmation. Ask for a yes that names the body or its
+  identifier.
 
 ## Process
 
@@ -93,6 +110,14 @@ For every answer, listen for "what I should want" language: best-practice talk,
 convention, buzzwords used as goals. Probe once with: "If you did not have to
 justify this to anyone, what would you actually want?"
 
+If a consequential default or irreversible consequence is still open (data
+retention, replay, discard, delivery guarantee), ask it before drafting; do not
+defer it to Open questions. If the user delegates it, stop as `blocked`; do not
+decide it for them.
+
+The observable-goal answer is the Outcome. Do not draft while it is only a
+mechanism.
+
 Stop when every template section (problem, outcome, in scope, out of scope,
 acceptance, context) carries a direct user answer or a fact you verified, with
 its source noted. No section may rest on an inference. Confidence is the exit
@@ -102,15 +127,15 @@ questions. If a required section is still missing, block and name it.
 
 ### 4. Split into issues
 
-One issue per independently testable capability. If the work bundles several,
-propose a small capability map first and confirm the split before writing issue
+One issue per independently valuable outcome. If the work bundles several,
+propose a small outcome map first and confirm the split before writing issue
 bodies:
 
 ```markdown
-| Capability | Responsibility | Depends on |
+| Outcome | Who benefits | Depends on |
 |---|---|---|
-| identity | accounts, sessions | - |
-| billing | plans, invoices | identity |
+| Customers can reset their own password | customers, support | - |
+| Admins can revoke a session | security, admins | password reset |
 ```
 
 ### 5. Restate each issue
@@ -121,9 +146,10 @@ frontmatter. Otherwise use this template, in the user's language:
 
 ```markdown
 ## Problem
+Who is affected, what they cannot do today, and why now.
 
 ## Outcome
-What changes for the user, in observable terms.
+What changes for the customer, operator, or business, in observable terms.
 
 ## In scope
 
@@ -134,7 +160,8 @@ The non-goals you explicitly agreed on.
 - [ ] Testable condition
 
 ## Context
-Links to code, docs, prior issues, or designs that ground the work.
+Links to code, docs, prior issues, or designs, plus prior decisions and any
+business constraints or commitments.
 
 ## Open questions
 Anything deliberately deferred, and who decides it.
@@ -143,10 +170,17 @@ Anything deliberately deferred, and who decides it.
 The out-of-scope section is not optional. Silent disagreement about non-goals is
 half of misalignment.
 
+Before presenting the bodies, compare every section with the confirmed answers.
+Remove an open question that a confirmed decision already answers. Rewrite or
+remove any acceptance criterion that is stronger than the answer, promises a
+guarantee the design cannot support, or contradicts a decision. If a material
+safety or scope decision is still open, stop as `blocked`; do not publish a
+draft around it.
+
 ### 6. Confirm and publish
 
-Present the issue bodies and ask for an explicit yes. On yes, publish through the
-tracker operation the agent file defines, one issue at a time. To amend an
+Present the issue bodies and ask for an explicit yes. On yes, publish through
+the tracker operation the agent file defines, one issue at a time. To amend an
 existing issue, use the tracker's amend operation; never create a duplicate.
 
 If the tracker is unavailable, print the finished bodies and stop.
@@ -157,15 +191,20 @@ OpenSpec changes, or specs in this turn.
 ## Verification
 
 - [ ] Every response opened with the current confidence, including the publish
-      or block response.
-- [ ] The interview asked one question per turn and stayed within the budget.
-- [ ] No response contained more than one question.
-- [ ] The hypothesis and confidence were stated before the first question.
+      or block response; the hypothesis and confidence came before the first
+      question.
+- [ ] The interview asked one question per turn, never more than one question,
+      and stayed within the budget.
 - [ ] Every template section has a direct answer or a verified fact with a
       source; none is inferred.
+- [ ] Each issue records a user-confirmed observable goal, not a mechanism.
+- [ ] Consequential defaults and irreversible consequences were confirmed, not
+      decided by delegation.
+- [ ] No material safety or scope question was parked in a `pass` issue.
+- [ ] The draft was checked against the answers; no section is stronger,
+      inconsistent, or promises a guarantee the design cannot support.
 - [ ] The repository's issue template was used when one exists; otherwise the
       default sections were used.
-- [ ] The user explicitly confirmed the issue bodies.
-- [ ] The issues exist in the tracker, or the bodies were printed because the
-      tracker was unavailable.
-- [ ] The handoff names `issue-to-openspec` and the issue identifiers.
+- [ ] The user explicitly confirmed the issue bodies; the issues exist in the
+      tracker, or the bodies were printed because it was unavailable.
+- [ ] The handoff names the issue identifiers.

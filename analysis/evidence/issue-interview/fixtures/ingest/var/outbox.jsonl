@@ -1,0 +1,2 @@
+{"type": "build.finished", "payload": {"service": "search"}}
+{"type": "deploy.started", "payload": {"service": "billing"}}

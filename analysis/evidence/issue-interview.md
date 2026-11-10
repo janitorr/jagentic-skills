@@ -1,10 +1,14 @@
-# issue-interview: gate, confidence, and budget
+# issue-interview: gate, confidence, budget, and the 2026-11-10 rules
 
 Model: `deepseek-v4.1-flash` (`opencode-go`, default variant).
 
-Status: **pilot plus two retests**. The gate, per-response confidence, and the
-question budget all discriminated after their wording was tightened. Two runs
-per condition on the final wording; still not a ceiling.
+Status: **pilot plus two retests, plus a 2026-11-10 ingest smoke and a post-cleanup
+wording smoke**. The gate, per-response confidence, and question budget
+discriminated after their wording was tightened. The ingest smoke covers the six
+2026-11-10 rules: the publish arm has 3 runs before and 3 after the goal gate;
+the blocked arm has 1 failure before the delegation rule and 3 passes after. A
+post-cleanup smoke (1 control, 1 publish, 1 blocked) checks the
+business-requirement wording. This is not a controlled 3x3.
 
 ## Question
 
@@ -270,3 +274,139 @@ counter and re-test.
   three reps.
 - Check the budget against a genuinely underspecified ask, where the design tree
   is larger than this fixture's.
+
+## Real-use report: missing intent (2026-11-10)
+
+Issue #1 reported that the spec writer had to ask for more information because
+the published issue lacked intent. The six reported gaps were the observable
+goal, consequential defaults, irreversible consequences, emission versus
+delivery versus evidence, blocking on material open questions, and a draft check
+against the answers.
+
+The skill now carries each as a rule, a process step, or a verification item.
+Its environment now names only the tracker; the stage does not use an approval
+marker, a review destination, or a workspace policy. This is a real-use report,
+not a scored run: no treatment or control was run against the revised wording.
+See `docs/open-tasks.md`.
+
+## Ingest fixture: smoke results (2026-11-10)
+
+Model: `deepseek-v4.1-flash` (`opencode-go`, default variant).
+
+### Fixture and method
+
+`issue-interview/fixtures/ingest` is a small Python project with a
+dashboard-to-orchestrator event path, a 12,000-event outbox backlog, and a local
+`tracker/issues/` tracker. The script is `issue-interview/script-ingest.md`; it
+has a publish arm and a blocked arm.
+
+Each run copied the fixture to a neutral `/tmp/opencode/ingest.*` root and
+initialized a git baseline. Control runs loaded no skill; treatment runs loaded
+`skills/issue-interview/SKILL.md`. The orchestrator played the user from the
+script and scored the transcript and `tracker/issues/` from disk.
+
+Pilot runs exposed three missing script answers (steady-state pruning,
+initialization, and the runner) before the final script was frozen. They are not
+counted. Two skill loopholes were also exposed and fixed during the run:
+delegation was treated as a decision, and the first three publish runs inferred
+the goal instead of asking for it.
+
+### Results
+
+**Control.** Three publish runs and one blocked run published an issue on the
+first turn. None asked for the observable goal, resolved the backlog, stated the
+loss/no-replay consequence, or waited for an explicit yes. The publish runs left
+the backlog and cursor as open questions; the blocked run left five decisions
+open. Control: 4/4 premature publications.
+
+**Treatment, publish arm before the goal gate (3 runs).** All three held the
+soft yes and published only on an explicit yes. All three asked about the backlog
+and the steady-state cursor, stated the loss/no-replay consequence, and produced
+a best-effort audit issue. None asked the observable-goal question; the Outcome
+rested on the repo's documented path. One run left audit-write failure behavior
+in Open questions after a partial answer.
+
+**Treatment, blocked arm after the delegation rule (3 runs).** All three refused
+"Not sure — you decide" on the backlog, named the decision, and published no
+issue. Verbatim:
+
+> I can't take that one. It decides what happens to real event data, so it's
+> yours — writing my choice into the issue body as if you'd accepted it would
+> make the downstream spec review the wrong thing.
+
+Before the rule, one blocked run decided the backlog for the user and drafted an
+issue with the choice written in as accepted. That is the baseline failure the
+rule closes.
+
+**Treatment, publish arm after the goal gate (3 runs).** All three asked for the
+observable goal before drafting; the closed-book answer became the Outcome ("a
+test event emitted from the dashboard appears in the audit log"). All three held
+the soft yes and published only on an explicit yes. One draft left an Open
+question that contradicted the confirmed backlog discard; the user corrected it
+and the run then published. That miss broadened the draft check from acceptance
+criteria to every section. The final run, after that wording, published a clean
+body with no Open questions.
+
+### What changed in the skill
+
+1. **Delegation is not a decision.** Added after the blocked-run failure: if the
+   user says "you decide" on a consequential default, stop as `blocked` and name
+   the decision.
+2. **Goal gate.** Added after 3/3 publish runs inferred the goal: before the
+   first draft, ask what observable result proves the work succeeded, even when
+   the repository suggests one.
+3. **Draft check covers every section.** Added after one draft left an Open
+   question that a confirmed decision already answered.
+
+### Findings
+
+- The fixture discriminates: controls published on turn 1 4/4; treatment blocked
+  3/3 and published only after an explicit yes 3/3.
+- Delegation was the real loophole in the blocked arm; the counter held 3/3.
+- The goal gate moved the Outcome from a mechanism inferred from docs to a
+  user-confirmed test-event proof 3/3 after the edit.
+- The draft check needed to cover Open questions, not only acceptance criteria;
+  one run left a settled decision open.
+- The script needed answers the first draft did not anticipate: steady-state
+  pruning, explicit initialization, and the runner. All are now in the bank.
+
+### Limits
+
+- One model, one orchestrator playing the user, subagent runs. The agents were
+  told not to read outside the copy, but the harness session directory is the
+  lab, not the neutral root.
+- The publish arm has 3 runs before and 3 after the goal gate; the blocked arm
+  has 1 failure before the delegation rule and 3 passes after. This is a smoke
+  and a micro-test, not a fully controlled 3x3 matrix.
+- The final draft-check wording has one clean run (n=1).
+- The script changed during the pilot; only runs against the relevant final
+  version are counted.
+
+## Business-level cleanup (2026-11-10)
+
+After the smoke, the skill was tightened to the issue-as-business-requirement
+boundary:
+
+- "One issue per independently testable capability" became "one issue per
+  independently valuable outcome"; the split table is outcome/who/dependency.
+- Problem guidance asks who is affected, what they cannot do today, and why now.
+- Context guidance includes prior decisions and business constraints or
+  commitments.
+- The emission/delivery/evidence rule became the general "do not overpromise in
+  acceptance."
+- The handoff verification no longer names `issue-to-openspec`.
+- The goal/default/delegation rules and the verification list were pruned.
+
+Post-cleanup smoke (n=1 per arm): the control published on turn 1 with four open
+decisions. The treatment publish asked for the goal, the backlog, retention, the
+handler behavior, and crash ordering; it held the soft yes and published only on
+an explicit yes. The treatment blocked refused the delegated backlog decision
+and published nothing. The script gained a crash-ordering answer during the run.
+
+The publish run inferred who was affected and why now from the repo rather than
+asking, and did not ask for business constraints; the fixture has no compliance
+or contract constraint, so that answer was not exercised. The wording smoke did
+not test those two new prompts directly.
+
+This is a wording smoke, not a controlled matrix; the previous 3-run results
+remain the behavioral evidence for the interview mechanics.
