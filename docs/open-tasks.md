@@ -96,7 +96,8 @@ verified evidence.
 - [x] **Smoke:** 3/3 blocked, one question per section, no review destination,
       no artifacts. See `analysis/evidence/issue-to-openspec.md`.
 - [x] **Propose gate:** a complete decision record now proposes without a second
-      "propose it"; 2/3 baseline, 3/3 after (treatment-only).
+      "propose it" and is not delivered as the result; 2/3 baseline, 3/3 after
+      (treatment-only).
 - [ ] **Full:** add a control to the blocked path. The revision route is 3/3
       after the confirmation counter; both runs are treatment-only.
 

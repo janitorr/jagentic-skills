@@ -17,8 +17,8 @@ defined, ask; do not assume a specific CLI or service.
 
 Turn one or more issues into an OpenSpec change, or revise one after review.
 Explore always runs first for a new change, even when the issue looks complete.
-Explore resolves decisions; `openspec-propose` writes new artifacts;
-`openspec-update-change` revises existing artifacts; none implements.
+Explore resolves decisions; `openspec-propose` writes the proposed change;
+`openspec-update-change` revises an existing one; none implements.
 
 This skill owns the route, the handoff, and the exit criteria. OpenSpec owns
 scaffolding, schema rules, validation, artifact paths, revision, and the `--store`
@@ -134,7 +134,7 @@ If several issues touch the same capability, explore them together. If one issue
 needs multiple independently shippable changes, propose only the first change,
 report the order, and stop; re-run this skill for each subsequent change.
 
-### 3. Exit explore only when the decision record is complete
+### 3. Finish exploration only when the decision record is complete
 
 Record the exploration where the agent file says: an issue comment, a scratch
 decision file, or a design note. The record lists settled decisions, open
@@ -147,8 +147,9 @@ questions, risks, and deferred items.
   interface, and seam choices, or explicitly deferred with an owner.
 - [ ] Risks, unknowns, and rollback or migration concerns are recorded.
 
-If the user wants to stop earlier, write the partial record to the same place and
-stop without proposing. Do not let an incomplete exploration become an artifact.
+A decision record is not the deliverable; the proposed change is. If the user
+cancels, stop and name what is still unsettled; do not present the partial
+record as the result. Do not let an incomplete exploration become an artifact.
 
 When every item above is settled, proceed to propose; do not ask for a second
 "propose it". The request that started the stage authorizes planning. If a new
@@ -229,8 +230,9 @@ Then stop. Do not implement, run apply, or archive.
       stage stopped as `blocked`; no blocking question stayed in chat.
 - [ ] The OpenSpec root exists, or the report explains why it does not.
 - [ ] Explore ran before propose for a new change, or the revision went through
-      `openspec-update-change`; the decision record was complete and the stage
-      proposed without a second request.
+      `openspec-update-change`; the decision record was complete, the stage
+      proposed without a second request, and an incomplete record was not
+      delivered as the result.
 - [ ] A reviewer request revised existing artifacts through
       `openspec-update-change`; an intent change started a new change instead;
       the revision turn ended `blocked` and `pass` waited for a later user

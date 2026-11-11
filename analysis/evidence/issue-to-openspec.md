@@ -250,12 +250,11 @@ the issue allows; no "proceed" phrasing.
 The baseline is variance, not a clean failure: two runs treated the opening
 request as authorization and proposed; one followed the rule literally and
 stopped with the complete decision record. After the change, a complete record
-proceeds to propose; only an explicit "stop after exploration" ends at the
-record.
+proceeds to propose, and the record is intermediate rather than a deliverable.
 
 Limits: treatment-only after the baseline, one fixture, one model family, one
 reader. A change request and an exploration-only request now take the same path
-unless the user says to stop.
+unless the user cancels.
 
 ## What changed in the skill
 
@@ -276,7 +275,8 @@ unless the user says to stop.
 - A revision turn ends `blocked` awaiting confirmation; only a later user
   message that accepts the revised artifacts authorizes `pass`.
 - A complete decision record proceeds to propose without a second "propose it";
-  only an explicit request to stop ends at the record.
+  the record is intermediate and never the deliverable. A cancellation stops the
+  stage without presenting the record as the result.
 
 ## Limits
 
