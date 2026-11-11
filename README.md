@@ -51,7 +51,7 @@ environment uses:
 | Stage | Skill | Output |
 |---|---|---|
 | 1 | `issue-interview` | Issue(s) in the configured tracker |
-| 2 | `issue-to-openspec` | OpenSpec change (explore first, then propose) |
+| 2 | `issue-to-openspec` | OpenSpec change (decision record, then propose) |
 | 3 | `spec-review` | Read-only findings, then human gate |
 | 4 | `vertical-slice-tdd` | Implemented tasks with test evidence |
 | 5 | `code-review` | Read-only findings, then human gate |

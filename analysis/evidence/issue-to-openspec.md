@@ -10,8 +10,9 @@ Current result: pointer 3/3; tasks sliced by behavior 3/3; approval marker
 created by the spec writer 0/3; blocked 3/3; `pass` through the real pipeline
 3/3; blocked questions one per comment 3/3 (2026-11-10 smoke); revision route
 3/3 with a later-turn confirmation after a 0/3 pre-counter run; propose after a
-complete decision record 3/3 after a 2/3 baseline (2026-11-10 smoke). The
-contract is `verdict` + `reason`; owner fields below are historical.
+complete decision record 3/3 after a 2/3 baseline (2026-11-10 smoke); autonomous
+stage 3/3 with no `openspec-explore` and blocked 3/3 on the tracker (2026-11-11
+smoke). The contract is `verdict` + `reason`; owner fields below are historical.
 
 **Link refactor (2026-11-04).** The skill no longer restates the OpenSpec project
 check, the `--store` rule, the spec-read commands, or the artifact status. It
@@ -164,6 +165,9 @@ The first cohort ran with `openspec-explore` and `openspec-propose` absent, so
 every run improvised. With the six workflow skills installed, three fresh runs
 used the real pipeline.
 
+> Historical: the 2026-11-11 autonomous change removes `openspec-explore` from
+> the stage. This cohort records the earlier pipeline.
+
 | Check | No workflow skills | Workflow skills |
 |---|---|---|
 | Loaded `openspec-explore` and `openspec-propose` | 0/3 (absent) | **3/3** |
@@ -232,6 +236,9 @@ recorded its seam decision without loading it.
 
 ### Propose after complete exploration (2026-11-10)
 
+> Superseded 2026-11-11: the stage no longer invokes `openspec-explore`; see
+> "Autonomous stage" below.
+
 Real-use report: after a complete exploration, the stage sometimes stopped to
 ask for a second "propose it" instead of creating the change. The rule said
 exploration alone does not authorize artifacts.
@@ -256,6 +263,40 @@ Limits: treatment-only after the baseline, one fixture, one model family, one
 reader. A change request and an exploration-only request now take the same path
 unless the user cancels.
 
+### Autonomous stage (2026-11-11)
+
+The stage no longer invokes `openspec-explore`. There is no terminal
+counterpart; a material decision the issue does not settle is posted on the
+issue and the stage stops as `blocked`. The decision record is completed from
+the issue, code, and specs.
+
+Fixtures: `seam` with the complete Issue 17, and `seam-blocked` with the missing
+Acceptance section plus two scope conflicts. Prompt: read `AGENTS.md` and
+`issue.md`, turn Issue 17 into an OpenSpec change with `issue-to-openspec`; no
+"proceed" or "explore" phrasing. Three runs per fixture.
+
+| Check | Complete issue (n=3) | Blocked issue (n=3) |
+|---|---|---|
+| Loaded `openspec-explore` | 0/3 | 0/3 |
+| Proposed a change | 3/3 | 0/3 |
+| Strict validation passes | 3/3 | n/a |
+| Blocked with questions in `questions.md` | 0/3 | 3/3 |
+| Named the missing Acceptance section | n/a | 3/3 |
+| Posted the partner-facing scope conflict | n/a | 3/3 |
+| Posted the attempt-count conflict | n/a | 3/3 |
+| Asked in chat or waited for a terminal reply | 0/3 | 0/3 |
+| Edited `src/`/`tests/`, committed, or created `APPROVED` | 0/3 | 0/3 |
+
+The first blocked set, before the scope-conflict counter, caught the partner-
+facing conflict 2/3; one run reconciled it by choosing the narrower reading.
+The counter "a scope item and an out-of-scope item conflict when one implies a
+capability the other denies" made it 3/3.
+
+Limits: treatment-only, one fixture pair, one model family, one reader. The
+complete-issue runs still split 2/3 wrapper and 1/3 template method, the known
+design-quality ceiling. The blocked fixture's two conflicts are subtle; a
+careful reader can detect either.
+
 ## What changed in the skill
 
 - A route step: a new change runs explore then `openspec-propose`; a reviewer
@@ -277,6 +318,9 @@ unless the user cancels.
 - A complete decision record proceeds to propose without a second "propose it";
   the record is intermediate and never the deliverable. A cancellation stops the
   stage without presenting the record as the result.
+- The stage is autonomous: it does not invoke `openspec-explore`. Decisions come
+  from the issue, code, and specs; a material decision the issue does not settle
+  is posted on the issue and the stage stops as `blocked`.
 
 ## Limits
 

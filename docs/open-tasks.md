@@ -98,6 +98,9 @@ verified evidence.
 - [x] **Propose gate:** a complete decision record now proposes without a second
       "propose it" and is not delivered as the result; 2/3 baseline, 3/3 after
       (treatment-only).
+- [x] **Autonomy:** no `openspec-explore`; 3/3 proposed on the complete fixture,
+      3/3 blocked with one question per comment on the blocked fixture; both
+      treatment-only.
 - [ ] **Full:** add a control to the blocked path. The revision route is 3/3
       after the confirmation counter; both runs are treatment-only.
 
@@ -171,6 +174,11 @@ The other five skills and every description are unchanged; no retest.
       smoke covers caching, not the full set.
 - [x] `issue-to-openspec`: the revision-route confirmation gate ran 0/3 before
       the counter and 3/3 after; treatment-only.
+- [ ] `issue-to-openspec`: the description no longer triggers on "explore this
+      issue"; re-run its trigger prompts and confirm it still loads on "turn
+      this issue into a change".
+- [ ] `docs/workflow.md`: align the issue-to-openspec verdict row with the
+      skill's block reasons and the narrower `needs_revision` output.
 - [ ] The multi-stage loop in `docs/workflow.md` is untested.
 
 ## Clean re-run rules

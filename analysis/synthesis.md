@@ -10,7 +10,7 @@ from where and what was deliberately left out.
 issue-interview
   -> issue(s) in the tracker    source of truth for scope and acceptance
 issue-to-openspec
-  -> openspec-explore (always)
+  -> decision record from issue, code, and specs
   -> openspec-propose
   -> openspec/changes/<change>  proposal, specs delta, design, tasks
 spec-review
@@ -24,9 +24,9 @@ code-review
 ```
 
 OpenSpec owns artifact creation and task tracking. These skills own the
-decisions OpenSpec deliberately leaves out: when the issue is ready, when
-exploration is done, whether the artifacts hold up, how to slice and test, and
-what a review must prove.
+decisions OpenSpec deliberately leaves out: when the issue is ready, when the
+decision record is complete, whether the artifacts hold up, how to slice and
+test, and what a review must prove.
 
 ## Environment boundary
 
@@ -38,7 +38,8 @@ push and PR rules). Supporting skills are invoked directly by a human or by an
 agent mid-task; they read the repository's instructions and fall back to their
 defaults, with no agent file required. OpenSpec is fixed as the artifact system;
 it is not abstracted. A stage skill that needs an undefined environment operation
-asks instead of assuming a CLI.
+stops as `blocked` and names it instead of assuming a CLI. Decision record:
+`docs/adr/0001-skills-are-environment-agnostic.md`.
 
 ## Provenance
 
@@ -48,7 +49,7 @@ asks instead of assuming a CLI.
 | | Design tree, frontier rounds, recommended answer per question, facts by agent | mattpocock `grilling` |
 | | Know what you know, look before asking, size the work | superpowers `brainstorming` |
 | | Persist the artifact, stop the turn after confirmation | humanlayer `rpi` |
-| `issue-to-openspec` | Explore before proposing; task directory; phase handoff | humanlayer `rpi`, OpenSpec explore/propose |
+| `issue-to-openspec` | Decision record before proposing; task directory; phase handoff | humanlayer `rpi`, OpenSpec propose |
 | | Spec as a gated artifact; assumptions surfaced; capability map | addyosmani `spec-driven-development` |
 | | Synthesize existing context instead of re-interviewing | mattpocock `to-spec` |
 | | Validation and required-artifact closure | OpenSpec `status` / `instructions` |
@@ -106,9 +107,9 @@ Supporting skills:
   and agent instruction files. `skill-forge` owns `SKILL.md` files; the two do
   not overlap. `visual-explainer` owns the diagram or one-pager; `documentation`
   points human-facing docs to it and keeps agent instructions text-first.
-- No duplicated OpenSpec commands. The skills reference `openspec-explore`,
-  `openspec-propose`, and `openspec-apply-change` rather than reimplementing
-  their scaffolding, validation, or checkbox rules.
+- No duplicated OpenSpec commands. The skills reference `openspec-propose`,
+  `openspec-update-change`, and `openspec-apply-change` rather than
+  reimplementing their scaffolding, validation, or checkbox rules.
 - No HTTP API contract skill. `api-and-interface-design` was not absorbed:
   `deep-module-design` supplies module-level contract reasoning, not status and
   error semantics, boundary validation, pagination, or idempotency. Two
