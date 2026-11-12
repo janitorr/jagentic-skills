@@ -153,3 +153,52 @@ Run a fresh agent in a copy of either fixture with the prompts under Method. For
 the seeded fixture, strict validation must fail before the review; for the clean
 fixture it must pass. Score D1–D6, false blocking, and the verdict. The seeded
 defects are listed above and in the fixture's `issue.md`.
+
+## Real-use report: necessity as well as feasibility (2026-11-12)
+
+Issue #6 reported that design soundness emphasized missing behavior and failure
+modes, not unnecessary machinery. The axis now asks whether the design is
+proportionate to the observable outcome, the falsification step tests necessity
+alongside feasibility, and a Required finding is allowed for custom
+infrastructure with no demonstrated requirement or justified advantage over a
+concrete simpler alternative. The risk list is capped by relevance: up to three
+material risks, and none is valid. A claimed capability gap must be checked
+against the installed version's documentation; default auto-instrumentation and
+built-in endpoints count as supported integrations.
+
+This is a real-use report, not a scored run. No control or treatment was run
+against the revised wording. See `docs/open-tasks.md`.
+
+## Micro-test: necessity as well as feasibility (2026-11-12)
+
+Fixture: `analysis/evidence/spec-review/fixtures/otel-health`. The change
+`add-request-tracing-and-health` is valid and proposes a custom ASGI middleware
+in place of `FastAPIInstrumentor` and a custom `/health` route in place of
+`fastapi-health`. The stated justification is an architecture approval; no
+capability gap is recorded. Both integrations are pinned in `requirements.txt`.
+
+Method: fresh fixture copy per run, git baseline, no reads outside the project,
+`opencode-go/deepseek-v4.1-flash` default variant. Three control runs had the
+`openspec-*` workflow skills only; three skill runs added `spec-review` and
+`deep-module-design` and were told to use `spec-review`. Score the findings and
+verdict from the response.
+
+| Check | Control (n=3) | Skill (n=3) |
+|---|---|---|
+| Required or Critical finding on the custom machinery | 0/3 | 3/3 |
+| Cited the pinned integration and the missing gap | 0/3 | 3/3 |
+| Verdict `needs_revision` | 3/3 (other defects) | 3/3 |
+| Accepted the approved custom direction | 3/3 | 0/3 |
+
+Every control reviewed around the custom approach; two explicitly called it
+"the approved direction". Every skill run raised a Required finding that the
+custom middleware and route duplicate a pinned, supported integration with no
+demonstrated gap, and capped the verdict at `needs_revision`. Session IDs:
+`ses_e2e574881ffetDYnvCM9NC1CND`, `ses_e2e5557feffexk7NOI4ZwpxSpC`,
+`ses_e2e5171a0ffemPqIilyjgRE3K2`, `ses_e2e4a466cffeD39pTPCZx9K6mA`,
+`ses_e2e440cb5ffezJOVkHda7J9yqc`.
+
+Limits: three runs per condition, one model and variant, one reader. The skill
+prompt named the skill. Controls reached `needs_revision` on other defects, so
+the verdict alone does not discriminate; the necessity finding does. The fixture
+is one change shape.

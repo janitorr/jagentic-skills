@@ -64,7 +64,7 @@ Keep the axes separate. Report each one, even when it passes.
 |---|---|---|
 | Problem fit | Does the proposal solve the stated problem? Does scope match the issue? Are non-goals explicit and respected? | An issue requirement with no corresponding artifact; behavior the issue never asked for |
 | Spec correctness | Are requirements and scenarios testable, complete, and consistent with existing specs? Are deltas correct? | A requirement with no scenario that can fail; contradictions, duplicates, or missing edge cases |
-| Design soundness | Are decisions justified against alternatives and constraints? Does it fit the architecture? | Invented APIs, unexplained data shapes, changed observable behavior, unstated failure modes. Use `deep-module-design` for module, interface, and seam terms. |
+| Design soundness | Are decisions justified against alternatives and constraints? Does it fit the architecture? Is the design proportionate to the observable outcome, or would the standard library, a supported integration, or a simpler policy achieve it? Which stronger guarantees create substantial custom infrastructure, and what evidence justifies them? | Invented APIs, unexplained data shapes, changed observable behavior, unstated failure modes, or custom infrastructure with no demonstrated requirement. Use `deep-module-design` for module, interface, and seam terms. |
 | Task executability | Are tasks vertical slices with acceptance and verification? Could a fresh agent execute each without guessing? | Horizontal layer batching; missing acceptance; stale file paths; ordering that blocks |
 | Repo and doc fit | Does it follow documented conventions? Does it conflict with existing behavior, docs, or prior decisions? | Convention drift; conflict with current code or a prior ADR |
 
@@ -74,6 +74,18 @@ List the load-bearing assumptions the change most depends on, typically three to
 five. Do not pad the list to reach a count. For each, find evidence in the
 source, tests, specs, or official documentation. Mark it confirmed, contradicted,
 or unverified.
+
+Test both kinds of assumption:
+
+- **Feasibility:** can this worker enforce the deadline?
+- **Necessity:** do we need this deadline strongly enough to own a worker?
+
+A supported integration or a simpler policy is evidence against the necessity
+assumption. Do not accept a stronger guarantee just because it is implementable.
+Framework auto-instrumentation, built-in middleware, and library-provided
+endpoints are supported integrations. Verify the claimed gap against the
+installed version's official documentation before accepting custom
+infrastructure.
 
 For framework-specific claims, check official documentation rather than memory.
 Cite what you checked.
@@ -90,6 +102,12 @@ Label every finding and state its remedy:
 | **Optional** | Worth considering; not blocking | Author decides |
 | **Nit** | Wording or formatting only | Author decides |
 | **FYI** | Context for the human; no action | None |
+
+A **Required** finding is valid when substantial custom infrastructure has no
+demonstrated requirement and no justified advantage over a concrete simpler
+alternative, such as the standard library or a supported integration. Cite the
+requirement or the alternative; "this feels overengineered" alone is not a
+finding.
 
 Each finding carries:
 
@@ -117,8 +135,8 @@ The verdict is capped by the evidence:
 - Only **Optional**, **Nit**, or **FYI** findings, with every load-bearing
   assumption confirmed or contradicted: **ready for spec approval**.
 
-End with findings by severity, the three highest-risk issues, any questions the
-human must answer, and the verdict.
+End with findings by severity, up to three material risks (none is valid), any
+questions the human must answer, and the verdict.
 
 Then stop. Do not edit artifacts, implement, or start remediation.
 
@@ -137,6 +155,8 @@ stop. Do not implement.
 - [ ] Strict validation ran, and its output is recorded.
 - [ ] Each finding quotes its source and states impact and remedy.
 - [ ] The highest-risk assumptions were confirmed or contradicted with evidence.
+- [ ] Design soundness tested both feasibility and necessity; a simpler
+      supported alternative was named when the design adds custom infrastructure.
 - [ ] A load-bearing unverified assumption, failed strict validation, or
       unavailable required source capped the verdict at **needs revision**.
 - [ ] The report was posted to the configured review destination.
