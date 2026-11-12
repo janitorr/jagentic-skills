@@ -138,6 +138,21 @@ The other five skills and every description are unchanged; no retest.
 
 ## Known debt
 
+- [ ] `issue-to-openspec`: the 2026-11-12 micro-test is 3/3 skill (choose the
+      pinned integrations or block for the missing gap) vs 0/3 control on an
+      OTEL/health fixture with an approved custom approach. One model, three
+      reps. Re-run with a second model and a different capability.
+- [ ] `spec-review`: the 2026-11-12 micro-test is 3/3 necessity findings vs 0/3
+      control. One change shape, one model. Re-run on a clean change and a
+      different capability.
+- [ ] `deep-module-design`: the 2026-11-12 micro-test on the `request-tracing`
+      fixture is 3/3 skill vs 0/3 control for direct wiring over a new module.
+      One model, three reps; an architecture-approval brief flipped one skill
+      run, so only the team-preference brief is recorded. Re-run with a second
+      capability and a cleaner control.
+- [ ] `issue-interview`: the 2026-11-12 scripted micro-test is 3/3 supported vs
+      3/3 control custom after the draft gate; an earlier cohort was 2/3. The
+      user is a scripted replier, so re-run with a human and a different ask.
 - [ ] `skill-forge` body: form matching and micro-tests; the trigger-test
       rewrite is observed but not separately tested.
 - [ ] `documentation`: `Update this repo's AGENTS.md` retested 4/5. If the 1/5

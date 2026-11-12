@@ -262,3 +262,51 @@ cost drop as established.
 - Session IDs: `analysis/evidence/deep-module-design/runs/sessions.txt`
 - Session store: `~/.local/share/opencode/opencode.db`, parent session
   `ses_e535c7922ffeHoIwa0qC2Ym6r4`; see `sessions.txt` for the six run IDs.
+
+## Real-use report: encapsulating versus eliminating complexity (2026-11-12)
+
+Issue #7 reported that the deletion test could justify a subsystem circularly:
+without the module, the complexity goes elsewhere. The skill now asks first
+whether the responsibility needs to exist — removal, a supported integration, or
+an approved simpler contract — and only runs the deletion test on a
+responsibility that survives. Alternative interfaces are compared on total
+ownership cost, not only depth and locality.
+
+This is a real-use report, not a scored run. No control or treatment was run
+against the revised wording. See `docs/open-tasks.md`.
+
+## Micro-test: encapsulating versus eliminating complexity (2026-11-12)
+
+Fixture: `analysis/evidence/deep-module-design/fixtures/request-tracing`. The brief
+says the team wants a code-owned `RequestTracing` module for one span per request.
+The service has no tracing; `requirements.txt` pins
+`opentelemetry-instrumentation-fastapi`, and the deployment owns the backend.
+
+Method: fresh fixture copy per run, git baseline, no reads outside the project,
+`opencode-go/deepseek-v4.1-flash` default variant. Three control runs had no
+skill; three skill runs loaded `deep-module-design`. Score the primary
+recommendation.
+
+| Check | Control (n=3) | Skill (n=3) |
+|---|---|---|
+| Proposed a new module or custom middleware | 3/3 | 0/3 |
+| Recommended direct `FastAPIInstrumentor` wiring | 0/3 | 3/3 |
+| Asked whether the responsibility needs to exist before the interface | 0/3 | 3/3 |
+
+The controls proposed a custom ASGI middleware (one run) or a thin wrapper module
+(two runs). The skill runs said the module should not exist and recommended one
+line at the composition root; two kept a thin fallback adapter only if a
+code-owned entry point is mandatory, but not as the primary design. Session IDs:
+`ses_e2e196402ffe3dvt9xka8DpN4D`, `ses_e2e17e7bcffeOwzCBiincBktFu`,
+`ses_e2e14a037ffeHYHPRVZCqt37u3`, `ses_e2e11d759ffeFYOFzptXPiiOPj`,
+`ses_e2e0eb3e1fferBy0KiSncOUN6N`, `ses_e2e0cd688ffew3B6gKgV6uiKY4`.
+
+An earlier brief stated that architecture review had approved the module and a
+branch held the skeleton. One skill run then complied with the custom middleware
+("proceeding because the brief explicitly asks"), so that wording is not pooled
+with this result. The softer team-preference brief is the recorded condition.
+
+Limits: three runs per condition, one model and variant, one brief. The skill
+answers still mention fallback adapters; the primary recommendation is what was
+scored. The control was not fully failing on every wording, so this is a partial
+micro-test, not a controlled 3x3.

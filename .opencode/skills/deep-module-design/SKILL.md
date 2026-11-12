@@ -18,6 +18,10 @@ Design **deep modules**: a lot of behavior behind a small interface, at a clean
 seam, testable through that interface. The aim is leverage for callers, locality
 for maintainers, and testability for everyone.
 
+Depth hides complexity; it does not justify creating it. A beautifully
+encapsulated subsystem that should never have been built is still the wrong
+design. First decide whether the responsibility belongs in the application.
+
 Use these terms exactly. They are the shared vocabulary:
 
 | Term | Meaning |
@@ -35,14 +39,20 @@ Use these terms exactly. They are the shared vocabulary:
 
 ### 1. Define the module and its callers
 
-Write one sentence for what the module is responsible for. List its callers and
-the tests that cross the seam. If the responsibility needs "and", it is probably
-two modules.
+First ask whether the responsibility needs to exist in the application. It can be
+removed, delegated to the standard library or a supported integration, or
+avoided through an explicitly approved simpler contract. If one of those meets
+the observable need, stop; do not design a module around it. The strongest
+encapsulation of unnecessary work is still unnecessary work.
 
-Before naming the interface, run the deletion test: imagine deleting the module.
-If the complexity vanishes, it was a pass-through; merge it into its caller or
-stop. If the complexity reappears across callers, it earns its keep. Record the
-result in one line.
+Only when the responsibility survives, write one sentence for what the module is
+responsible for. List its callers and the tests that cross the seam. If the
+responsibility needs "and", it is probably two modules.
+
+Then run the deletion test on a responsibility that survives: imagine deleting
+the module. If the complexity vanishes, it was a pass-through; merge it into its
+caller or stop. If the complexity reappears across callers, it earns its keep.
+Record the result in one line.
 
 ### 2. Name the interface
 
@@ -77,9 +87,10 @@ Apply these tests before writing the implementation:
 ### 5. Design it twice
 
 Sketch two or three radically different interfaces for the same responsibility.
-Compare them on depth, locality, seam placement, and testability. Pick one and
-state why the others lost. This is cheaper than discovering the shallow version
-during implementation.
+Compare them on depth, locality, seam placement, testability, and total
+ownership cost: the custom machinery, configuration, failure modes, and
+maintenance the choice adds. Pick one and state why the others lost. This is
+cheaper than discovering the shallow version during implementation.
 
 ### 6. Name the domain
 
@@ -113,12 +124,15 @@ count. Scope the work to the module in question; do not renovate neighbors.
 ## Verification
 
 - [ ] The module has one stated responsibility and one interface.
+- [ ] The responsibility was justified before the interface: removal, a supported
+      integration, or a simpler contract was considered.
 - [ ] The interface lists invariants, errors, ordering, and configuration, not
       just types.
 - [ ] The seam is at an existing caller boundary, and something actually varies
       across it.
 - [ ] The deletion test and the test-surface test pass.
-- [ ] At least two alternative interfaces were compared.
+- [ ] At least two alternative interfaces were compared, including total
+      ownership cost.
 - [ ] Domain terms are used consistently, or the gap is recorded.
 - [ ] Simplification preserves behavior and keeps tests unchanged.
 - [ ] A migration has a proven replacement, a down path or approved backup, and
