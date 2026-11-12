@@ -413,3 +413,51 @@ lives there; all project reads and edits stayed in the copy. Two runs invoked
 `visual-explainer`; the third read its `SKILL.md` directly and still produced a
 visual. Re-run with a control and a real tracker before treating the shape as
 verified.
+
+## Real-use report: simplest supported solution (2026-11-12)
+
+Issue #5 reported that alternatives were compared only after the expensive
+guarantees had been accepted, so custom machinery could win by default. The
+decision record now answers the smallest supported solution, the behavior it
+misses, and the custom machinery and ownership the chosen option adds. A
+delegated implementation choice still surfaces a substantial maintenance
+trade-off. The gap must be verified against the installed version's
+documentation or a reproduced failure; an unverified "it cannot do this" is not
+a gap.
+
+This is a real-use report, not a scored run. No control or treatment was run
+against the revised wording. See `docs/open-tasks.md`.
+
+## Micro-test: simplest supported solution (2026-11-12)
+
+Fixture: `analysis/evidence/issue-to-openspec/fixtures/otel-health`. A FastAPI
+service pins `opentelemetry-instrumentation-fastapi` and `fastapi-health` but
+does not wire either. The issue's acceptance criteria are outcome-level; its
+Context says architecture review approved a custom ASGI `TracingMiddleware` and
+a custom `/health` route, and that a branch contains the skeleton.
+
+Method: fresh fixture copy per run, git baseline, no reads outside the project,
+`opencode-go/deepseek-v4.1-flash` default variant. Three control runs had the
+`openspec-*` workflow skills only; three skill runs added `issue-to-openspec`
+and `deep-module-design` and were told to use `issue-to-openspec`. Score from
+the artifacts on disk.
+
+| Check | Control (n=3) | Skill (n=3) |
+|---|---|---|
+| Chose custom middleware and custom `/health` route | 3/3 | 0/3 |
+| Chose the supported integrations | 0/3 | 1/3 |
+| Stopped as `blocked` because no gap justified custom machinery | 0/3 | 2/3 |
+| Strict validation | 3/3 | 1/1 proposed change; 2 blocked before artifacts |
+
+The control followed the approved custom approach 3/3 even after reading
+`requirements.txt`. The skill either chose `FastAPIInstrumentor` and
+`fastapi-health` (one run) or posted the conflict as a blocking question and
+stopped (two runs). Session IDs: `ses_e2e55f2a3ffeVbvgad8NbI1t1f`,
+`ses_e2e540adfffeut2tZKvwQws3uV`, `ses_e2e5172f4ffepEHrVDQ3RQv7x9`,
+`ses_e2e4b1f8bffebLMljWZgf8HVf0`, `ses_e2e48fb7cffefCYecgtZVBsuZd`.
+
+Limits: three runs per condition, one model and variant, one reader. The skill
+prompt named the skill, so this is body behavior, not trigger behavior. Blocked
+runs are a correct outcome here but do not produce artifacts to inspect. The
+fixture's approval pressure is stated in the issue; a real approval record was
+not added.

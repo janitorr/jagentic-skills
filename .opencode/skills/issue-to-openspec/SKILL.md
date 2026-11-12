@@ -131,6 +131,24 @@ Record the decisions where the agent file says: an issue comment, a scratch
 decision file, or a design note. The record lists settled decisions, open
 questions, risks, and deferred items.
 
+When the change adds custom machinery — a worker, queue, cache, gate, or
+protocol — the same record answers three questions. Do not add an artifact.
+
+- What is the smallest standard-library or supported framework solution?
+- Which required behavior does it miss, and why does that behavior matter?
+- What custom machinery and ongoing ownership does the chosen option introduce?
+
+The standard library or a supported integration is the default when it meets
+the observable behavior. Custom machinery needs a named capability gap that
+matters, not speculative robustness. Verify that gap against the installed
+version's official documentation or a reproduced failure; framework
+auto-instrumentation, built-in middleware, and library-provided endpoints count
+as supported, and an unverified "it cannot do this" is not a gap. Delegating an
+implementation choice does not remove the need to surface a substantial
+maintenance trade-off: choosing a threshold can be delegated, but who owns the
+machinery that enforces it cannot. Keep internal mechanisms in the design; do
+not promote them into mandatory behavioral requirements without a reason.
+
 - [ ] Scope and non-goals are explicit.
 - [ ] Externally observable behavior and acceptance criteria are settled.
 - [ ] Impacted capabilities and existing specs are identified.
@@ -138,6 +156,8 @@ questions, risks, and deferred items.
   interface, and seam choices; a decision that needs the issue author is posted
   as a question.
 - [ ] Risks, unknowns, and rollback or migration concerns are recorded.
+- [ ] A change that adds custom machinery names the smallest supported solution,
+  the gap that rules it out, and the ownership it adds.
 
 A decision record is not the deliverable; the proposed change is. Do not let an
 incomplete record become an artifact.
