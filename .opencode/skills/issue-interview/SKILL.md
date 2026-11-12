@@ -115,6 +115,19 @@ retention, replay, discard, delivery guarantee), ask it before drafting; do not
 defer it to Open questions. If the user delegates it, stop as `blocked`; do not
 decide it for them.
 
+When the request or an acceptance criterion would require a bespoke subsystem —
+a worker, queue, buffer, gate, or protocol — rather than standard framework or
+library behavior, do not ask for more failure cases. The opening request is not
+exempt: a proposed middleware, route, or worker is a mechanism, not a settled
+goal. Ask one question that names the standard-library or supported alternative,
+states the limitation it leaves, and confirms whether the stronger guarantee is
+worth owning that machinery. Record the answer with the criterion.
+
+Then verify the gap. "The framework cannot do this" is a claim, not a reason to
+build: check the installed version's official documentation or a reproduced
+failure before it becomes a requirement. Auto-instrumentation, built-in
+middleware, and library-provided endpoints are the first candidates.
+
 The observable-goal answer is the Outcome. Do not draft while it is only a
 mechanism.
 
@@ -171,11 +184,19 @@ The out-of-scope section is not optional. Silent disagreement about non-goals is
 half of misalignment.
 
 Before presenting the bodies, compare every section with the confirmed answers.
-Remove an open question that a confirmed decision already answers. Rewrite or
-remove any acceptance criterion that is stronger than the answer, promises a
-guarantee the design cannot support, or contradicts a decision. If a material
-safety or scope decision is still open, stop as `blocked`; do not publish a
-draft around it.
+Remove an open question that a confirmed decision already answers. Rewrite an
+acceptance criterion that names a mechanism — a custom middleware, span, header,
+or endpoint — as the observable result it produces, then check whether the
+supported integration already produces that result. Rewrite or remove any
+acceptance criterion that is stronger than the answer, promises a guarantee the
+design cannot support, or contradicts a decision. If a material safety or scope
+decision is still open, stop as `blocked`; do not publish a draft around it.
+
+When the request or an acceptance criterion names a bespoke subsystem, the draft
+is not publishable until it either uses the supported integration or records the
+verified gap that rules the supported path out. Keeping the custom mechanism
+because the request asked for it, or because the branch already has it, is not a
+gap.
 
 ### 6. Confirm and publish
 
@@ -200,6 +221,8 @@ OpenSpec changes, or specs in this turn.
 - [ ] Each issue records a user-confirmed observable goal, not a mechanism.
 - [ ] Consequential defaults and irreversible consequences were confirmed, not
       decided by delegation.
+- [ ] An acceptance criterion that needs a bespoke subsystem was priced against
+      standard framework behavior, and the user confirmed the stronger guarantee.
 - [ ] No material safety or scope question was parked in a `pass` issue.
 - [ ] The draft was checked against the answers; no section is stronger,
       inconsistent, or promises a guarantee the design cannot support.

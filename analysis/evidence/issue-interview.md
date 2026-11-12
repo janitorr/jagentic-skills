@@ -410,3 +410,53 @@ not test those two new prompts directly.
 
 This is a wording smoke, not a controlled matrix; the previous 3-run results
 remain the behavioral evidence for the interview mechanics.
+
+## Real-use report: price an expensive guarantee (2026-11-12)
+
+Issue #4 reported that an acceptance criterion can require a bespoke subsystem
+while the interview only checks whether the user meant it. The skill now asks one
+question when a criterion needs custom machinery: name the standard-library or
+supported alternative, state the limitation it leaves, and confirm whether the
+stronger guarantee is worth owning it. The answer is recorded with the criterion.
+Acceptance criteria that name a mechanism are rewritten as the observable result,
+and the gap is verified against the installed version's documentation before it
+becomes a requirement.
+
+This is a real-use report, not a scored run. No control or treatment was run
+against the revised wording. See `docs/open-tasks.md`.
+
+## Micro-test: price an expensive guarantee (2026-11-12)
+
+Fixture: `analysis/evidence/issue-interview/fixtures/otel-health`; script:
+`analysis/evidence/issue-interview/script-otel-health.md`. The opening request
+asks for a custom ASGI span middleware and a custom `/health` route. The repo
+pins `opentelemetry-instrumentation-fastapi` and `fastapi-health` but does not
+wire them. The frozen answer bank says to use the supported path when it gives
+the same outcome.
+
+Method: fresh fixture copy per run, git baseline, no reads outside the project,
+`opencode-go/deepseek-v4.1-flash` default variant. A scripted user replayed the
+bank one question per turn and only published after the explicit yes. Three
+control runs had no skill; three skill runs loaded `issue-interview` and
+`visual-explainer`.
+
+| Check | Control (n=3) | Skill (n=3) |
+|---|---|---|
+| Published issue requires custom middleware/route | 3/3 | 0/3 |
+| Published issue requires the pinned integrations | 0/3 | 3/3 |
+| Asked whether the supported path suffices | 0/3 | 3/3 |
+| Published before the explicit yes | 3/3 | 0/3 |
+
+The first skill cohort, before the draft gate, was 2/3: one run skipped the
+interview entirely and kept the custom ASGI middleware in scope while naming
+the library as a fallback. The draft gate closed that: all three post-gate runs
+put custom middleware and a hand-written health route out of scope. Session IDs:
+`ses_e2e464edbffetrEnyYl0nxxjpi`, `ses_e2e450fc1ffeONETHD6jlGckCL`,
+`ses_e2e448125ffeBZvpWMOC2x3R3J`, `ses_e2e388637ffeXAYbxMrloRzJHg`,
+`ses_e2e364b78ffe65FE0kHzmqROGG`, `ses_e2e343550ffeww33lYKscl5X4x`.
+
+Limits: three runs per condition, one model and variant, one reader. The user
+is a scripted replier, not a human; the matcher answers the last question, which
+can misread a compound turn. Controls published on turn 1, so the gate result is
+not comparable between conditions. The first cohort is recorded as a failure and
+is not pooled with the post-gate result.
