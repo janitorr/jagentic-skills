@@ -53,5 +53,7 @@ Then map each verdict to the environment action:
 ## References
 
 - `docs/workflow.md`: stage graph, verdict semantics, delivery mapping.
+- `docs/adr/0001-skills-are-environment-agnostic.md`: why the boundary exists
+  and what was rejected.
 - `analysis/synthesis.md`: "Environment boundary".
 - `AGENTS.md`: project instructions and skill ownership.

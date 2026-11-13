@@ -7,9 +7,11 @@ description: Use before implementing or archiving an OpenSpec change; when the u
 
 ## Environment
 
-The agent file defines the tracker, approval marker, review destination, and
-workspace policy. Read it before starting. If an operation you need is not
-defined, ask; do not assume a specific CLI or service.
+The agent file defines the tracker (where issues live and how to read them), the
+spec-approval marker (the recorded human approval for implementation, such as a
+label, comment, file, or pull request state), the review destination (where the
+report goes), and the workspace policy. Read it before starting. If an operation
+you need is not defined, ask; do not assume a specific CLI or service.
 
 ## Overview
 
@@ -141,8 +143,9 @@ questions the human must answer, and the verdict.
 Then stop. Do not edit artifacts, implement, or start remediation.
 
 On **ready for spec approval**, do not record approval yourself. Say that human
-approval is needed and name the marker the agent file defines; if it defines
-none, say which marker is needed rather than inventing one. Then stop.
+approval is needed and name the spec-approval marker the agent file defines; if
+it defines none, say which spec-approval marker is needed rather than inventing
+one. Then stop.
 
 On **needs revision**, name the artifact pass that owns each blocking finding
 (return to the issue, return to explore, or update the change artifacts) and
@@ -161,5 +164,5 @@ stop. Do not implement.
       unavailable required source capped the verdict at **needs revision**.
 - [ ] The report was posted to the configured review destination.
 - [ ] No files were modified and no implementation started.
-- [ ] The verdict follows the severity mapping, and the approval marker or
+- [ ] The verdict follows the severity mapping, and the spec-approval marker or
       blocking remediation path is explicit.

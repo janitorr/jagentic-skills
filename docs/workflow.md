@@ -16,6 +16,9 @@ A stage skill does not invoke another stage skill and does not assume a specific
 tracker or label CLI. It may invoke OpenSpec and the named supporting skills. The
 skill reports what happened; the persona decides how to deliver it.
 
+The rationale and rejected alternatives are recorded in
+`docs/adr/0001-skills-are-environment-agnostic.md`.
+
 ## Why verdicts
 
 Skills used to emit `routing_status`, `owner`, and `requested_action`. That made
