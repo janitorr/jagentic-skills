@@ -131,3 +131,11 @@ cd /tmp/vst
 Run one fresh agent per copy with "implement the OpenSpec change `add-slugify`"
 and the skill loaded. Score test-first behavior from `.testlog.jsonl`, the
 marker gate, the verdict, and the commit.
+
+## Real-use report: spec-review mention (2026-11-10)
+
+Issue #2 reported that loading the skill made the agent try to review the spec.
+The precondition and drift wording now name only the spec-approval marker
+defined by the agent file; the skill no longer mentions `spec-review`. This is a
+real-use report, not a scored run: the gate and verdict results above predate the
+wording change. See `docs/open-tasks.md`.

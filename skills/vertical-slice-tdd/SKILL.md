@@ -7,9 +7,11 @@ description: Use when implementing or applying an approved OpenSpec change; when
 
 ## Environment
 
-The agent file defines the tracker, approval marker, review destination, and
-workspace policy. Read it before starting. If an operation you need is not
-defined, ask; do not assume a specific CLI or service.
+The agent file defines the spec-approval marker (the recorded human approval
+that starts implementation, such as a label, comment, file, or pull request
+state), the review destination (where the handoff goes), and the workspace
+policy. Read it before starting. If an operation you need is not defined, ask;
+do not assume a specific CLI or service.
 
 ## Overview
 
@@ -31,16 +33,16 @@ reason: <one line naming the missing precondition>
 ```
 
 `pass` means every task is implemented, the suite is green, and the handoff is
-recorded. `blocked` means a precondition is missing: the approval marker or the
-artifacts. Name which one in the reason. A missing marker is not something this
-skill can resolve; do not continue implementation or create the marker yourself.
+recorded. `blocked` means a precondition is missing: the spec-approval marker or
+the artifacts. Name which one in the reason. A missing spec-approval marker is
+not something this skill can resolve; do not continue implementation or create
+the spec-approval marker yourself.
 
 ## Preconditions
 
-- `spec-review` returned **ready for spec approval**.
-- The approval marker defined by the agent file is present on the issue, pull
-  request, or change. Check it the way the agent file defines. If it is absent,
-  stop; do not infer approval from conversation.
+- The spec-approval marker defined by the agent file is present on the issue,
+  pull request, or change. Check it the way the agent file defines. If it is
+  absent, stop; do not infer approval from conversation.
 - Resolve the change name. If it is missing, run `openspec list --json` and ask.
 - The OpenSpec root exists. If `root` is null, `openspec list` exits 1; stop and
   report it.
@@ -52,8 +54,8 @@ openspec instructions apply --change "<name>" --json
 
 Handle the returned state before implementing:
 
-- `blocked` with `missingArtifacts`: stop and name the missing artifacts; return
-  to `issue-to-openspec` or `spec-review`.
+- `blocked` with `missingArtifacts`: stop and name the missing artifacts; do not
+  implement. The persona returns the change to the spec stage.
 - `all_done`: report completion and hand off to the OpenSpec archive workflow; do
   not implement.
 - otherwise: read every path in `contextFiles`, plus the `context` and
@@ -144,9 +146,9 @@ Stop and report when:
   to narrow, defer, or accept an exception.
 - A task cannot be made green without changing another task's contract.
 
-Update the artifacts through OpenSpec and return to `spec-review`. Implementation
-resumes only when the approval marker is present again. Do not absorb scope
-silently, and do not rewrite the spec to match the code.
+Update the artifacts through OpenSpec and stop. Implementation resumes only when
+the spec-approval marker is present again. Do not absorb scope silently, and do
+not rewrite the spec to match the code.
 
 ### 6. Complete the change
 
@@ -168,7 +170,7 @@ Do not archive the change.
 
 ## Verification
 
-- [ ] The approval marker defined by the agent file is present.
+- [ ] The spec-approval marker defined by the agent file is present.
 - [ ] The apply state was handled, and `contextFiles`, `context`, and
       `operationGuidance` were read.
 - [ ] Every slice was tested through a named seam.
