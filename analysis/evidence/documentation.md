@@ -294,3 +294,13 @@ the output was text-first anyway.
 - The `AGENTS.md` text-first rule is not tested with the skill loaded.
 - The README test asked for an architecture overview; it does not show that a
   generic document request will add visuals.
+
+## Real-use report: historical ADRs (2026-11-10)
+
+Issue #3 reported that an agent read "preserve historical ADRs" as permission to
+add a current-status block to each record. The skill now says an ADR stays in
+its historical frame; current guidance links forward or supersedes it, and a
+preserve request amends only the named sections.
+
+This is a real-use report, not a scored run. No control or treatment was run
+against the revised wording. See `docs/open-tasks.md`.

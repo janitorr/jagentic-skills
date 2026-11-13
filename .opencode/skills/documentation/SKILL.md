@@ -80,6 +80,13 @@ Record the alternatives and why they lost. Do not delete old ADRs; supersede the
 with a new record that links back. A decision record without its constraints is
 just an announcement.
 
+Keep an ADR in its historical frame. It records what was decided then, under
+the constraints of that time; do not add a current-status block that makes it
+read as today's guidance. When current practice changes, link forward from the
+old record or supersede it with a new one. If a request says to preserve
+historical ADRs, amend only the sections it names and keep the original
+decisions and consequences intact.
+
 An RFC is the same record with status `proposed`; reviewers act on the
 alternatives and consequences, so those sections carry the weight.
 
@@ -214,7 +221,8 @@ owns changelog content and format; `git-workflow` owns when a release needs one.
 - [ ] The artifact matches its branch: ADR or RFC, README, reference, procedural
       document, comment, agent rules, or changelog.
 - [ ] Audience and job shaped the document without becoming a default section.
-- [ ] Decision records include context, alternatives, and consequences.
+- [ ] Decision records include context, alternatives, and consequences, and stay
+      in their historical frame; current guidance links forward or supersedes.
 - [ ] Reference pages document observed behavior and include one complete example.
 - [ ] Procedural documents give prerequisites, ordered steps, expected results,
       and a failure path.
