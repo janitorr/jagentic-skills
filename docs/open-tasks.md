@@ -138,6 +138,13 @@ The other five skills and every description are unchanged; no retest.
 
 ## Known debt
 
+- [ ] **Cross-domain generalization.** The 2026-11-12 simplest-solution
+      micro-tests cover one domain: Python web observability (FastAPI, OTEL,
+      health libraries). They do not show the rule fires for a retry loop, a
+      config parser, a queue worker, or a CLI in another ecosystem. The examples
+      are web-shaped ("middleware", "endpoint"); one non-web 3x3 should run
+      before claiming the rule generalizes, and the examples should be broadened
+      if it does not fire.
 - [ ] `issue-to-openspec`: the 2026-11-12 micro-test is 3/3 skill (choose the
       pinned integrations or block for the missing gap) vs 0/3 control on an
       OTEL/health fixture with an approved custom approach. One model, three

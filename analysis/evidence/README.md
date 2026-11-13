@@ -206,6 +206,13 @@ include the parent evaluation session.
 These are stable findings. Each skill file keeps the method, tables, and
 reproduction steps.
 
+- **The simplest-solution rules are proven on one web fixture, not across
+  domains.** The 2026-11-12 micro-tests cover Python web observability
+  (FastAPI, OTEL, health libraries). They do not show the rule fires for a retry
+  loop, a config parser, a queue worker, or a CLI in another ecosystem. The
+  examples remain web-shaped; see `docs/open-tasks.md` before claiming
+  generalization.
+
 - **Review recall has a ceiling.** Seeded `spec-review` and TDD runs matched a
   strong control on recall; the fixtures do not show a skill advantage there.
 - **A traceback that points at the root cause does not need a debugging loop.**
